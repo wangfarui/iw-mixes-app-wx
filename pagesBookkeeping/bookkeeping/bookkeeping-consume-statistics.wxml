@@ -1,0 +1,147 @@
+<view class="statistics-page">
+  <view class="header-card time-card">
+    <view class="time-row">
+      <picker wx:if="{{currentTab === 'month'}}" mode="date" fields="month" value="{{selectedMonth}}" bindchange="onMonthChange">
+        <view class="time-picker">
+          <text>{{selectedMonthText}}</text>
+          <view class="picker-arrow"></view>
+        </view>
+      </picker>
+      <picker wx:else mode="date" fields="year" value="{{selectedYear}}" bindchange="onYearChange">
+        <view class="time-picker">
+          <text>{{selectedYear}}年</text>
+          <view class="picker-arrow"></view>
+        </view>
+      </picker>
+      <view class="tab-bar">
+        <view class="tab-item {{currentTab === 'month' ? 'active' : ''}}" data-tab="month" bindtap="switchTab">月度</view>
+        <view class="tab-item {{currentTab === 'year' ? 'active' : ''}}" data-tab="year" bindtap="switchTab">年度</view>
+      </view>
+    </view>
+
+  </view>
+
+  <view class="summary-card">
+    <view class="summary-main">
+      <view class="summary-total-line">
+        <text class="summary-label">总支出</text>
+        <text class="summary-amount">¥{{totalAmount}}</text>
+      </view>
+      <text class="summary-count">共 {{totalRecordNum}} 笔</text>
+    </view>
+    <view class="summary-ignore">
+      <text>忽略不计入统计的账单</text>
+      <switch checked="{{ignoreNotStatistics}}" color="#2f7cff" bindchange="switchIgnoreStatistics" />
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-head">
+      <view>
+        <view class="section-title">{{currentTab === 'month' ? '本月支出占比' : '年度支出占比'}}</view>
+        <view class="section-subtitle">按支出分类统计</view>
+      </view>
+      <view wx:if="{{currentTab === 'month'}}" class="compare-toggle">
+        <text>对比上月</text>
+        <switch checked="{{compareLastMonth}}" color="#2f7cff" bindchange="toggleCompareLastMonth" />
+      </view>
+    </view>
+
+    <view wx:if="{{categoryList.length > 0}}" class="chart-layout">
+      <canvas id="categoryPieCanvas" canvas-id="categoryPieCanvas" class="pie-canvas"></canvas>
+      <view class="chart-legend">
+        <view wx:for="{{categoryLegend}}" wx:key="key" class="legend-item {{item.hidden ? 'disabled' : ''}}" data-key="{{item.key}}" bindtap="toggleCategoryLegend">
+          <view class="legend-color" style="background: {{item.hidden ? '#cfd4dc' : item.color}};"></view>
+          <view class="legend-main">
+            <view class="legend-line">
+              <text class="legend-name">{{item.name}}</text>
+              <text class="legend-ratio">{{item.ratio}}%</text>
+            </view>
+            <view class="legend-meta">¥{{item.amount}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:for="{{categoryList}}" wx:key="recordType" class="progress-item" data-record-type="{{item.recordType}}" bindtap="goToRecords">
+      <view class="progress-head">
+        <view class="progress-name">{{item.name}} <text class="muted">({{item.recordNum}}笔)</text></view>
+        <view class="progress-amount">¥{{item.amount}}</view>
+      </view>
+      <view class="progress-track">
+        <view class="progress-fill consume-fill" style="width: {{item.ratio}}%; background: {{item.color}};"></view>
+      </view>
+      <view class="progress-foot">
+        <text>{{item.ratio}}%</text>
+        <text wx:if="{{compareLastMonth && item.lastAmountText}}" class="month-delta {{item.isGreaterThan ? 'greater' : 'less'}}">
+          {{item.isGreaterThan ? '+' : '-'}}¥{{item.lastAmountText}}
+        </text>
+      </view>
+    </view>
+    <view wx:if="{{categoryList.length === 0}}" class="empty">暂无分类统计</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-head">
+      <view>
+        <view class="section-title">支出标签占比</view>
+        <view class="section-subtitle">{{tagViewType === 'count' ? '按出现次数排序' : '按支出金额排序'}}</view>
+      </view>
+      <view class="segmented-control">
+        <view class="segment-item {{tagViewType === 'count' ? 'active' : ''}}" data-type="count" bindtap="switchTagViewType">次数</view>
+        <view class="segment-item {{tagViewType === 'amount' ? 'active' : ''}}" data-type="amount" bindtap="switchTagViewType">金额</view>
+      </view>
+    </view>
+
+    <view wx:if="{{displayTagList.length > 0}}" class="chart-layout">
+      <canvas id="tagPieCanvas" canvas-id="tagPieCanvas" class="pie-canvas"></canvas>
+      <view class="chart-legend">
+        <view wx:for="{{tagLegend}}" wx:key="key" class="legend-item {{item.hidden ? 'disabled' : ''}}" data-key="{{item.key}}" bindtap="toggleTagLegend">
+          <view class="legend-color" style="background: {{item.hidden ? '#cfd4dc' : item.color}};"></view>
+          <view class="legend-main">
+            <view class="legend-line">
+              <text class="legend-name">{{item.name}}</text>
+              <text class="legend-ratio">{{item.displayRatio}}%</text>
+            </view>
+            <view class="legend-meta">{{item.displayText}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:for="{{displayTagList}}" wx:key="key" class="progress-item">
+      <view class="progress-head">
+        <view class="progress-name">{{item.name}}</view>
+        <view class="progress-amount">{{item.displayText}}</view>
+      </view>
+      <view class="progress-track">
+        <view class="progress-fill tag-fill" style="width: {{item.displayRatio}}%; background: {{item.color}};"></view>
+      </view>
+      <view class="progress-foot">{{item.displayRatio}}%</view>
+    </view>
+    <view wx:if="{{displayTagList.length === 0}}" class="empty">暂无标签统计</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-head">
+      <view>
+        <view class="section-title">{{currentTab === 'month' ? '月度每日消费' : '年度每月支出'}}</view>
+        <view class="section-subtitle">{{barChartSummary}}</view>
+      </view>
+    </view>
+    <canvas id="consumeBarCanvas" canvas-id="consumeBarCanvas" class="bar-canvas"></canvas>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">支出排行 TOP 10</view>
+    <view wx:for="{{rankList}}" wx:key="id" class="rank-item" data-id="{{item.id}}" bindtap="goToDetail">
+      <view class="rank-index">{{index + 1}}</view>
+      <view class="rank-main">
+        <view class="rank-name">{{item.recordSource}}</view>
+        <view class="rank-meta">{{item.recordTypeName}}{{item.ownerText}}</view>
+      </view>
+      <view class="rank-amount">¥{{item.amount}}</view>
+    </view>
+    <view wx:if="{{rankList.length === 0}}" class="empty">暂无排行数据</view>
+  </view>
+</view>

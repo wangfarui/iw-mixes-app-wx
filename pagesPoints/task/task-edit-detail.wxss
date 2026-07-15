@@ -1,0 +1,82 @@
+@import "../points/points-common.wxss";
+
+.task-detail-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-detail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.task-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.task-name-input {
+  flex: 1;
+  min-width: 0;
+  height: 60rpx;
+  padding: 0 16rpx;
+  border-radius: 8rpx;
+  background: #f7f8fa;
+  color: #222;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 60rpx;
+  box-sizing: border-box;
+}
+
+.task-name-placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.save-btn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 92rpx;
+  height: 52rpx;
+  padding: 0 20rpx;
+  border-radius: 8rpx;
+  background: #007aff;
+  color: #ffffff;
+  font-size: 25rpx;
+  font-weight: 500;
+  line-height: 52rpx;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.save-btn.is-disabled {
+  background: #b8d8ff;
+}
+
+.remark-editor {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  background: #ffffff;
+  color: #333;
+  font-size: 28rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.retry-btn {
+  display: inline-flex;
+  margin-top: 24rpx;
+}

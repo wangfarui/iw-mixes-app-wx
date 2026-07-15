@@ -1,0 +1,22 @@
+<view class="points-page">
+  <view class="detail-row">
+    <view class="detail-label">积分记录时间</view>
+    <view class="detail-value">{{detail.createTime || '-'}}</view>
+  </view>
+  <view class="detail-row">
+    <view class="detail-label">积分来源</view>
+    <view class="detail-value">{{detail.source || '-'}}</view>
+  </view>
+  <view class="detail-row">
+    <view class="detail-label">积分变动数量</view>
+    <view class="detail-value {{detail.points >= 0 ? 'positive' : 'negative'}}">{{detail.pointsText}}分</view>
+  </view>
+  <view class="detail-row">
+    <view class="detail-label">备注</view>
+    <view class="detail-value">{{detail.remark || '-'}}</view>
+  </view>
+
+  <view class="button-row">
+    <button class="danger-btn" bindtap="confirmDelete">删除</button>
+  </view>
+</view>

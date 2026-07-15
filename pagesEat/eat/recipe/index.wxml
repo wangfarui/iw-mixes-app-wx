@@ -1,0 +1,34 @@
+<view class="eat-page">
+  <view class="filter-card recipe-filter-card">
+    <view class="filter-row recipe-filter-row">
+      <input class="filter-field recipe-search-field" value="{{dishesName}}" placeholder="搜索菜品" bindinput="onSearchInput" confirm-type="search" bindconfirm="initPage" />
+      <button class="plain-btn recipe-search-btn" bindtap="initPage">搜索</button>
+    </view>
+  </view>
+
+  <scroll-view class="category-row recipe-category-row" scroll-x>
+    <view class="recipe-category-list">
+      <view wx:for="{{categories}}" wx:key="value" class="category-chip recipe-category-chip {{item.value === currentType ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectCategory">{{item.text}}</view>
+    </view>
+  </scroll-view>
+
+  <view class="dish-card" wx:for="{{list}}" wx:key="id" bindtap="goDetail" bindlongpress="openActions" data-index="{{index}}" data-id="{{item.id}}">
+    <image wx:if="{{item.image && !item.imageLoadError}}" class="dish-image" src="{{item.image}}" mode="aspectFill" data-index="{{index}}" binderror="onDishImageError" />
+    <view wx:else class="dish-image image-placeholder {{item.image ? 'image-placeholder-error' : ''}}">{{item.image ? '图片加载失败' : '暂无图片'}}</view>
+    <view class="item-main">
+      <view class="item-row">
+        <view class="item-title">{{item.dishesName}}</view>
+        <view class="item-value">¥{{item.priceText}}</view>
+      </view>
+      <view class="item-meta">{{item.dishesTypeName}} · {{item.useTime || 0}}分钟 · 难度{{item.difficultyFactor || 0}}</view>
+      <view class="tag-row">
+        <view wx:if="{{item.isOwner}}" class="tag owner">本人创建</view>
+        <view class="tag">{{item.statusName}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">暂无菜品</view>
+  <view class="load-more">{{loadMoreText}}</view>
+  <view class="fab recipe-fab" bindtap="goAdd">+</view>
+</view>

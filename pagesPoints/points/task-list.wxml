@@ -1,0 +1,43 @@
+<view class="points-page task-list-page">
+  <view class="filter-card task-list-filter">
+    <input class="filter-field task-list-search" value="{{filterKeyword}}" placeholder="输入任务名称进行筛选" bindinput="onFilterInput" />
+  </view>
+
+  <view class="list-card">
+    <view class="list-item task-list-item" wx:for="{{filteredTaskList}}" wx:key="id" bindlongpress="openActions" data-index="{{index}}">
+      <view class="item-row task-list-header">
+        <view class="item-title task-list-title">{{item.taskNameText}}</view>
+        <view class="task-list-side">
+          <view class="item-value {{item.pointsClass}}">{{item.pointsText}}积分</view>
+          <button class="primary-btn task-list-submit" catchtap="submitTask" data-id="{{item.id}}">提交</button>
+        </view>
+      </view>
+      <view wx:if="{{item.taskRemark}}" class="item-meta task-list-remark">{{item.taskRemark}}</view>
+    </view>
+    <view wx:if="{{!filteredTaskList.length}}" class="empty">暂无常用任务</view>
+  </view>
+
+  <view class="fab task-list-fab" bindtap="openAddModal">+</view>
+
+  <view wx:if="{{showModal}}" class="modal-mask" catchtap="closeModal">
+    <view class="modal-card task-list-modal" catchtap="noop">
+      <view class="modal-title">{{isEdit ? '编辑任务' : '新增任务'}}</view>
+      <view class="form-row">
+        <view class="form-label">任务名称</view>
+        <input class="form-input" value="{{formData.taskName}}" placeholder="请输入任务名称" data-field="taskName" bindinput="handleFormInput" />
+      </view>
+      <view class="form-row">
+        <view class="form-label">任务积分</view>
+        <input class="form-input" value="{{formData.taskPoints}}" placeholder="请输入积分（可以是正数或负数）" data-field="taskPoints" bindinput="handleFormInput" />
+      </view>
+      <view class="form-row">
+        <view class="form-label">任务备注</view>
+        <textarea class="form-textarea" value="{{formData.taskRemark}}" placeholder="请输入任务备注" data-field="taskRemark" bindinput="handleFormInput" auto-height />
+      </view>
+      <view class="button-row task-list-modal-actions">
+        <button class="plain-btn task-list-modal-btn" bindtap="closeModal">取消</button>
+        <button class="primary-btn task-list-modal-btn" bindtap="saveTask">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

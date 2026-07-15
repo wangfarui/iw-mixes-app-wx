@@ -1,0 +1,52 @@
+<view class="profile-container">
+  <view class="profile-avatar-section">
+    <image class="profile-avatar" src="{{avatarUrl}}" mode="aspectFill" bindtap="openUploadActions" />
+    <text class="avatar-tip">点击更换头像</text>
+  </view>
+
+  <view class="profile-info-list">
+    <view class="profile-info-item clickable" bindtap="openEditNameDialog">
+      <text class="profile-info-label">姓名</text>
+      <view class="profile-info-value-row">
+        <text class="profile-info-value">{{userInfo.name || '-'}}</text>
+        <text class="profile-arrow">›</text>
+      </view>
+    </view>
+    <picker class="profile-info-picker" mode="selector" range="{{genderOptions}}" range-key="text" value="{{genderIndex}}" disabled="{{isUpdatingGender}}" bindchange="onGenderChange">
+      <view class="profile-info-item clickable">
+        <text class="profile-info-label">性别</text>
+        <view class="profile-info-value-row">
+          <text class="profile-info-value">{{genderName}}</text>
+          <text class="profile-arrow">›</text>
+        </view>
+      </view>
+    </picker>
+    <view class="profile-info-item">
+      <text class="profile-info-label">手机号</text>
+      <text class="profile-info-value">{{userInfo.phoneNumber || '-'}}</text>
+    </view>
+    <view class="profile-info-item">
+      <text class="profile-info-label">邮箱</text>
+      <text class="profile-info-value">{{userInfo.emailAddress || '-'}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{showEditNameDialog}}" class="modal-mask">
+    <view class="modal-card">
+      <view class="modal-title">编辑姓名</view>
+      <input class="modal-input" value="{{editName}}" placeholder="请输入新姓名" maxlength="20" bindinput="onEditNameInput" />
+      <view class="modal-actions">
+        <button class="modal-btn secondary" bindtap="closeEditNameDialog">取消</button>
+        <button class="modal-btn primary" bindtap="submitEditName">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showUploadActions}}" class="action-mask" bindtap="closeUploadActions">
+    <view class="action-sheet" catchtap="noop">
+      <button class="action-btn" bindtap="takePhoto">拍照</button>
+      <button class="action-btn" bindtap="chooseFromAlbum">从相册选择</button>
+      <button class="action-btn cancel" bindtap="closeUploadActions">取消</button>
+    </view>
+  </view>
+</view>

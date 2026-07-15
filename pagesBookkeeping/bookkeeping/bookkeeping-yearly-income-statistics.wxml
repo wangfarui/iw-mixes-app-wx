@@ -1,0 +1,64 @@
+<view class="year-page">
+  <view class="year-header">
+    <picker mode="date" fields="year" value="{{selectedYearDate}}" bindchange="onYearChange">
+      <view class="year-picker">{{selectedYear}}年</view>
+    </picker>
+  </view>
+
+  <view class="setting-card">
+    <text>忽略不计入统计的账单</text>
+    <switch checked="{{ignoreNotStatistics}}" bindchange="switchIgnoreStatistics" />
+  </view>
+
+  <view class="summary-card single income">
+    <view class="summary-label">年度收入总额</view>
+    <view class="summary-amount">¥{{income.yearStatistics.totalIncome}}</view>
+    <view class="summary-sub">共 {{income.yearStatistics.incomeCount}} 笔</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">每月收入趋势</view>
+    <view class="month-bar" wx:for="{{income.monthlyList}}" wx:key="month">
+      <text class="month-label">{{item.month}}</text>
+      <view class="progress-track"><view class="progress-fill income-fill" style="width: {{item.ratio}}%"></view></view>
+      <text class="progress-money">¥{{item.amount}}</text>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">收入分类占比</view>
+    <view class="progress-item" wx:for="{{income.incomeCategories}}" wx:key="name">
+      <view class="progress-head"><text>{{item.name}}</text><text>¥{{item.amount}}</text></view>
+      <view class="progress-track"><view class="progress-fill" style="width: {{item.ratio}}%; background: {{item.color}}"></view></view>
+      <view class="progress-foot">{{item.ratio}}%</view>
+    </view>
+    <view wx:if="{{income.hasMoreIncomeCategory}}" class="expand-btn" bindtap="toggleIncomeCategory">{{showAllIncomeCategory ? '收起' : '展开全部'}}</view>
+    <view wx:if="{{!income.incomeCategories.length}}" class="empty">暂无分类数据</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">收入 Top10</view>
+    <view class="rank-item" wx:for="{{income.topIncomeList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="rank-index">{{index + 1}}</view>
+      <view class="rank-main">
+        <view class="rank-title">{{item.category}}</view>
+        <view class="rank-desc">{{item.description}}</view>
+        <view class="rank-meta">{{item.date}}{{item.ownerText}}</view>
+      </view>
+      <view class="rank-amount income-amount">¥{{item.amount}}</view>
+    </view>
+    <view wx:if="{{!income.topIncomeList.length}}" class="empty">暂无收入记录</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">收入洞察</view>
+    <view class="insight-grid">
+      <view class="insight-item"><text>收入最高的一天</text><text>¥{{income.insights.maxDayAmount}}</text><text>{{income.insights.maxDayDate}}</text></view>
+      <view class="insight-item"><text>收入最高的月份</text><text>¥{{income.insights.maxMonthAmount}}</text><text>{{income.insights.maxMonthName}}</text></view>
+      <view class="insight-item"><text>大额收入占比</text><text>{{income.insights.largeIncomeRatio}}%</text><text>&gt;¥10000</text></view>
+      <view class="insight-item"><text>月均收入</text><text>¥{{income.insights.avgMonthAmount}}</text><text>12月平均</text></view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-mask">加载中...</view>
+</view>

@@ -1,0 +1,45 @@
+@import "./wardrobe-common.wxss";
+
+.outfit-card {
+  margin-bottom: 18rpx;
+  padding: 18rpx;
+}
+
+.outfit-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 18rpx;
+}
+
+.outfit-image-row {
+  margin-top: 16rpx;
+  white-space: nowrap;
+}
+
+.outfit-image-list {
+  display: inline-flex;
+  gap: 10rpx;
+}
+
+.outfit-thumb {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 8rpx;
+  background: #edf0f3;
+}
+
+.card-actions {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.suggestion-card {
+  padding: 18rpx 0;
+  border-top: 1rpx solid #f0f1f3;
+}
+
+.suggestion-main {
+  flex: 1;
+  min-width: 0;
+}

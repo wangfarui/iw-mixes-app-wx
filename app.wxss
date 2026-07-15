@@ -1,0 +1,69 @@
+@import "./style/weui.wxss";
+@import "./static/iconfont.wxss";
+
+page {
+  min-height: 100%;
+  background: #f8f8f8;
+  color: #1f2329;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 28rpx;
+}
+
+view,
+text,
+input,
+textarea,
+button,
+scroll-view {
+  box-sizing: border-box;
+}
+
+button::after {
+  border: none;
+}
+
+.page {
+  min-height: 100vh;
+  background: #f8f8f8;
+}
+
+.page-body {
+  padding: 24rpx;
+}
+
+.placeholder-page {
+  min-height: 100vh;
+  padding: 32rpx;
+  background: #f8f8f8;
+}
+
+.placeholder-card {
+  margin-top: 96rpx;
+  padding: 40rpx 32rpx;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.06);
+}
+
+.placeholder-title {
+  color: #111827;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.placeholder-path {
+  margin-top: 16rpx;
+  color: #6b7280;
+  font-size: 24rpx;
+  word-break: break-all;
+}
+
+.placeholder-desc {
+  margin-top: 28rpx;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.placeholder-actions {
+  margin-top: 36rpx;
+}

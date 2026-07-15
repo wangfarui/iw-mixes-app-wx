@@ -1,0 +1,45 @@
+@import "./wardrobe-common.wxss";
+
+.form-top-line {
+  margin-top: 20rpx;
+}
+
+.tag-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin: 4rpx 0 18rpx;
+}
+
+.record-card {
+  margin-bottom: 18rpx;
+  padding: 18rpx;
+}
+
+.record-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.record-image-row {
+  margin-top: 16rpx;
+  white-space: nowrap;
+}
+
+.record-image-list {
+  display: inline-flex;
+  gap: 10rpx;
+}
+
+.record-thumb {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 8rpx;
+  background: #edf0f3;
+}
+
+.card-actions {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}

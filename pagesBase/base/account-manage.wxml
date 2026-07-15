@@ -1,0 +1,39 @@
+<view class="base-page">
+  <view class="filter-card">
+    <view class="filter-row">
+      <input class="filter-field filter-input" value="{{filterForm.name}}" placeholder="请输入应用名称" data-field="name" bindinput="onFilterInput" confirm-type="search" bindconfirm="applyFilter" />
+      <input class="filter-field filter-input" value="{{filterForm.address}}" placeholder="请输入应用地址" data-field="address" bindinput="onFilterInput" confirm-type="search" bindconfirm="applyFilter" />
+    </view>
+    <view class="filter-row">
+      <button class="plain-btn" bindtap="applyFilter">搜索</button>
+      <button class="primary-btn" bindtap="goAdd">新增</button>
+    </view>
+  </view>
+
+  <view class="list-card">
+    <view class="list-item account-item" wx:for="{{accountList}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+      <view class="item-main">
+        <view class="item-title">{{item.name || item.address || item.account || '未命名账号'}}</view>
+        <view class="item-meta">应用地址：{{item.address || '-'}}</view>
+        <view class="item-meta">账号：{{item.account || '-'}}</view>
+        <view class="item-meta">分类：{{item.typeName}}</view>
+      </view>
+      <view class="item-actions account-actions">
+        <view class="password-action" catchtap="viewPassword" data-id="{{item.id}}">查看密码</view>
+      </view>
+    </view>
+    <view wx:if="{{!accountList.length && !loading}}" class="empty">暂无账号数据</view>
+    <view class="load-more">{{loadMoreText}}</view>
+  </view>
+
+  <view wx:if="{{showPasswordPopup}}" class="modal-mask" catchtap="closePasswordPopup">
+    <view class="modal-card" catchtap="noop">
+      <view class="modal-title">账号密码</view>
+      <view class="password-text">{{passwordToShow}}</view>
+      <view class="modal-actions">
+        <button class="plain-btn" bindtap="copyPassword">复制</button>
+        <button class="primary-btn" bindtap="closePasswordPopup">关闭</button>
+      </view>
+    </view>
+  </view>
+</view>

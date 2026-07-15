@@ -1,0 +1,73 @@
+<view class="eat-page">
+  <view class="form-card">
+    <view class="form-line">
+      <view class="form-label">菜品名称</view>
+      <input class="form-input" value="{{formData.name}}" placeholder="请输入菜品名称" data-field="name" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">菜品封面</view>
+      <view class="form-input" bindtap="chooseCoverImage">{{formData.coverImage ? '已上传，点击更换' : '点击上传封面'}}</view>
+    </view>
+    <image wx:if="{{formData.coverImage}}" class="cover-image" src="{{formData.coverImage}}" mode="aspectFill" />
+    <view class="form-line">
+      <view class="form-label">菜品分类</view>
+      <picker class="picker-field" mode="selector" range="{{categoryOptions}}" range-key="text" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view>{{categoryName || '请选择菜品分类'}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">难度系数</view>
+      <picker class="picker-field" mode="selector" range="{{difficultyOptions}}" value="{{difficultyIndex}}" bindchange="onDifficultyChange">
+        <view>{{formData.difficulty || 0}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">预计用时</view>
+      <input class="form-input" type="number" value="{{formData.estimatedTime}}" placeholder="分钟" data-field="estimatedTime" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">菜品价格</view>
+      <input class="form-input" type="digit" value="{{formData.price}}" placeholder="元" data-field="price" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">备注</view>
+      <textarea class="form-textarea" value="{{formData.remark}}" placeholder="请输入备注信息" data-field="remark" bindinput="handleInput" auto-height />
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">食材列表</view>
+    <view class="mini-card" wx:for="{{formData.ingredients}}" wx:key="index">
+      <input class="form-input" value="{{item.name}}" placeholder="食材名称" data-index="{{index}}" data-field="name" bindinput="handleIngredientInput" />
+      <input class="form-input" value="{{item.amount}}" placeholder="用量" data-index="{{index}}" data-field="amount" bindinput="handleIngredientInput" />
+      <input class="form-input" type="digit" value="{{item.price}}" placeholder="价格" data-index="{{index}}" data-field="price" bindinput="handleIngredientInput" />
+      <view class="item-row">
+        <text class="item-meta">需要购买</text>
+        <switch checked="{{item.needToBuy}}" data-index="{{index}}" bindchange="toggleIngredientPurchase" />
+      </view>
+      <view class="mini-actions">
+        <button class="danger-btn" data-index="{{index}}" bindtap="removeIngredient">删除</button>
+        <button class="plain-btn" data-index="{{index}}" data-direction="up" bindtap="moveIngredient">上移</button>
+        <button class="plain-btn" data-index="{{index}}" data-direction="down" bindtap="moveIngredient">下移</button>
+      </view>
+    </view>
+    <button class="plain-btn" bindtap="addIngredient">添加食材</button>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">制作步骤</view>
+    <view class="mini-card" wx:for="{{formData.steps}}" wx:key="index">
+      <view class="form-input" data-index="{{index}}" bindtap="chooseStepImage">{{item.image ? '已上传步骤图，点击更换' : '点击上传步骤图'}}</view>
+      <image wx:if="{{item.image}}" class="dish-image" src="{{item.image}}" mode="aspectFill" />
+      <textarea class="form-textarea" value="{{item.description}}" placeholder="请输入步骤说明" data-index="{{index}}" bindinput="handleStepInput" auto-height />
+      <view class="mini-actions">
+        <button class="danger-btn" data-index="{{index}}" bindtap="removeStep">删除</button>
+        <button class="plain-btn" data-index="{{index}}" data-direction="up" bindtap="moveStep">上移</button>
+        <button class="plain-btn" data-index="{{index}}" data-direction="down" bindtap="moveStep">下移</button>
+      </view>
+    </view>
+    <button class="plain-btn" bindtap="addStep">添加步骤</button>
+  </view>
+
+  <button class="primary-btn" bindtap="submitForm">保存</button>
+</view>

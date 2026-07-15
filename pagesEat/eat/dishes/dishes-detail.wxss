@@ -1,0 +1,69 @@
+@import "../eat-common.wxss";
+
+.dish-detail-page.order-mode {
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+}
+
+.detail-cover-image {
+  width: 100%;
+  height: 360rpx;
+  margin-bottom: 20rpx;
+  border-radius: 12rpx;
+}
+
+.detail-order-bar {
+  position: fixed;
+  left: 20rpx;
+  right: 20rpx;
+  bottom: calc(36rpx + env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  min-height: 96rpx;
+  padding: 12rpx;
+  border-radius: 48rpx;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.14);
+  box-sizing: border-box;
+}
+
+.detail-order-summary {
+  flex: 1;
+  min-width: 0;
+  padding-left: 12rpx;
+}
+
+.detail-order-price {
+  color: #ff6b35;
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.detail-order-meta {
+  color: #777777;
+  font-size: 22rpx;
+  line-height: 1.3;
+}
+
+.detail-cart-btn,
+.detail-add-btn {
+  flex: none;
+  min-width: 132rpx;
+  height: 72rpx;
+  padding: 0 20rpx;
+  border-radius: 36rpx;
+  font-size: 25rpx;
+  line-height: 72rpx;
+}
+
+.detail-add-btn.selected {
+  background: #eef5ff;
+  color: #007aff;
+}
+
+.detail-add-btn.disabled {
+  background: #e6e6e6;
+  color: #999999;
+}

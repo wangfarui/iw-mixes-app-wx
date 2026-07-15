@@ -1,0 +1,70 @@
+<view class="detail-page">
+  <view wx:if="{{detail.id}}" class="record-card">
+    <view class="amount-block {{detail.recordCategory == 2 ? 'income' : 'consume'}}">
+      <view class="amount-label">{{detail.recordCategoryText}}</view>
+      <view class="amount-value">{{detail.recordCategory == 1 ? '-' : '+'}}{{detail.amount}}</view>
+    </view>
+
+    <view class="item">
+      <text class="label">时间</text>
+      <text class="value">{{detail.recordTime}}</text>
+    </view>
+    <view class="item">
+      <text class="label">类型</text>
+      <text class="value">{{detail.recordCategoryText}}</text>
+    </view>
+    <view wx:if="{{detail.userName}}" class="item">
+      <text class="label">记账人</text>
+      <text class="value">{{detail.userName}}</text>
+    </view>
+    <view class="item">
+      <text class="label">来源</text>
+      <text class="value">{{detail.recordSourceText}}</text>
+    </view>
+    <view class="item">
+      <text class="label">分类</text>
+      <text class="value">{{detail.recordTypeName}}</text>
+    </view>
+    <view class="item">
+      <text class="label">标签</text>
+      <text class="value">{{detail.recordTagsText || '-'}}</text>
+    </view>
+    <view class="item">
+      <text class="label">备注</text>
+      <text class="value">{{detail.remark || '-'}}</text>
+    </view>
+
+    <view wx:if="{{detail.fileList && detail.fileList.length > 0}}" class="item file-item-row">
+      <text class="label">附件</text>
+      <view class="file-list">
+        <image
+          wx:for="{{detail.fileList}}"
+          wx:key="fileUrl"
+          src="{{item.fileUrl}}"
+          class="file-thumbnail"
+          mode="aspectFill"
+          data-url="{{item.fileUrl}}"
+          bindtap="previewImage"
+        />
+      </view>
+    </view>
+
+    <view class="item">
+      <text class="label">订单编号</text>
+      <text class="value">{{detail.orderNo || '-'}}</text>
+    </view>
+  </view>
+
+  <view wx:else class="loading">
+    <text>{{isLoading ? '加载中...' : '暂无记录'}}</text>
+  </view>
+
+  <view wx:if="{{detail.id && detail.canEdit}}" class="bottom-actions">
+    <button class="edit-btn" bindtap="clickUpdateButton">编辑</button>
+    <button class="delete-btn" bindtap="confirmDelete">删除</button>
+  </view>
+
+  <view wx:if="{{detail.id && !detail.canEdit}}" class="readonly-tip">
+    共享记录仅支持查看，不能编辑或删除
+  </view>
+</view>

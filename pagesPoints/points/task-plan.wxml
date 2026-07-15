@@ -1,0 +1,35 @@
+<view class="points-page task-plan-page">
+  <view class="filter-card task-plan-filter">
+    <view class="filter-row task-plan-filter-row">
+      <input class="filter-field task-plan-search" value="{{searchForm.taskName}}" placeholder="任务名称" data-field="taskName" bindinput="handleSearchInput" confirm-type="search" bindconfirm="search" />
+      <picker class="filter-field task-plan-status-picker" mode="selector" range="{{statusOptions}}" range-key="text" value="{{statusIndex}}" bindchange="onStatusChange">
+        <view>{{statusName || '全部状态'}}</view>
+      </picker>
+      <button class="plain-btn task-plan-search-btn" bindtap="search">搜索</button>
+    </view>
+  </view>
+
+  <view class="list-card">
+    <view class="list-item task-plan-item" wx:for="{{list}}" wx:key="id" bindlongpress="openActions" data-index="{{index}}">
+      <view class="item-row task-plan-header">
+        <view class="item-title task-plan-title">{{item.taskNameText}}</view>
+        <view class="status-tag task-plan-status-tag {{item.statusClass}}">{{item.statusText}}</view>
+      </view>
+      <view class="task-plan-date-grid">
+        <view class="task-plan-date-cell">
+          <view class="task-plan-date-label">计划日期</view>
+          <view class="task-plan-date-value">{{item.planDateText}}</view>
+        </view>
+        <view class="task-plan-date-cell">
+          <view class="task-plan-date-label">下次生成</view>
+          <view class="task-plan-date-value">{{item.nextPlanDateText}}</view>
+        </view>
+      </view>
+      <view wx:if="{{item.createTimeText}}" class="item-meta task-plan-created">创建时间：{{item.createTimeText}}</view>
+    </view>
+    <view wx:if="{{!list.length && !loading}}" class="empty">暂无任务计划</view>
+    <view class="load-more">{{loadMoreText}}</view>
+  </view>
+
+  <view class="fab task-plan-fab" bindtap="navigateToAdd">+</view>
+</view>

@@ -1,0 +1,124 @@
+@import "./wardrobe-common.wxss";
+
+.record-hero {
+  display: block;
+}
+
+.record-hero-main {
+  min-width: 0;
+}
+
+.record-hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.range-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.range-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 128rpx;
+  height: 56rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: #eef2f7;
+  color: #3f4652;
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 56rpx;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.range-chip.active {
+  background: #007aff;
+  color: #ffffff;
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.record-group {
+  margin-bottom: 0;
+}
+
+.record-group-head {
+  padding-bottom: 14rpx;
+}
+
+.group-title {
+  color: #1f2329;
+  font-size: 32rpx;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.record-entry {
+  padding: 18rpx 0;
+  border-top: 1rpx solid #f0f1f3;
+}
+
+.record-tap-area {
+  border-radius: 8rpx;
+}
+
+.record-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.record-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.record-title-row .item-title {
+  min-width: 0;
+}
+
+.record-item-count {
+  flex: 0 0 auto;
+  color: #7a7f87;
+  font-size: 24rpx;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.record-image-row {
+  margin-top: 16rpx;
+  white-space: nowrap;
+}
+
+.record-image-list {
+  display: inline-flex;
+  gap: 10rpx;
+}
+
+.record-thumb {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 8rpx;
+  background: #edf0f3;
+}
+
+.record-empty {
+  padding-top: 120rpx;
+}
+
+.empty-action {
+  margin-top: 22rpx;
+}

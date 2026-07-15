@@ -1,0 +1,94 @@
+<view wx:if="{{pageReady}}" class="action-page">
+  <view class="step-bar">
+    <view class="step-item active">
+      <view class="step-index">1</view>
+      <text>身份验证</text>
+    </view>
+    <view class="step-line {{step !== 'verify' ? 'active' : ''}}"></view>
+    <view class="step-item {{step !== 'verify' ? 'active' : ''}}">
+      <view class="step-index">2</view>
+      <text>{{nextStepText}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{step === 'verify'}}" class="form-section">
+    <view class="section-title">验证方式</view>
+    <view class="method-segments">
+      <view
+        wx:for="{{verificationMethods}}"
+        wx:key="value"
+        data-index="{{index}}"
+        class="method-segment {{verificationMethodIndex === index ? 'selected' : ''}}"
+        bindtap="selectVerificationMethod"
+      >
+        <text class="method-label">{{item.label}}</text>
+        <text wx:if="{{item.target}}" class="method-target">{{item.target}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{verificationMethod === 1}}" class="input-row single">
+      <input password value="{{securityPassword}}" maxlength="64" placeholder="请输入登录密码" bindinput="onSecurityPasswordInput" />
+    </view>
+    <view wx:else class="input-row">
+      <input type="number" value="{{securityCode}}" maxlength="6" placeholder="请输入验证码" bindinput="onSecurityCodeInput" />
+      <view class="code-button {{securityCountdown || isSendingSecurityCode ? 'disabled' : ''}}" bindtap="sendSecurityCode">
+        {{securityCodeButtonText}}
+      </view>
+    </view>
+
+    <view class="primary-button {{isVerifying ? 'disabled' : ''}}" bindtap="submitIdentityVerification">
+      {{isVerifying ? '验证中...' : '验证并继续'}}
+    </view>
+  </view>
+
+  <view wx:if="{{step === 'target' && config.contactType}}" class="form-section">
+    <view class="section-title">{{pageTitle}}</view>
+    <view class="input-row single">
+      <input value="{{contact}}" maxlength="64" placeholder="{{contactPlaceholder}}" bindinput="onContactInput" />
+    </view>
+    <view class="input-row">
+      <input type="number" value="{{contactCode}}" maxlength="6" placeholder="请输入验证码" bindinput="onContactCodeInput" />
+      <view class="code-button {{contactCountdown || isSendingContactCode ? 'disabled' : ''}}" bindtap="sendContactCode">
+        {{contactCodeButtonText}}
+      </view>
+    </view>
+    <view class="primary-button {{isSubmitting ? 'disabled' : ''}}" bindtap="submitTarget">
+      {{isSubmitting ? '提交中...' : '确认提交'}}
+    </view>
+  </view>
+
+  <view wx:if="{{step === 'target' && config.username}}" class="form-section">
+    <view class="section-title">设置新用户名</view>
+    <view class="username-warning">用户名只能修改一次，请谨慎操作！</view>
+    <view class="input-row single">
+      <input value="{{username}}" maxlength="64" placeholder="请输入新用户名" bindinput="onUsernameInput" />
+    </view>
+    <view class="primary-button {{isSubmitting ? 'disabled' : ''}}" bindtap="submitTarget">
+      {{isSubmitting ? '提交中...' : '确认修改'}}
+    </view>
+  </view>
+
+  <view wx:if="{{step === 'target' && config.password}}" class="form-section">
+    <view class="section-title">{{pageTitle}}</view>
+    <view class="input-row single">
+      <input password value="{{newPassword}}" maxlength="64" placeholder="请输入新密码" bindinput="onNewPasswordInput" />
+    </view>
+    <view class="input-row single">
+      <input password value="{{confirmPassword}}" maxlength="64" placeholder="请再次输入新密码" bindinput="onConfirmPasswordInput" />
+    </view>
+    <view class="primary-button {{isSubmitting ? 'disabled' : ''}}" bindtap="submitTarget">
+      {{isSubmitting ? '提交中...' : '确认提交'}}
+    </view>
+  </view>
+
+  <view wx:if="{{step === 'confirm'}}" class="confirm-section">
+    <view class="warning-mark">!</view>
+    <view class="confirm-title">{{pageTitle}}</view>
+    <view class="confirm-value">
+      {{config.contactType === 1 ? userInfo.phoneNumber : userInfo.emailAddress}}
+    </view>
+    <view class="danger-button {{isSubmitting ? 'disabled' : ''}}" bindtap="confirmUnbind">
+      {{isSubmitting ? '提交中...' : '确认解绑'}}
+    </view>
+  </view>
+</view>

@@ -1,0 +1,60 @@
+<view class="menu-container">
+  <view class="search-box">
+    <view class="search-bar-wrapper">
+      <view class="search-input-wrap {{showDialog ? 'dialog-mode' : ''}}">
+        <text class="search-icon">⌕</text>
+        <input
+          class="search-input"
+          value="{{searchValue}}"
+          placeholder="搜索功能"
+          confirm-type="send"
+          bindinput="handleSearch"
+          bindconfirm="handleAsk"
+        />
+      </view>
+      <button wx:if="{{showDialog}}" class="exit-btn" bindtap="exitDialog">退出对话</button>
+    </view>
+  </view>
+
+  <scroll-view wx:if="{{!showDialog}}" scroll-y class="menu-scroll">
+    <view class="menu-section" wx:for="{{filteredMenuList}}" wx:key="title">
+      <view class="section-title">{{item.title}}</view>
+      <view class="menu-grid">
+        <view
+          class="menu-item"
+          wx:for="{{item.components}}"
+          wx:for-item="menuItem"
+          wx:key="text"
+          bindtap="handleNavigate"
+          data-path="{{menuItem.path}}"
+        >
+          <view class="icon-wrapper">
+            <image src="{{menuItem.url}}" class="image" mode="aspectFill" />
+          </view>
+          <text class="text">{{menuItem.text}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty-menu" wx:if="{{filteredMenuList.length === 0}}">没有匹配的功能</view>
+  </scroll-view>
+
+  <view wx:else class="dialog-container">
+    <scroll-view scroll-y class="dialog-scroll" scroll-into-view="{{scrollToId}}">
+      <view wx:for="{{dialogList}}" wx:key="index" id="dialog-item-{{index}}">
+        <view class="dialog-row user-row">
+          <view class="dialog-bubble user-bubble" bindlongpress="copyDialogText" data-text="{{item.question}}">
+            {{item.question}}
+          </view>
+        </view>
+        <view class="dialog-row ai-row">
+          <view class="dialog-bubble ai-bubble" bindlongpress="copyDialogText" data-text="{{item.answer}}">
+            <text selectable>{{item.answer}}</text>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{loading}}" class="dialog-row ai-row">
+        <view class="dialog-bubble ai-bubble loading-text">正在思考...</view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

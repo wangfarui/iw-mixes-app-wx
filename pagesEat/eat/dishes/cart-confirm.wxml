@@ -1,0 +1,53 @@
+<view class="eat-page cart-confirm-page">
+  <view class="form-card">
+    <view class="section-title">下单信息</view>
+    <view class="form-line">
+      <view class="form-label">用餐日期</view>
+      <picker class="picker-field" mode="date" value="{{formData.mealDate}}" bindchange="onMealDateChange">
+        <view>{{formData.mealDate}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">用餐时间</view>
+      <picker class="picker-field" mode="selector" range="{{mealTimeOptions}}" range-key="text" value="{{mealTimeIndex}}" bindchange="onMealTimeChange">
+        <view>{{mealTimeName || '请选择用餐时间'}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">用餐人数</view>
+      <input class="form-input" type="number" value="{{formData.diners}}" placeholder="不确定可不填" data-field="diners" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">备注</view>
+      <textarea class="form-textarea" value="{{formData.remark}}" placeholder="请输入备注" data-field="remark" bindinput="handleInput" auto-height />
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="cart-section-title">
+      <view class="section-title">菜品信息</view>
+      <view wx:if="{{cartItems.length}}" class="cart-clear" bindtap="clearCart">清空</view>
+    </view>
+    <view class="dish-card confirm-dish-card" wx:for="{{cartItems}}" wx:key="id" bindtap="goDishDetail" data-id="{{item.id}}">
+      <image wx:if="{{item.image}}" class="dish-image" src="{{item.image}}" mode="aspectFill" />
+      <view wx:else class="dish-image image-placeholder">暂无图片</view>
+      <view class="item-main">
+        <view class="item-row">
+          <view class="item-title">{{item.dishesName}}</view>
+          <view class="tag danger" data-id="{{item.id}}" catchtap="removeCartItem">移除</view>
+        </view>
+        <view class="item-meta">{{item.dishesTypeName}} · {{item.useTime || 0}}分钟 · 难度{{item.difficultyFactor || 0}}</view>
+        <view class="item-value confirm-dish-price">¥{{item.priceText}}</view>
+      </view>
+    </view>
+    <view wx:if="{{!cartItems.length}}" class="empty">还没有菜品加入购物车</view>
+  </view>
+
+  <view class="confirm-footer">
+    <view class="confirm-summary">
+      <view class="confirm-summary-title">已选 {{cartSummary.count}} 道菜</view>
+      <view class="confirm-summary-meta">¥{{cartSummary.totalPriceText}} · {{cartSummary.totalUseTime}}分钟</view>
+    </view>
+    <button class="primary-btn confirm-submit" loading="{{submitting}}" disabled="{{submitting || !cartItems.length}}" bindtap="submitMeal">确认下单</button>
+  </view>
+</view>

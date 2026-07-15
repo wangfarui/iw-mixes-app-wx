@@ -1,0 +1,47 @@
+<view class="statistics-page">
+  <view class="header-card">
+    <view class="time-row">
+      <picker wx:if="{{currentTab === 'month'}}" mode="date" fields="month" value="{{selectedMonth}}" bindchange="onMonthChange">
+        <view class="time-picker">{{selectedMonthText}} ▾</view>
+      </picker>
+      <picker wx:else mode="date" fields="year" value="{{selectedYear}}" bindchange="onYearChange">
+        <view class="time-picker">{{selectedYear}}年 ▾</view>
+      </picker>
+      <view class="tab-bar">
+        <view class="tab-item {{currentTab === 'month' ? 'active' : ''}}" data-tab="month" bindtap="switchTab">月度</view>
+        <view class="tab-item {{currentTab === 'year' ? 'active' : ''}}" data-tab="year" bindtap="switchTab">年度</view>
+      </view>
+    </view>
+
+    <view class="total-row">
+      <view>
+        <view class="label">总收入</view>
+        <view class="amount income">¥{{totalAmount}}</view>
+      </view>
+      <view class="count">共 {{totalRecordNum}} 笔</view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-head">
+      <view>
+        <view class="section-title">{{currentTab === 'month' ? '本月收入趋势' : '年度收入趋势'}}</view>
+        <view class="section-subtitle">{{barChartSummary}}</view>
+      </view>
+    </view>
+    <canvas id="incomeBarCanvas" canvas-id="incomeBarCanvas" class="bar-canvas"></canvas>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">收入排行 TOP 10</view>
+    <view wx:for="{{rankList}}" wx:key="id" class="rank-item" data-id="{{item.id}}" bindtap="goToDetail">
+      <view class="rank-index">{{index + 1}}</view>
+      <view class="rank-main">
+        <view class="rank-name">{{item.recordSource}}</view>
+        <view class="rank-meta">{{item.recordTypeName}}{{item.ownerText}}</view>
+      </view>
+      <view class="rank-amount">¥{{item.amount}}</view>
+    </view>
+    <view wx:if="{{rankList.length === 0}}" class="empty">暂无排行数据</view>
+  </view>
+</view>

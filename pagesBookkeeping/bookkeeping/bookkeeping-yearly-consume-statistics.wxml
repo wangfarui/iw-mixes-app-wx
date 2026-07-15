@@ -1,0 +1,79 @@
+<view class="year-page">
+  <view class="year-header">
+    <picker mode="date" fields="year" value="{{selectedYearDate}}" bindchange="onYearChange">
+      <view class="year-picker">{{selectedYear}}年</view>
+    </picker>
+  </view>
+
+  <view class="setting-card">
+    <text>忽略不计入统计的账单</text>
+    <switch checked="{{ignoreNotStatistics}}" bindchange="switchIgnoreStatistics" />
+  </view>
+
+  <view class="summary-card single consume">
+    <view class="summary-label">年度支出</view>
+    <view class="summary-amount">¥{{consume.yearStatistics.totalConsume}}</view>
+    <view class="summary-sub">共 {{consume.yearStatistics.consumeCount}} 笔</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">每月支出趋势</view>
+    <view class="month-bar" wx:for="{{consume.monthlyList}}" wx:key="month">
+      <text class="month-label">{{item.month}}</text>
+      <view class="progress-track"><view class="progress-fill consume-fill" style="width: {{item.ratio}}%"></view></view>
+      <text class="progress-money">¥{{item.amount}}</text>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">支出分类占比</view>
+    <view class="progress-item" wx:for="{{consume.consumeCategories}}" wx:key="name">
+      <view class="progress-head"><text>{{item.name}}</text><text>¥{{item.amount}}</text></view>
+      <view class="progress-track"><view class="progress-fill" style="width: {{item.ratio}}%; background: {{item.color}}"></view></view>
+      <view class="progress-foot">{{item.ratio}}%</view>
+    </view>
+    <view wx:if="{{consume.hasMoreCategory}}" class="expand-btn" bindtap="toggleCategory">{{showAllCategory ? '收起' : '展开全部'}}</view>
+    <view wx:if="{{!consume.consumeCategories.length}}" class="empty">暂无分类数据</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-head">
+      <text class="section-title">支出标签占比</text>
+      <text class="mini-btn" bindtap="switchTagViewType">{{tagViewTypeText}}</text>
+    </view>
+    <view class="progress-item" wx:for="{{consume.consumeTags}}" wx:key="name">
+      <view class="progress-head"><text>{{item.name}}</text><text>{{item.displayText}}</text></view>
+      <view class="progress-track"><view class="progress-fill" style="width: {{item.displayRatio}}%; background: {{item.color}}"></view></view>
+    </view>
+    <view wx:if="{{consume.hasMoreTags}}" class="expand-btn" bindtap="toggleTags">{{showAllTags ? '收起' : '展开全部'}}</view>
+    <view wx:if="{{!consume.consumeTags.length}}" class="empty">暂无标签数据</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">支出 Top10</view>
+    <view class="rank-item" wx:for="{{consume.topConsumeList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="rank-index">{{index + 1}}</view>
+      <view class="rank-main">
+        <view class="rank-title">{{item.category}}</view>
+        <view class="rank-desc">{{item.description}}</view>
+        <view class="rank-meta">{{item.date}}{{item.ownerText}}</view>
+      </view>
+      <view class="rank-amount">¥{{item.amount}}</view>
+    </view>
+    <view wx:if="{{!consume.topConsumeList.length}}" class="empty">暂无支出记录</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">支出洞察</view>
+    <view class="insight-grid">
+      <view class="insight-item"><text>支出最高的一天</text><text>¥{{consume.insights.maxDayAmount}}</text><text>{{consume.insights.maxDayDate}}</text></view>
+      <view class="insight-item"><text>支出最高的月份</text><text>¥{{consume.insights.maxMonthAmount}}</text><text>{{consume.insights.maxMonthName}}</text></view>
+      <view class="insight-item"><text>最常用支出标签</text><text>{{consume.insights.topTag}}</text><text>{{consume.insights.topTagCount}}次</text></view>
+      <view class="insight-item"><text>最少用支出标签</text><text>{{consume.insights.bottomTag}}</text><text>{{consume.insights.bottomTagCount}}次</text></view>
+      <view class="insight-item"><text>大额支出比例</text><text>{{consume.insights.largeExpenseRatio}}%</text><text>&gt;¥100</text></view>
+      <view class="insight-item"><text>月均支出</text><text>¥{{consume.insights.avgMonthAmount}}</text><text>12月平均</text></view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-mask">加载中...</view>
+</view>

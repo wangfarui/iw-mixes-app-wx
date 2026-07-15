@@ -1,0 +1,134 @@
+.about-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  background: #f7f8fa;
+}
+
+.brand-card,
+.info-card {
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.brand-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 32rpx 24rpx;
+}
+
+.brand-logo {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 16rpx;
+  border-radius: 24rpx;
+  background: #f0f0f0;
+}
+
+.brand-name {
+  margin-bottom: 6rpx;
+  color: #222222;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.brand-version {
+  margin-bottom: 16rpx;
+  color: #999999;
+  font-size: 24rpx;
+}
+
+.brand-desc {
+  color: #666666;
+  font-size: 26rpx;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.info-card {
+  margin-bottom: 20rpx;
+  padding: 0 24rpx;
+  overflow: hidden;
+}
+
+.card-title {
+  padding: 24rpx 0 12rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  color: #666666;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.feature-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.feature-row:last-child,
+.info-row:last-child {
+  border-bottom: 0;
+}
+
+.feature-dot {
+  width: 12rpx;
+  height: 12rpx;
+  margin-top: 10rpx;
+  margin-right: 12rpx;
+  border-radius: 50%;
+  background: #1677ff;
+}
+
+.feature-text {
+  flex: 1;
+  color: #444444;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.clickable:active {
+  background: #f7f8fa;
+}
+
+.info-label {
+  color: #333333;
+  font-size: 28rpx;
+}
+
+.info-right {
+  display: flex;
+  align-items: center;
+  max-width: 60%;
+}
+
+.info-value {
+  color: #666666;
+  font-size: 26rpx;
+  text-align: right;
+  word-break: break-all;
+}
+
+.row-arrow {
+  color: #c0c4cc;
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+.copyright {
+  display: block;
+  margin-top: 16rpx;
+  color: #999999;
+  font-size: 24rpx;
+  text-align: center;
+}

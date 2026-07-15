@@ -1,0 +1,128 @@
+.family-index {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 48rpx 32rpx;
+  background: #f7f8fa;
+}
+
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48rpx;
+  padding: 56rpx 32rpx;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.hero-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 112rpx;
+  height: 112rpx;
+  margin-bottom: 28rpx;
+  border-radius: 32rpx;
+  background: #e9f8ef;
+  color: #07c160;
+  font-size: 42rpx;
+  font-weight: 600;
+}
+
+.hero-title {
+  margin-bottom: 12rpx;
+  color: #222;
+  font-size: 44rpx;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  color: #8a8f99;
+  font-size: 28rpx;
+  text-align: center;
+}
+
+.actions {
+  margin-bottom: 36rpx;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  margin: 0 0 20rpx;
+  border: 0;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 88rpx;
+}
+
+.btn::after {
+  border: 0;
+}
+
+.btn-primary {
+  background: #07c160;
+  color: #ffffff;
+}
+
+.btn-secondary {
+  border: 2rpx solid #07c160;
+  background: #ffffff;
+  color: #07c160;
+}
+
+.btn:active {
+  opacity: 0.82;
+}
+
+.feature-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 28rpx 12rpx;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.feature-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin-bottom: 14rpx;
+  border-radius: 20rpx;
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.feature-icon.blue {
+  background: #1989fa;
+}
+
+.feature-icon.green {
+  background: #07c160;
+}
+
+.feature-icon.orange {
+  background: #ff9f0a;
+}
+
+.feature-text {
+  color: #666;
+  font-size: 24rpx;
+  text-align: center;
+}

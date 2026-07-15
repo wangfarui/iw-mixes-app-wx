@@ -1,0 +1,133 @@
+<view class="records-page">
+  <view class="sticky-filter">
+    <scroll-view scroll-x class="type-scroll" enable-flex>
+      <view
+        wx:for="{{recordTypeButtons}}"
+        wx:key="dictCode"
+        class="type-chip {{selectedButtonCode == item.dictCode ? 'active' : ''}}"
+        data-code="{{item.dictCode}}"
+        bindtap="selectButton"
+      >{{item.dictName}}</view>
+    </scroll-view>
+    <view class="filter-button" bindtap="openFilter">筛选</view>
+  </view>
+
+  <view class="summary-card">
+    <view class="date-row">
+      <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+        <view class="date-box">
+          <view class="date-icon"></view>
+          <text class="date-text">{{startDate || '开始日期'}}</text>
+        </view>
+      </picker>
+      <view class="date-separator">至</view>
+      <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+        <view class="date-box">
+          <view class="date-icon"></view>
+          <text class="date-text">{{endDate || '结束日期'}}</text>
+        </view>
+      </picker>
+      <view wx:if="{{startDate || endDate}}" class="clear-date-btn" bindtap="clearDates">重置</view>
+    </view>
+
+    <view class="statistics-row">
+      <view class="stat-item">
+        <text class="stat-label">支出：</text>
+        <text class="stat-value consume">{{statistics.consume || 0}}元</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">收入：</text>
+        <text class="stat-value income">{{statistics.income || 0}}元</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="record-list">
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="record-item"
+      data-id="{{item.id}}"
+      bindtap="handleRecordClick"
+    >
+      <image src="{{item.recordIconPath}}" class="record-icon" mode="aspectFit" />
+      <view class="record-main">
+        <view class="record-top">
+          <view class="record-source">{{item.recordSourceText}}</view>
+          <text class="record-amount {{item.recordCategory == 2 ? 'income' : 'consume'}}">{{item.amountText}}元</text>
+        </view>
+        <view class="record-meta">{{item.recordMetaText}}</view>
+        <view class="record-time">{{item.recordTimeStr}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="load-more">{{loadMoreText}}</view>
+
+  <view wx:if="{{showFilter}}" class="filter-mask" catchtap="closeFilter" catchtouchmove="noop">
+    <view class="filter-panel" catchtap="noop">
+      <view class="panel-header">
+        <text class="panel-title">筛选条件</text>
+        <text class="panel-close" bindtap="closeFilter">×</text>
+      </view>
+
+      <scroll-view scroll-y class="panel-body">
+        <view class="filter-item switch-row">
+          <text class="filter-label">过滤不计入统计的账单</text>
+          <switch checked="{{ignoreNotStatistics}}" color="#07c160" bindchange="switchIgnoreStatistics" />
+        </view>
+
+        <view class="filter-item">
+          <text class="filter-label">记录来源</text>
+          <input class="filter-input" value="{{dto.recordSource}}" maxlength="64" data-field="recordSource" bindinput="handleFilterInput" />
+        </view>
+
+        <view class="filter-item">
+          <text class="filter-label">金额范围</text>
+          <view class="amount-row">
+            <input class="filter-input amount-input" value="{{dto.mixAmount}}" placeholder="最低金额" type="digit" data-field="mixAmount" bindinput="handleFilterInput" />
+            <text class="amount-line">-</text>
+            <input class="filter-input amount-input" value="{{dto.maxAmount}}" placeholder="最高金额" type="digit" data-field="maxAmount" bindinput="handleFilterInput" />
+          </view>
+        </view>
+
+        <view class="filter-item">
+          <text class="filter-label">标签</text>
+          <view class="tag-group">
+            <view
+              wx:for="{{filterTagOptions}}"
+              wx:key="id"
+              class="tag-chip {{item.selected ? 'selected' : ''}}"
+              data-id="{{item.id}}"
+              bindtap="toggleTag"
+            >{{item.dictName}}</view>
+          </view>
+        </view>
+
+        <view class="filter-item">
+          <text class="filter-label">记账类型</text>
+          <picker mode="selector" range="{{recordCategoryOptions}}" range-key="text" value="{{recordCategoryIndex}}" bindchange="onCategoryPickerChange">
+            <view class="picker-box">{{recordCategoryOptions[recordCategoryIndex].text}}</view>
+          </picker>
+        </view>
+
+        <view class="filter-item">
+          <text class="filter-label">排序</text>
+          <view class="sort-row">
+            <picker mode="selector" range="{{sortTypeOptions}}" range-key="text" value="{{sortTypeIndex}}" bindchange="onSortTypeChange">
+              <view class="picker-box">{{sortTypeOptions[sortTypeIndex].text}}</view>
+            </picker>
+            <picker mode="selector" range="{{sortWayOptions}}" range-key="text" value="{{sortWayIndex}}" bindchange="onSortWayChange">
+              <view class="picker-box">{{sortWayOptions[sortWayIndex].text}}</view>
+            </picker>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="panel-footer">
+        <button class="reset-button" bindtap="resetFilter">重置</button>
+        <button class="confirm-button" bindtap="applyFilter">确认</button>
+      </view>
+    </view>
+  </view>
+</view>

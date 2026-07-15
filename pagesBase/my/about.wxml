@@ -1,0 +1,36 @@
+<view class="about-page">
+  <view class="brand-card">
+    <image class="brand-logo" src="{{aboutConfig.logo}}" mode="aspectFill" />
+    <text class="brand-name">{{appName}}</text>
+    <text class="brand-version">版本 {{appVersion}}</text>
+    <text class="brand-desc">{{aboutConfig.desc}}</text>
+  </view>
+
+  <view class="info-card" wx:if="{{aboutConfig.features.length}}">
+    <view class="card-title">产品亮点</view>
+    <view class="feature-row" wx:for="{{aboutConfig.features}}" wx:key="*this">
+      <view class="feature-dot"></view>
+      <text class="feature-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{contactList.length}}">
+    <view class="card-title">联系我们</view>
+    <view class="info-row" wx:for="{{contactList}}" wx:key="label">
+      <text class="info-label">{{item.label}}</text>
+      <view class="info-right">
+        <text class="info-value">{{item.value}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card" wx:if="{{linkList.length}}">
+    <view class="card-title">协议与政策</view>
+    <view class="info-row clickable" wx:for="{{linkList}}" wx:key="label" data-url="{{item.url}}" bindtap="openLink">
+      <text class="info-label">{{item.label}}</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <text class="copyright">© {{currentYear}} {{aboutConfig.owner}}</text>
+</view>

@@ -1,0 +1,48 @@
+<view class="settings-page">
+  <view class="settings-card">
+    <view class="card-title">通用设置</view>
+    <view class="settings-row">
+      <text class="row-label">消息通知</text>
+      <switch checked="{{settings.notify}}" color="#007aff" data-key="notify" bindchange="toggleSetting" />
+    </view>
+    <view class="settings-row">
+      <text class="row-label">自动更新</text>
+      <switch checked="{{settings.autoUpdate}}" color="#007aff" data-key="autoUpdate" bindchange="toggleSetting" />
+    </view>
+    <view class="settings-row">
+      <text class="row-label">仅 Wi-Fi 同步</text>
+      <switch checked="{{settings.wifiOnly}}" color="#007aff" data-key="wifiOnly" bindchange="toggleSetting" />
+    </view>
+  </view>
+
+  <view class="settings-card">
+    <view class="card-title">缓存与更新</view>
+    <view class="settings-row clickable" bindtap="clearCache">
+      <text class="row-label">清除缓存</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view wx:if="{{isSuperAdmin}}" class="settings-row clickable" bindtap="syncDict">
+      <text class="row-label">同步字典</text>
+      <view class="row-right">
+        <text class="row-value">{{dictSyncing ? '同步中' : '补齐用户字典'}}</text>
+        <text class="row-arrow">›</text>
+      </view>
+    </view>
+    <view class="settings-row clickable" bindtap="checkUpdate">
+      <text class="row-label">检查更新</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="settings-card">
+    <view class="card-title">关于</view>
+    <view class="settings-row clickable" data-url="/pagesBase/my/about" bindtap="navigateTo">
+      <text class="row-label">关于我们</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="settings-row clickable" data-url="/pagesBase/my/feedback" bindtap="navigateTo">
+      <text class="row-label">意见反馈</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,169 @@
+.setting-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+  background: #f7f8fa;
+}
+
+.category-selector {
+  display: flex;
+  margin-bottom: 24rpx;
+  padding: 6rpx;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.category-item {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 12rpx;
+  color: #666;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 72rpx;
+  text-align: center;
+}
+
+.category-item.active {
+  background: #07c160;
+  color: #ffffff;
+}
+
+.action-list {
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 96rpx;
+  padding: 18rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  box-sizing: border-box;
+}
+
+.action-item:last-child {
+  border-bottom: 0;
+}
+
+.action-main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  padding-right: 18rpx;
+  box-sizing: border-box;
+}
+
+.action-icon {
+  width: 58rpx;
+  height: 58rpx;
+  flex: none;
+  margin-right: 18rpx;
+}
+
+.action-name {
+  flex: 1;
+  min-width: 0;
+  color: #333;
+  font-size: 30rpx;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.sort-actions {
+  display: flex;
+  gap: 8rpx;
+}
+
+.icon-button {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 52rpx;
+  height: 52rpx;
+  min-width: 52rpx;
+  padding: 0;
+  border: 1rpx solid #e6e8eb;
+  border-radius: 50%;
+  background: #f0f1f3;
+  color: #666;
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.add-button::after {
+  border: 0;
+}
+
+.icon-button.sort {
+  background: #f6f7f8;
+  color: #60656f;
+}
+
+.icon-button.disabled {
+  color: #c8ccd2;
+  background: #f7f8fa;
+  border-color: #f0f1f3;
+}
+
+.icon-button.primary {
+  background: #eef6ff;
+  border-color: #dbeeff;
+  color: #1989fa;
+}
+
+.icon-button.danger {
+  background: #fff0f0;
+  border-color: #ffe0e0;
+  color: #f56c6c;
+}
+
+.add-button {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  height: 88rpx;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 44rpx;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.empty {
+  padding: 120rpx 0;
+  color: #999;
+  font-size: 28rpx;
+  text-align: center;
+}

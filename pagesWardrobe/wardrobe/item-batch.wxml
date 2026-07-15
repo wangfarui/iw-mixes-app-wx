@@ -1,0 +1,62 @@
+<view class="wardrobe-page form-page">
+  <view class="form-panel">
+    <view class="section-title">批量入柜</view>
+    <view class="section-subtitle">每行一件；可写“名称,品牌,尺码”</view>
+    <textarea class="batch-textarea" value="{{bulkText}}" placeholder="黑色短袖,优衣库,M&#10;白衬衫,,L&#10;牛仔裤" bindinput="handleTextInput" />
+  </view>
+
+  <view class="form-panel">
+    <view class="section-title">公共信息</view>
+    <view class="form-line form-top-line">
+      <view class="form-label">品类</view>
+      <picker class="picker-field" mode="selector" range="{{categoryOptions}}" range-key="text" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view>{{categoryOptions[categoryIndex].text}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">款式</view>
+      <picker class="picker-field" mode="selector" range="{{itemStyleOptions}}" range-key="text" value="{{itemStyleIndex}}" bindchange="onItemStyleChange">
+        <view>{{itemStyleOptions[itemStyleIndex].text}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">颜色</view>
+      <picker class="picker-field" mode="selector" range="{{colorOptions}}" range-key="text" value="{{colorIndex}}" bindchange="onColorChange">
+        <view>{{common.colorName}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">状态</view>
+      <picker class="picker-field" mode="selector" range="{{statusOptions}}" range-key="text" value="{{statusIndex}}" bindchange="onStatusChange">
+        <view>{{statusOptions[statusIndex].text}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">位置</view>
+      <input class="form-input" value="{{common.storageLocation}}" placeholder="例如 主卧衣柜上层" data-field="storageLocation" bindinput="handleCommonInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">标签</view>
+      <input class="form-input" value="{{common.customTags}}" placeholder="逗号分隔" data-field="customTags" bindinput="handleCommonInput" />
+    </view>
+  </view>
+
+  <view class="form-panel">
+    <view class="section-title">季节</view>
+    <view class="tag-wrap">
+      <view wx:for="{{seasonOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="seasonTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+    </view>
+    <view class="section-title form-section-title">场景</view>
+    <view class="tag-wrap">
+      <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="sceneTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+    </view>
+    <view class="section-title form-section-title">风格</view>
+    <view class="tag-wrap">
+      <view wx:for="{{styleOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="styleTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+    </view>
+  </view>
+
+  <view class="bottom-action-bar">
+    <view class="primary-btn bottom-submit {{submitting ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="submitBatch">{{submitting ? '保存中' : '批量保存'}}</view>
+  </view>
+</view>

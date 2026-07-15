@@ -1,0 +1,62 @@
+<view class="join-page">
+  <view class="header">
+    <view class="title">输入邀请码</view>
+    <view class="subtitle">请输入 8 位邀请码加入家庭组</view>
+  </view>
+
+  <view class="code-input-section">
+    <view class="code-inputs">
+      <input
+        wx:for="{{codeArray}}"
+        wx:key="index"
+        id="code-input-{{index}}"
+        class="code-input"
+        value="{{item}}"
+        type="text"
+        maxlength="1"
+        focus="{{focusIndex === index}}"
+        data-index="{{index}}"
+        bindfocus="handleFocus"
+        bindinput="handleInput"
+      />
+    </view>
+  </view>
+
+  <view wx:if="{{inviteInfo}}" class="preview-section">
+    <view class="preview-card">
+      <view class="preview-header">
+        <image wx:if="{{inviteInfo.groupAvatar}}" src="{{inviteInfo.groupAvatar}}" class="group-avatar" mode="aspectFill" />
+        <view wx:else class="group-avatar-placeholder">家</view>
+        <view class="group-info">
+          <view class="group-name">{{inviteInfo.groupName}}</view>
+          <view class="group-meta">邀请人：{{inviteInfo.inviterName || '-'}}</view>
+        </view>
+      </view>
+      <view class="preview-footer">
+        <view class="expire-text">有效期至：{{expireText}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{hasCurrentGroup}}" class="warning-tip">
+      <view class="warning-icon">!</view>
+      <view class="warning-text">您已加入家庭组，请先退出当前家庭组后再加入新组</view>
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button
+      wx:if="{{!inviteInfo}}"
+      class="btn btn-primary"
+      loading="{{isValidating}}"
+      disabled="{{isValidating}}"
+      bindtap="handleValidate"
+    >验证邀请码</button>
+    <button
+      wx:else
+      class="btn btn-primary"
+      loading="{{isJoining}}"
+      disabled="{{isJoining || hasCurrentGroup}}"
+      bindtap="handleJoin"
+    >确认加入</button>
+  </view>
+</view>

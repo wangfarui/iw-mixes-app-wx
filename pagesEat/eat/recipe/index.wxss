@@ -1,0 +1,69 @@
+@import "../eat-common.wxss";
+
+.eat-page {
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.recipe-filter-card {
+  padding: 16rpx;
+}
+
+.recipe-filter-row {
+  gap: 12rpx;
+}
+
+.recipe-search-field {
+  height: 62rpx;
+  padding: 0 18rpx;
+  border-radius: 31rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+}
+
+.recipe-search-btn {
+  flex: 0 0 96rpx;
+  width: 96rpx;
+  min-width: 96rpx;
+  height: 62rpx;
+  padding: 0;
+  border-radius: 31rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+  white-space: nowrap;
+}
+
+.recipe-category-row {
+  display: block;
+  margin-bottom: 22rpx;
+  padding: 0;
+}
+
+.recipe-category-list {
+  display: inline-flex;
+  gap: 20rpx;
+  padding: 4rpx 20rpx;
+  white-space: nowrap;
+}
+
+.recipe-category-chip {
+  flex: none;
+}
+
+.image-placeholder {
+  text-align: center;
+}
+
+.image-placeholder-error {
+  color: #dd524d;
+  background: #fff4f4;
+}
+
+.recipe-fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: calc(48rpx + env(safe-area-inset-bottom));
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box;
+}

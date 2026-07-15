@@ -1,0 +1,24 @@
+<view class="eat-page">
+  <view class="filter-card">
+    <view class="filter-row">
+      <picker class="filter-field" mode="date" value="{{mealDate}}" bindchange="onMealDateChange">
+        <view>{{mealDate || '选择用餐日期'}}</view>
+      </picker>
+      <view class="reset-btn" bindtap="resetDate">重置</view>
+    </view>
+  </view>
+
+  <view class="meal-card" wx:for="{{list}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+    <view class="item-main">
+      <view class="item-row">
+        <view class="item-title">{{item.mealDate}}</view>
+        <view class="tag">{{item.mealTimeName}}</view>
+      </view>
+      <view class="item-meta">用餐人数：{{item.diners || 0}}</view>
+      <view wx:if="{{item.remark}}" class="item-meta">备注：{{item.remark}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">暂无用餐记录</view>
+  <view class="load-more">{{loadMoreText}}</view>
+</view>

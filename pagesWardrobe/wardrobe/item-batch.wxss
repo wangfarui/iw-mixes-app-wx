@@ -1,0 +1,14 @@
+@import "./wardrobe-common.wxss";
+
+.batch-textarea {
+  width: 100%;
+  min-height: 260rpx;
+  margin-top: 18rpx;
+  padding: 18rpx;
+  border-radius: 8rpx;
+  background: #f6f7f9;
+  color: #1f2329;
+  font-size: 26rpx;
+  line-height: 1.5;
+  box-sizing: border-box;
+}

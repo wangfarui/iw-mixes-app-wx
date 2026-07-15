@@ -1,0 +1,54 @@
+<view class="form-page">
+  <view class="form-card">
+    <view class="form-item">
+      <view class="form-label">家庭组头像</view>
+      <view class="avatar-upload" bindtap="chooseAvatar">
+        <image wx:if="{{formData.groupAvatar}}" src="{{formData.groupAvatar}}" class="avatar-preview" mode="aspectFill" />
+        <view wx:else class="avatar-placeholder">
+          <view class="placeholder-icon">+</view>
+          <view class="placeholder-text">点击上传</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">家庭组名称 <text class="required">*</text></view>
+      <input
+        class="form-input"
+        value="{{formData.groupName}}"
+        placeholder="请输入家庭组名称"
+        maxlength="32"
+        data-field="groupName"
+        bindinput="handleInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">家庭组描述</view>
+      <textarea
+        class="form-textarea"
+        value="{{formData.groupDesc}}"
+        placeholder="请输入家庭组描述（可选）"
+        maxlength="255"
+        data-field="groupDesc"
+        bindinput="handleInput"
+      />
+    </view>
+
+    <view class="form-item last">
+      <view class="form-label">最大成员数</view>
+      <input
+        class="form-input"
+        value="{{formData.maxMember}}"
+        type="number"
+        placeholder="默认10人"
+        data-field="maxMember"
+        bindinput="handleInput"
+      />
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" loading="{{isSubmitting}}" disabled="{{isSubmitting}}" bindtap="handleSubmit">创建家庭组</button>
+  </view>
+</view>

@@ -1,0 +1,149 @@
+<view class="wardrobe-page">
+  <view class="panel">
+    <view class="section-title">统计概览</view>
+    <view class="stat-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{overview.activeItems || 0}}</view>
+        <view class="stat-label">可穿衣物</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{overview.totalOutfits || 0}}</view>
+        <view class="stat-label">搭配</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{overview.neverWornItems || 0}}</view>
+        <view class="stat-label">未穿</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{overview.totalWearRecords || 0}}</view>
+        <view class="stat-label">记录</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{overview.idleItems || 0}}</view>
+        <view class="stat-label">闲置</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{overview.plannedRecords || 0}}</view>
+        <view class="stat-label">计划</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{overview.eliminatedItems || 0}}</view>
+        <view class="stat-label">已淘汰</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{overview.totalItems || 0}}</view>
+        <view class="stat-label">全部衣物</view>
+      </view>
+    </view>
+    <view class="money-row">
+      <view>
+        <view class="money-label">总价值</view>
+        <view class="money-value">¥{{overview.totalValue || 0}}</view>
+      </view>
+      <view>
+        <view class="money-label">成本/次</view>
+        <view class="money-value">¥{{overview.avgCostPerWear || 0}}</view>
+      </view>
+      <view>
+        <view class="money-label">均价</view>
+        <view class="money-value">¥{{overview.avgItemPrice || 0}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">品类占比</view>
+    <view wx:for="{{categoryStats}}" wx:key="name" class="stat-line">
+      <view class="stat-name">{{item.text}}</view>
+      <view class="bar-wrap"><view class="bar-fill" style="width: {{item.value * 12}}rpx;"></view></view>
+      <view class="stat-count">{{item.value}}</view>
+    </view>
+    <view wx:if="{{!categoryStats.length}}" class="empty small-empty">暂无品类统计</view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">款式分布</view>
+    <view class="color-list">
+      <view wx:for="{{itemStyleStats}}" wx:key="name" class="color-chip">{{item.text}} {{item.value}}</view>
+    </view>
+    <view wx:if="{{!itemStyleStats.length}}" class="empty small-empty">暂无款式统计</view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">颜色分布</view>
+    <view class="color-list">
+      <view wx:for="{{colorStats}}" wx:key="name" class="color-chip">{{item.name}} {{item.value}}</view>
+    </view>
+    <view wx:if="{{!colorStats.length}}" class="empty small-empty">暂无颜色统计</view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">季节/场景/风格</view>
+    <view class="color-list">
+      <view wx:for="{{seasonStats}}" wx:key="name" class="color-chip">{{item.text}} {{item.value}}</view>
+      <view wx:for="{{sceneStats}}" wx:key="name" class="color-chip">{{item.text}} {{item.value}}</view>
+      <view wx:for="{{styleStats}}" wx:key="name" class="color-chip">{{item.text}} {{item.value}}</view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">状态/品牌/位置</view>
+    <view class="color-list">
+      <view wx:for="{{statusStats}}" wx:key="name" class="color-chip">{{item.name}} {{item.value}}</view>
+      <view wx:for="{{brandStats}}" wx:key="name" class="color-chip">{{item.name}} {{item.value}}</view>
+      <view wx:for="{{storageStats}}" wx:key="name" class="color-chip">{{item.name}} {{item.value}}</view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">最常穿</view>
+    <view wx:for="{{mostWornItems}}" wx:key="id" class="rank-line">
+      <image wx:if="{{item.image}}" class="rank-image" src="{{item.image}}" mode="aspectFill" />
+      <view wx:else class="rank-image image-placeholder">无图</view>
+      <view class="rank-main">
+        <view class="item-title">{{item.itemName}}</view>
+        <view class="item-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.wearCountText}}</view>
+      </view>
+    </view>
+    <view wx:if="{{!mostWornItems.length}}" class="empty small-empty">暂无数据</view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">最少穿</view>
+    <view wx:for="{{leastWornItems}}" wx:key="id" class="rank-line">
+      <image wx:if="{{item.image}}" class="rank-image" src="{{item.image}}" mode="aspectFill" />
+      <view wx:else class="rank-image image-placeholder">无图</view>
+      <view class="rank-main">
+        <view class="item-title">{{item.itemName}}</view>
+        <view class="item-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.wearCountText}}</view>
+      </view>
+    </view>
+    <view wx:if="{{!leastWornItems.length}}" class="empty small-empty">暂无数据</view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">闲置提醒</view>
+    <view wx:for="{{idleItemList}}" wx:key="id" class="rank-line">
+      <image wx:if="{{item.image}}" class="rank-image" src="{{item.image}}" mode="aspectFill" />
+      <view wx:else class="rank-image image-placeholder">无图</view>
+      <view class="rank-main">
+        <view class="item-title">{{item.itemName}}</view>
+        <view class="item-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.idleDaysText}} · {{item.storageText}}</view>
+      </view>
+    </view>
+    <view wx:if="{{!idleItemList.length}}" class="empty small-empty">暂无闲置提醒</view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">高价低频</view>
+    <view wx:for="{{highCostLowWearItems}}" wx:key="id" class="rank-line">
+      <image wx:if="{{item.image}}" class="rank-image" src="{{item.image}}" mode="aspectFill" />
+      <view wx:else class="rank-image image-placeholder">无图</view>
+      <view class="rank-main">
+        <view class="item-title">{{item.itemName}}</view>
+        <view class="item-meta">¥{{item.priceText}} · {{item.wearCountText}} · 成本/次 ¥{{item.costPerWearText}}</view>
+      </view>
+    </view>
+    <view wx:if="{{!highCostLowWearItems.length}}" class="empty small-empty">暂无数据</view>
+  </view>
+</view>

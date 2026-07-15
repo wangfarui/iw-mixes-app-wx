@@ -1,0 +1,38 @@
+<view class="invite-page">
+  <view wx:if="{{!inviteCode}}" class="select-section">
+    <view class="section-title">选择有效期</view>
+    <view class="period-options">
+      <view
+        wx:for="{{periodOptions}}"
+        wx:key="value"
+        class="period-option {{selectedPeriod === item.value ? 'active' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="selectPeriod"
+      >
+        <text class="option-text">{{item.label}}</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="btn btn-primary" loading="{{isGenerating}}" disabled="{{isGenerating}}" bindtap="handleGenerate">生成邀请码</button>
+      <button class="btn btn-secondary" bindtap="goInviteList">查看邀请记录</button>
+    </view>
+  </view>
+
+  <view wx:else class="code-section">
+    <view class="code-card">
+      <view class="code-title">邀请码</view>
+      <view class="code-display">
+        <text class="code-text">{{formattedInviteCode}}</text>
+      </view>
+      <view class="expire-text">有效期至：{{expireText}}</view>
+    </view>
+
+    <view class="action-buttons">
+      <button class="btn btn-secondary" bindtap="handleCopy">复制邀请码</button>
+      <button class="btn btn-secondary" bindtap="goInviteList">查看邀请记录</button>
+    </view>
+
+    <button class="btn btn-primary" bindtap="handleReset">重新生成</button>
+  </view>
+</view>

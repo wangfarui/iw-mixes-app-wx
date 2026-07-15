@@ -1,0 +1,38 @@
+<view class="eat-page">
+  <view class="section-card">
+    <view class="item-row">
+      <view class="item-title">用餐日期：{{detail.mealDate || '-'}}</view>
+      <view class="tag">{{detail.mealTimeName}}</view>
+    </view>
+    <view class="item-meta">用餐人数：{{detail.diners || 0}}</view>
+    <view class="item-meta">备注：{{detail.remark || '-'}}</view>
+    <view class="button-row">
+      <button class="danger-btn" bindtap="confirmDelete">删除</button>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">菜品信息</view>
+    <view class="mini-card" wx:for="{{detail.mealMenuList}}" wx:key="id" bindtap="goDishDetail" data-id="{{item.dishesId}}">
+      <view class="item-title">{{index + 1}}. {{item.dishesName}}</view>
+    </view>
+    <view wx:if="{{!detail.mealMenuList.length}}" class="empty">暂无菜品</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">需要采购</view>
+    <view class="mini-card" wx:for="{{material.needPurchaseMaterialList}}" wx:key="materialName">
+      <view class="item-title">{{item.materialName}}</view>
+      <view class="item-meta">{{item.materialDosagesText}}</view>
+    </view>
+    <view wx:if="{{!material.needPurchaseMaterialList.length}}" class="empty">暂无需采购食材</view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">常用食材</view>
+    <view class="tag-row">
+      <view class="tag" wx:for="{{material.commonMaterialList}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view wx:if="{{!material.commonMaterialList.length}}" class="empty">暂无常用食材</view>
+  </view>
+</view>

@@ -1,0 +1,35 @@
+<view class="base-page">
+  <view class="form-card">
+    <view class="form-row">
+      <view class="form-label">应用名称</view>
+      <input class="form-input" value="{{formData.name}}" placeholder="请输入应用名称" data-field="name" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">应用地址</view>
+      <input class="form-input" value="{{formData.address}}" placeholder="请输入应用地址" data-field="address" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">账号</view>
+      <input class="form-input" value="{{formData.account}}" placeholder="请输入账号" data-field="account" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">应用分类</view>
+      <picker class="form-control" mode="selector" range="{{typeOptions}}" range-key="text" value="{{typeIndex}}" bindchange="onTypeChange">
+        <view>{{typeName || '请选择应用分类'}}</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <view class="form-label">密码</view>
+      <input class="form-input" password value="{{formData.password}}" placeholder="{{isEdit ? '不修改则留空' : '请输入密码'}}" data-field="password" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">备注</view>
+      <textarea class="form-textarea" value="{{formData.remark}}" placeholder="请输入备注" data-field="remark" bindinput="handleInput" auto-height />
+    </view>
+  </view>
+
+  <view class="footer-actions">
+    <button wx:if="{{isEdit}}" class="danger-btn" bindtap="handleDelete">删除</button>
+    <button class="primary-btn" bindtap="handleSave">保存</button>
+  </view>
+</view>

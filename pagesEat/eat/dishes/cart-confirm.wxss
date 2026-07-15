@@ -1,0 +1,83 @@
+@import "../eat-common.wxss";
+
+.cart-confirm-page {
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+}
+
+.cart-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.cart-section-title .section-title {
+  margin-bottom: 0;
+}
+
+.cart-clear {
+  flex: none;
+  color: #dd524d;
+  font-size: 26rpx;
+}
+
+.confirm-dish-card {
+  margin-bottom: 16rpx;
+  background: #f7f8fa;
+  box-shadow: none;
+}
+
+.confirm-dish-price {
+  margin-top: 8rpx;
+}
+
+.confirm-footer {
+  position: fixed;
+  left: 20rpx;
+  right: 20rpx;
+  bottom: calc(36rpx + env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-height: 96rpx;
+  padding: 12rpx;
+  border-radius: 48rpx;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.14);
+  box-sizing: border-box;
+}
+
+.confirm-summary {
+  flex: 1;
+  min-width: 0;
+  padding-left: 12rpx;
+}
+
+.confirm-summary-title {
+  color: #222222;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.confirm-summary-meta {
+  margin-top: 2rpx;
+  color: #777777;
+  font-size: 22rpx;
+}
+
+.confirm-submit {
+  flex: none;
+  min-width: 190rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  line-height: 72rpx;
+}
+
+.confirm-submit[disabled] {
+  background: #e6e6e6;
+  color: #999999;
+}

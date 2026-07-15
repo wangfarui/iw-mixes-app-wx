@@ -1,0 +1,158 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/bill/index",
+    "pages/menu",
+    "pages/task/index",
+    "pages/my/my"
+  ],
+  "subPackages": [
+    {
+      "root": "pagesBookkeeping",
+      "pages": [
+        "bookkeeping/bookkeeping-quick",
+        "bookkeeping/bookkeeping-action",
+        "bookkeeping/bookkeeping-action-setting",
+        "bookkeeping/bookkeeping-action-edit",
+        "bookkeeping/bookkeeping-records",
+        "bookkeeping/bookkeeping-detail",
+        "bookkeeping/bookkeeping-consume-statistics",
+        "bookkeeping/bookkeeping-income-statistics",
+        "bookkeeping/bookkeeping-budget",
+        "bookkeeping/bookkeeping-wallet",
+        "bookkeeping/bookkeeping-membership-subscription",
+        "bookkeeping/bookkeeping-yearly-statistics",
+        "bookkeeping/bookkeeping-yearly-overview-statistics",
+        "bookkeeping/bookkeeping-yearly-consume-statistics",
+        "bookkeeping/bookkeeping-yearly-income-statistics"
+      ]
+    },
+    {
+      "root": "pagesBase",
+      "pages": [
+        "base/dict-manage",
+        "base/dict-detail",
+        "base/account-manage",
+        "base/account-detail",
+        "my/profile",
+        "my/security",
+        "my/securityAction",
+        "my/registerInvite",
+        "my/settings",
+        "my/about",
+        "my/feedback",
+        "family/index",
+        "family/create",
+        "family/join",
+        "family/detail",
+        "family/invite",
+        "family/manage",
+        "family/edit",
+        "family/inviteList",
+        "family/transfer"
+      ]
+    },
+    {
+      "root": "pagesEat",
+      "pages": [
+        "eat/recipe/index",
+        "eat/dishes/index",
+        "eat/dishes/dishes-detail",
+        "eat/dishes/dishes-form",
+        "eat/dishes/cart-confirm",
+        "eat/meal/index",
+        "eat/meal/meal-detail",
+        "eat/fridge/index",
+        "eat/fridge/detail"
+      ]
+    },
+    {
+      "root": "pagesWardrobe",
+      "pages": [
+        "wardrobe/index",
+        "wardrobe/item-list",
+        "wardrobe/item-form",
+        "wardrobe/item-batch",
+        "wardrobe/outfit-list",
+        "wardrobe/outfit-editor",
+        "wardrobe/assistant",
+        "wardrobe/wear-record-form",
+        "wardrobe/calendar",
+        "wardrobe/statistics"
+      ]
+    },
+    {
+      "root": "pagesPoints",
+      "pages": [
+        "points/points-action",
+        "points/points-records",
+        "points/points-statistics",
+        "points/points-detail",
+        "points/task-plan",
+        "points/task-plan-add",
+        "points/task-list",
+        "task/task-edit-detail"
+      ]
+    },
+    {
+      "root": "pagesAuth",
+      "pages": [
+        "login/index"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "IW服务平台",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "enablePullDownRefresh": false,
+    "onReachBottomDistance": 10
+  },
+  "permission": {
+    "scope.record": {
+      "desc": "用于语音记账录入消费信息"
+    }
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#007AFF",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/bill/index",
+        "iconPath": "static/tabbar/bill.png",
+        "selectedIconPath": "static/tabbar/bill-active.png",
+        "text": "账单"
+      },
+      {
+        "pagePath": "pages/menu",
+        "iconPath": "static/tabbar/menu.png",
+        "selectedIconPath": "static/tabbar/menu-active.png",
+        "text": "菜单"
+      },
+      {
+        "pagePath": "pages/task/index",
+        "iconPath": "static/tabbar/task.png",
+        "selectedIconPath": "static/tabbar/task-active.png",
+        "text": "任务"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "iconPath": "static/tabbar/my.png",
+        "selectedIconPath": "static/tabbar/my-active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

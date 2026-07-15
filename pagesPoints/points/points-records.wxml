@@ -1,0 +1,40 @@
+<view class="points-page">
+  <view class="card total-card">
+    <view class="total-label">总积分</view>
+    <view class="total-value">{{totalPoints}}分</view>
+  </view>
+
+  <view class="filter-card points-records-filter">
+    <view class="filter-row points-records-filter-row">
+      <picker class="filter-field points-records-date" mode="date" value="{{rangeStart}}" bindchange="onStartDateChange">
+        <view>{{rangeStart || '记录开始日期'}}</view>
+      </picker>
+      <picker class="filter-field points-records-date" mode="date" value="{{rangeEnd}}" bindchange="onEndDateChange">
+        <view>{{rangeEnd || '记录结束日期'}}</view>
+      </picker>
+      <button class="plain-btn points-records-reset" bindtap="resetRange">重置</button>
+    </view>
+    <view class="stats-grid points-records-stats">
+      <view class="stat-item">
+        <view class="stat-label">{{showCurrentMonth ? '本月新增' : '筛选新增'}}</view>
+        <view class="stat-value positive">+{{statistics.increasePoints || 0}}</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-label">{{showCurrentMonth ? '本月扣减' : '筛选扣减'}}</view>
+        <view class="stat-value negative">{{statistics.deductPoints || 0}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="list-card">
+    <view class="list-item" wx:for="{{list}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+      <view class="item-row">
+        <view class="item-title">{{item.source || '积分记录'}}</view>
+        <view class="item-value {{item.points >= 0 ? 'positive' : 'negative'}}">{{item.pointsText}}分</view>
+      </view>
+      <view class="item-meta">{{item.createTime}}</view>
+    </view>
+    <view wx:if="{{!list.length && !loading}}" class="empty">暂无积分记录</view>
+    <view class="load-more">{{loadMoreText}}</view>
+  </view>
+</view>

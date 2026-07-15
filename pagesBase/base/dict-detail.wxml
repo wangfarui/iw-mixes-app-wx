@@ -1,0 +1,48 @@
+<view class="base-page">
+  <view class="form-card">
+    <view class="section-title">基础信息</view>
+    <view class="form-row">
+      <view class="form-label required">字典类型</view>
+      <picker class="form-control" mode="selector" range="{{dictTypeOptions}}" range-key="text" value="{{dictTypeIndex}}" bindchange="onDictTypeChange">
+        <view class="{{dictTypeName ? '' : 'field-placeholder'}}">{{dictTypeName || '请选择字典类型'}}</view>
+      </picker>
+    </view>
+    <view wx:if="{{showParentCategory}}" class="form-row">
+      <view class="form-label required">所属品类</view>
+      <picker class="form-control" mode="selector" range="{{parentCategoryOptions}}" range-key="text" value="{{parentCategoryIndex}}" bindchange="onParentCategoryChange">
+        <view class="{{formData.parentId ? '' : 'field-placeholder'}}">{{parentCategoryName || '请选择所属品类'}}</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <view class="form-label required">字典名称</view>
+      <input class="form-input" value="{{formData.dictName}}" placeholder="请输入字典名称" data-field="dictName" bindinput="handleInput" maxlength="40" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">字典编码</view>
+      <input class="form-input" type="number" value="{{formData.dictCode}}" placeholder="留空自动生成" data-field="dictCode" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label required">字典状态</view>
+      <picker class="form-control" mode="selector" range="{{statusOptions}}" range-key="text" value="{{statusIndex}}" bindchange="onStatusChange">
+        <view>{{statusName || '请选择字典状态'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="form-card secondary-card">
+    <view class="section-title">扩展配置</view>
+    <view class="form-row">
+      <view class="form-label">排序</view>
+      <input class="form-input" type="number" value="{{formData.sort}}" placeholder="留空自动追加" data-field="sort" bindinput="handleInput" />
+    </view>
+    <view wx:if="{{isAdmin && !showParentCategory}}" class="form-row">
+      <view class="form-label">同步所有用户</view>
+      <switch checked="{{formData.isSyncAll === 1}}" bindchange="onSyncAllChange" />
+    </view>
+  </view>
+
+  <view class="footer-actions">
+    <button wx:if="{{isEdit}}" class="danger-btn" bindtap="handleDelete">删除</button>
+    <button class="primary-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="handleSave">保存</button>
+  </view>
+</view>

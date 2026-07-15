@@ -1,0 +1,37 @@
+<view class="my-page">
+  <view class="profile-card" bindtap="goProfile">
+    <image wx:if="{{hasCustomAvatar}}" src="{{avatarUrl}}" class="avatar" mode="aspectFill" catchtap="previewAvatar" />
+    <view wx:else class="avatar avatar-fallback">
+      <text class="avatar-initial">{{avatarInitial}}</text>
+    </view>
+    <view class="profile-main">
+      <text class="profile-name">{{userInfo.name || '未登录'}}</text>
+      <text class="profile-sub">{{profileSub}}</text>
+    </view>
+    <text class="row-arrow">›</text>
+  </view>
+
+  <view class="section-card">
+    <view class="list-row" bindtap="goFamilyGroup">
+      <text class="row-label">我的家庭组</text>
+      <view class="row-right">
+        <text class="row-value">{{familyDesc}}</text>
+        <text class="row-arrow">›</text>
+      </view>
+    </view>
+    <view class="list-row" bindtap="goSecurity">
+      <text class="row-label">账号安全</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="list-row" bindtap="goSettings">
+      <text class="row-label">系统设置</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="section-card logout-card">
+    <view class="list-row logout-row" bindtap="clickLogout">
+      <text class="row-label logout-text">退出登录</text>
+    </view>
+  </view>
+</view>

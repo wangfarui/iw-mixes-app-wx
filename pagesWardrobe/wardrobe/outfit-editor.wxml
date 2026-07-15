@@ -1,0 +1,93 @@
+<view class="wardrobe-page form-page">
+  <view class="form-panel">
+    <view class="form-line">
+      <view class="form-label">名称</view>
+      <input class="form-input" value="{{formData.outfitName}}" placeholder="例如 周一通勤" data-field="outfitName" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">封面</view>
+      <view class="form-input tap-field" hover-class="tap-active" bindtap="chooseCover">{{formData.coverImage ? '已上传，点击更换' : '可选，默认第一件衣物'}}</view>
+    </view>
+    <image wx:if="{{formData.coverImage}}" class="cover-preview" src="{{formData.coverImage}}" mode="aspectFill" />
+    <view class="form-line">
+      <view class="form-label">标签</view>
+      <input class="form-input" value="{{formData.customTags}}" placeholder="逗号分隔，例如 通勤模板" data-field="customTags" bindinput="handleInput" />
+    </view>
+  </view>
+
+  <view class="form-panel">
+    <view class="section-title">季节</view>
+    <view class="tag-wrap">
+      <view wx:for="{{seasonOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="seasonTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+    </view>
+    <view class="section-title form-section-title">场景</view>
+    <view class="tag-wrap">
+      <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="sceneTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+    </view>
+    <view class="section-title form-section-title">风格</view>
+    <view class="tag-wrap">
+      <view wx:for="{{styleOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="styleTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+    </view>
+  </view>
+
+  <view class="form-panel">
+    <view class="row-between">
+      <view>
+        <view class="section-title">选择衣物</view>
+        <view class="section-subtitle">已选择 {{formData.itemIds.length}} 件</view>
+      </view>
+    </view>
+
+    <view class="selection-tools">
+      <input class="selection-search" value="{{itemKeyword}}" placeholder="搜索衣物或标签" confirm-type="search" bindinput="handleItemKeywordInput" bindconfirm="searchItems" />
+      <view class="plain-btn selection-search-btn" hover-class="tap-active" bindtap="searchItems">搜索</view>
+    </view>
+
+    <scroll-view scroll-x class="item-filter-scroll">
+      <view class="item-filter-list">
+        <picker class="item-filter-picker" mode="selector" range="{{itemCategoryFilterOptions}}" range-key="text" value="{{itemCategoryFilterIndex}}" bindchange="onItemCategoryFilterChange">
+          <view class="filter-chip">{{itemCategoryFilterOptions[itemCategoryFilterIndex].text}}</view>
+        </picker>
+        <picker class="item-filter-picker" mode="selector" range="{{itemSubcategoryFilterOptions}}" range-key="text" value="{{itemSubcategoryFilterIndex}}" bindchange="onItemSubcategoryFilterChange">
+          <view class="filter-chip">{{itemSubcategoryFilterOptions[itemSubcategoryFilterIndex].text}}</view>
+        </picker>
+        <picker class="item-filter-picker" mode="selector" range="{{itemSeasonFilterOptions}}" range-key="text" value="{{itemSeasonFilterIndex}}" bindchange="onItemSeasonFilterChange">
+          <view class="filter-chip">{{itemSeasonFilterOptions[itemSeasonFilterIndex].text}}</view>
+        </picker>
+        <picker class="item-filter-picker" mode="selector" range="{{itemSceneFilterOptions}}" range-key="text" value="{{itemSceneFilterIndex}}" bindchange="onItemSceneFilterChange">
+          <view class="filter-chip">{{itemSceneFilterOptions[itemSceneFilterIndex].text}}</view>
+        </picker>
+        <picker class="item-filter-picker" mode="selector" range="{{itemStyleFilterOptions}}" range-key="text" value="{{itemStyleFilterIndex}}" bindchange="onItemStyleFilterChange">
+          <view class="filter-chip">{{itemStyleFilterOptions[itemStyleFilterIndex].text}}</view>
+        </picker>
+        <picker class="item-filter-picker" mode="selector" range="{{itemSortOptions}}" range-key="text" value="{{itemSortIndex}}" bindchange="onItemSortChange">
+          <view class="filter-chip">{{itemSortOptions[itemSortIndex].text}}</view>
+        </picker>
+        <view class="filter-chip filter-reset" hover-class="tap-active" bindtap="resetItemFilters">重置</view>
+      </view>
+    </scroll-view>
+
+    <scroll-view scroll-y class="selection-scroll item-selection-scroll" lower-threshold="80" bindscrolltolower="loadMoreItems">
+      <view class="select-grid">
+        <view wx:for="{{itemList}}" wx:key="id" class="select-item {{selectedMap[item.id] ? 'selected' : ''}}" hover-class="tap-active" data-id="{{item.id}}" bindtap="toggleItem">
+          <image wx:if="{{item.image}}" class="select-image" src="{{item.image}}" mode="aspectFill" />
+          <view wx:else class="select-image image-placeholder">暂无图片</view>
+          <view class="select-name">{{item.itemName}}</view>
+          <view class="select-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.statusName}}</view>
+          <view wx:if="{{item.customTagNames}}" class="select-tags">{{item.customTagNames}}</view>
+          <view wx:if="{{selectedMap[item.id]}}" class="selected-dot">✓</view>
+        </view>
+      </view>
+      <view wx:if="{{!itemList.length && !itemLoading}}" class="empty small-empty">暂无可选衣物</view>
+      <view wx:if="{{itemLoadMoreText}}" class="selection-load-more">{{itemLoadMoreText}}</view>
+    </scroll-view>
+  </view>
+
+  <view class="form-panel">
+    <textarea class="form-textarea" value="{{formData.remark}}" placeholder="备注" data-field="remark" bindinput="handleInput" />
+  </view>
+
+  <view class="bottom-action-bar">
+    <view class="primary-btn bottom-submit" hover-class="tap-active" bindtap="submitForm">保存</view>
+  </view>
+</view>

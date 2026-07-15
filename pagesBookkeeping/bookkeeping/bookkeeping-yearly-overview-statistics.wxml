@@ -1,0 +1,83 @@
+<view class="year-page">
+  <view class="year-header">
+    <picker mode="date" fields="year" value="{{selectedYearDate}}" bindchange="onYearChange">
+      <view class="year-picker">{{selectedYear}}年</view>
+    </picker>
+  </view>
+
+  <view class="setting-card">
+    <text>忽略不计入统计的账单</text>
+    <switch checked="{{ignoreNotStatistics}}" bindchange="switchIgnoreStatistics" />
+  </view>
+
+  <view class="summary-grid">
+    <view class="summary-card consume">
+      <view class="summary-label">年度支出</view>
+      <view class="summary-amount">¥{{overview.yearStatistics.totalConsume}}</view>
+      <view class="summary-sub">{{overview.yearStatistics.consumeCount}} 笔</view>
+    </view>
+    <view class="summary-card income">
+      <view class="summary-label">年度收入</view>
+      <view class="summary-amount">¥{{overview.yearStatistics.totalIncome}}</view>
+      <view class="summary-sub">{{overview.yearStatistics.incomeCount}} 笔</view>
+    </view>
+  </view>
+
+  <view class="section-card net-card">
+    <text class="section-title">年度净收入</text>
+    <text class="net-amount {{overview.yearStatistics.netIncomeRaw >= 0 ? 'positive' : 'negative'}}">{{overview.yearStatistics.netIncomePrefix}}¥{{overview.yearStatistics.netIncome}}</text>
+  </view>
+
+  <view class="section-card">
+    <view class="section-head">
+      <view>
+        <view class="section-title">年度趋势分析</view>
+        <view class="section-subtitle">{{overview.trendChart.summary}}</view>
+      </view>
+    </view>
+    <view class="trend-legend">
+      <view class="trend-legend-item"><view class="legend-dot consume-dot"></view><text>支出</text></view>
+      <view class="trend-legend-item"><view class="legend-dot income-dot"></view><text>收入</text></view>
+      <view class="trend-legend-item"><view class="legend-dot net-dot"></view><text>净收入</text></view>
+    </view>
+    <canvas id="yearOverviewTrendCanvas" canvas-id="yearOverviewTrendCanvas" class="trend-canvas"></canvas>
+    <view wx:if="{{overview.trendChart.negativeMonthsText}}" class="negative-months">
+      <text class="negative-label">净收入为负</text>
+      <text class="negative-text">{{overview.trendChart.negativeMonthsText}}</text>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">记账习惯分析</view>
+    <view class="metric-grid">
+      <view class="metric-item">
+        <view class="metric-value-line">
+          <text class="metric-value">{{overview.recordingHabits.recordingDays}}</text>
+          <text class="metric-unit">天</text>
+        </view>
+        <view class="metric-label">记账天数</view>
+      </view>
+      <view class="metric-item">
+        <view class="metric-value-line">
+          <text class="metric-value">{{overview.recordingHabits.maxContinuousDays}}</text>
+          <text class="metric-unit">天</text>
+        </view>
+        <view class="metric-label">连续记账最长</view>
+      </view>
+      <view class="metric-item">
+        <view class="metric-value-line">
+          <text class="metric-value month-value">{{overview.recordingHabits.peakMonth}}</text>
+          <text class="metric-count-inline">({{overview.recordingHabits.peakCount}}次)</text>
+        </view>
+        <view class="metric-label">记账次数最多</view>
+      </view>
+    </view>
+    <view class="detail-row"><text>全年记账次数</text><text>{{overview.recordingHabits.recordingCount}}</text></view>
+    <view class="detail-row"><text>平均每天记账次数</text><text>{{overview.recordingHabits.avgPerDay}}次</text></view>
+    <view class="detail-row"><text>遗漏次数</text><text>{{overview.recordingHabits.missingCount}}次</text></view>
+    <view class="detail-row"><text>遗漏率</text><text>{{overview.recordingHabits.missingRate}}%</text></view>
+    <view class="evaluation">{{overview.recordingHabits.evaluation}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-mask">加载中...</view>
+</view>

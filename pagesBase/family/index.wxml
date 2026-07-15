@@ -1,0 +1,27 @@
+<view class="family-index">
+  <view class="hero-card">
+    <view class="hero-icon">家</view>
+    <view class="hero-title">家庭组</view>
+    <view class="hero-subtitle">与家人共享账单、任务和餐饮记录</view>
+  </view>
+
+  <view class="actions">
+    <button class="btn btn-primary" bindtap="goCreate">创建家庭组</button>
+    <button class="btn btn-secondary" bindtap="goJoin">加入家庭组</button>
+  </view>
+
+  <view class="feature-card">
+    <view class="feature-item">
+      <view class="feature-icon blue">账</view>
+      <view class="feature-text">共享账单数据</view>
+    </view>
+    <view class="feature-item">
+      <view class="feature-icon green">任</view>
+      <view class="feature-text">共享任务清单</view>
+    </view>
+    <view class="feature-item">
+      <view class="feature-icon orange">餐</view>
+      <view class="feature-text">共享餐饮记录</view>
+    </view>
+  </view>
+</view>

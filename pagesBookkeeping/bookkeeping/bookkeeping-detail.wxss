@@ -1,0 +1,142 @@
+.detail-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx;
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+  background: #f7f8fa;
+}
+
+.record-card {
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.amount-block {
+  padding: 40rpx 32rpx;
+  color: #ffffff;
+  text-align: center;
+}
+
+.amount-block.consume {
+  background: #ff6b35;
+}
+
+.amount-block.income {
+  background: #07c160;
+}
+
+.amount-label {
+  margin-bottom: 8rpx;
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.amount-value {
+  font-size: 52rpx;
+  font-weight: 700;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  padding: 26rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.item:last-child {
+  border-bottom: 0;
+}
+
+.label {
+  flex: none;
+  width: 150rpx;
+  color: #888;
+  font-size: 28rpx;
+}
+
+.value {
+  flex: 1;
+  color: #333;
+  font-size: 28rpx;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.file-item-row {
+  align-items: flex-start;
+}
+
+.file-list {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.file-thumbnail {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 8rpx;
+  background: #f7f8fa;
+}
+
+.bottom-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 24rpx;
+  box-sizing: border-box;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.bottom-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 82rpx;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 42rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.bottom-actions button::after {
+  border: 0;
+}
+
+.edit-btn {
+  background: #07c160;
+  color: #ffffff;
+}
+
+.delete-btn {
+  background: #fff0f0;
+  color: #f56c6c;
+}
+
+.readonly-tip,
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240rpx;
+  color: #999;
+  font-size: 28rpx;
+  text-align: center;
+}
+
+.readonly-tip {
+  color: #1989fa;
+}

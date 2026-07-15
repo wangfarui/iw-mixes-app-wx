@@ -1,0 +1,167 @@
+.statistics-page {
+  min-height: 100vh;
+  padding: 20rpx;
+  background: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.header-card,
+.section-card {
+  margin-bottom: 20rpx;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.time-row,
+.total-row,
+.section-head,
+.rank-item {
+  display: flex;
+  align-items: center;
+}
+
+.time-row,
+.total-row,
+.section-head {
+  justify-content: space-between;
+}
+
+.time-picker {
+  height: 60rpx;
+  padding: 0 20rpx;
+  border-radius: 30rpx;
+  background: #f7f8fa;
+  color: #333;
+  font-size: 26rpx;
+  line-height: 60rpx;
+}
+
+.tab-bar {
+  display: flex;
+  padding: 4rpx;
+  border-radius: 30rpx;
+  background: #f0f1f3;
+}
+
+.tab-item {
+  min-width: 92rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  color: #666;
+  font-size: 24rpx;
+  line-height: 52rpx;
+  text-align: center;
+}
+
+.tab-item.active {
+  background: #07c160;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.total-row {
+  margin-top: 28rpx;
+}
+
+.label {
+  color: #999;
+  font-size: 24rpx;
+}
+
+.amount {
+  margin-top: 6rpx;
+  font-size: 46rpx;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.amount.income,
+.rank-amount {
+  color: #07c160;
+}
+
+.count {
+  color: #666;
+  font-size: 26rpx;
+}
+
+.section-title {
+  color: #222;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.section-subtitle {
+  margin-top: 6rpx;
+  color: #999;
+  font-size: 23rpx;
+}
+
+.section-head {
+  margin-bottom: 18rpx;
+}
+
+.bar-canvas {
+  width: 100%;
+  height: 320rpx;
+}
+
+.rank-item {
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.rank-item:first-of-type {
+  border-top: 0;
+}
+
+.rank-index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44rpx;
+  height: 44rpx;
+  margin-right: 18rpx;
+  border-radius: 50%;
+  background: #f7f8fa;
+  color: #666;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.rank-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.rank-name {
+  color: #222;
+  font-size: 28rpx;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rank-meta {
+  margin-top: 6rpx;
+  color: #999;
+  font-size: 23rpx;
+}
+
+.rank-amount {
+  flex: none;
+  margin-left: 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.empty {
+  padding: 36rpx 0;
+  color: #999;
+  font-size: 26rpx;
+  text-align: center;
+}

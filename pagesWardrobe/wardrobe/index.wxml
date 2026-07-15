@@ -1,0 +1,51 @@
+<view class="wardrobe-page wear-record-page">
+  <view class="panel record-hero">
+    <view class="record-hero-main">
+      <view class="record-hero-top">
+        <view>
+          <view class="section-title">穿着记录</view>
+          <view class="section-subtitle">{{rangeText}}</view>
+        </view>
+        <view class="primary-btn compact-btn" hover-class="tap-active" bindtap="goRecordForm">记录穿着</view>
+      </view>
+      <view class="range-filter-row">
+        <view wx:for="{{rangeOptions}}" wx:key="value" class="range-chip {{rangeType === item.value ? 'active' : ''}}" data-value="{{item.value}}" hover-class="tap-active" bindtap="onRangeChange">{{item.text}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{recordGroups.length}}" class="record-list">
+    <view wx:for="{{recordGroups}}" wx:key="date" wx:for-item="group" class="panel record-group">
+      <view class="record-group-head">
+        <view class="group-title">{{group.label}}</view>
+      </view>
+      <view wx:for="{{group.records}}" wx:key="id" wx:for-item="record" class="record-entry">
+        <view class="record-tap-area" hover-class="tap-active" data-id="{{record.id}}" bindtap="editRecord">
+          <view class="record-main">
+            <view class="record-title-row">
+              <view class="item-title">{{record.outfitName || '自由搭配'}}</view>
+              <view class="record-item-count">{{record.itemCountText}}</view>
+            </view>
+            <view wx:if="{{record.sceneNames}}" class="item-meta">{{record.sceneNames}}</view>
+            <view wx:if="{{record.weatherMoodText}}" class="item-meta">{{record.weatherMoodText}}</view>
+            <view wx:if="{{record.remark}}" class="item-meta">{{record.remark}}</view>
+          </view>
+        </view>
+        <scroll-view wx:if="{{record.itemList.length}}" scroll-x class="record-image-row">
+          <view class="record-image-list">
+            <block wx:for="{{record.itemList}}" wx:for-item="child" wx:key="itemId">
+              <image wx:if="{{child.itemImage}}" class="record-thumb" src="{{child.itemImage}}" mode="aspectFill" data-record-id="{{record.id}}" data-url="{{child.itemImage}}" catchtap="previewRecordImage" />
+              <view wx:else class="record-thumb image-placeholder">无图</view>
+            </block>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!recordGroups.length && !loading}}" class="empty record-empty">
+    <view>当前日期范围还没有穿着记录</view>
+    <view class="plain-btn empty-action" hover-class="tap-active" bindtap="goRecordForm">记录穿着</view>
+  </view>
+  <view class="safe-bottom"></view>
+</view>

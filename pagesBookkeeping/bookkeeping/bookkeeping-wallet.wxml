@@ -1,0 +1,49 @@
+<view class="wallet-page">
+  <view class="wallet-card">
+    <view class="amount-item">
+      <view class="amount-label">钱包余额</view>
+      <view class="amount-value">¥{{wallet.walletBalanceText}}</view>
+      <view class="update-btn" data-type="1" bindtap="showUpdateSheet">修改</view>
+    </view>
+    <view class="divider"></view>
+    <view class="amount-item">
+      <view class="amount-label">钱包资产</view>
+      <view class="amount-value">¥{{wallet.walletAssetsText}}</view>
+      <view class="update-btn" data-type="2" bindtap="showUpdateSheet">修改</view>
+    </view>
+  </view>
+
+  <view class="records-card">
+    <view class="type-tabs">
+      <view class="tab-item {{currentType === 1 ? 'active' : ''}}" data-type="1" bindtap="switchType">余额记录</view>
+      <view class="tab-item {{currentType === 2 ? 'active' : ''}}" data-type="2" bindtap="switchType">资产记录</view>
+    </view>
+
+    <view wx:for="{{records}}" wx:key="id" class="record-item">
+      <view>
+        <view class="change-amount {{item.changeAmount > 0 ? 'increase' : ''}}">{{item.changeAmountText}}</view>
+        <view class="record-time">{{item.createTime}}</view>
+      </view>
+      <view class="amount-info">
+        <view>变动前：{{item.beforeAmountText}}</view>
+        <view>变动后：{{item.afterAmountText}}</view>
+      </view>
+    </view>
+    <view class="load-more">{{loadMoreText}}</view>
+  </view>
+
+  <view wx:if="{{showUpdatePopup}}" class="modal-mask" catchtap="closeUpdatePopup" catchtouchmove="noop">
+    <view class="modal-card" catchtap="noop">
+      <view class="modal-title">{{currentTypeName}}</view>
+      <view class="mode-tabs">
+        <view class="mode-item {{updateMode === 'direct' ? 'active' : ''}}" data-mode="direct" bindtap="selectUpdateMode">直接修改金额</view>
+        <view class="mode-item {{updateMode === 'delta' ? 'active' : ''}}" data-mode="delta" bindtap="selectUpdateMode">输入变动金额</view>
+      </view>
+      <input class="amount-input" type="text" value="{{updateAmount}}" placeholder="请输入金额" bindinput="onUpdateAmountInput" />
+      <view class="modal-actions">
+        <button class="cancel-btn" bindtap="closeUpdatePopup">取消</button>
+        <button class="confirm-btn" bindtap="submitUpdateAmount">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

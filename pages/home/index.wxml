@@ -1,0 +1,112 @@
+<view class="home-container">
+  <view class="weather-card">
+    <block wx:if="{{!weatherInfo.error}}">
+      <view class="weather-info">
+        <text class="temperature">{{weatherInfo.temperature}}°C</text>
+        <text class="weather-desc">{{weatherInfo.weather}}</text>
+      </view>
+      <view class="weather-detail">
+        <text class="location">{{weatherInfo.city}}</text>
+        <text class="date">{{currentDate}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="weather-info">
+        <text class="temperature weather-error">获取天气失败</text>
+      </view>
+      <view class="weather-detail">
+        <text class="date">{{currentDate}}</text>
+      </view>
+    </block>
+  </view>
+
+  <view class="cards-container">
+    <view class="function-card">
+      <view class="card-header">
+        <view class="card-left">
+          <view class="card-icon">
+            <image class="card-icon-img" src="/static/tabbar/bill-active.png" mode="aspectFill" />
+          </view>
+          <view class="card-content">
+            <view class="bill-title-row">
+              <text class="card-title">今日记账</text>
+              <text wx:if="{{scope.hasGroup}}" class="scope-badge">{{scope.scopeText}}</text>
+            </view>
+            <text class="card-value">¥ {{billTotalAmount}}</text>
+          </view>
+        </view>
+        <view class="quick-add-btn" bindtap="navigateToQuickBookkeep">
+          <text>记一笔</text>
+        </view>
+      </view>
+      <view class="card-details bill-list">
+        <view class="detail-item" wx:for="{{billRecords}}" wx:key="index">
+          <text class="bill-time">{{item.time}}</text>
+          <view class="bill-source">{{item.desc}}</view>
+          <text class="bill-amount">-{{item.amount}}</text>
+        </view>
+        <view class="empty-line" wx:if="{{billRecords.length === 0}}">今天还没有支出记录</view>
+        <view class="more-link" wx:if="{{showBillMore}}" bindtap="navigateToBill">查看更多 ›</view>
+      </view>
+    </view>
+
+    <view class="function-card">
+      <view class="card-header">
+        <view class="card-left">
+          <view class="card-icon">
+            <image class="card-icon-img" src="/static/tabbar/task-active.png" mode="aspectFill" />
+          </view>
+          <view class="card-content">
+            <text class="card-title">待办任务</text>
+            <text class="card-value">{{taskTotalCount}} 个待办</text>
+          </view>
+        </view>
+      </view>
+      <view class="card-details task-list">
+        <view class="detail-item" wx:for="{{taskRecords}}" wx:key="index">
+          <text class="detail-title">{{item.title}}</text>
+          <text class="detail-deadline {{item.deadlineClass}}">{{item.deadline}}</text>
+        </view>
+        <view class="empty-line" wx:if="{{taskRecords.length === 0}}">暂无近期任务</view>
+        <view class="more-link" wx:if="{{showTaskMore}}" bindtap="navigateToTask">查看更多 ›</view>
+      </view>
+    </view>
+
+    <view class="function-card">
+      <view class="card-header">
+        <view class="card-left">
+          <view class="card-icon">
+            <image class="card-icon-img" src="/static/tabbar/points.png" mode="aspectFill" />
+          </view>
+          <view class="card-content">
+            <text class="card-title">剩余积分</text>
+            <text class="card-value">{{pointsBalance}} 分</text>
+          </view>
+        </view>
+      </view>
+      <view class="card-details points-list">
+        <view class="detail-item" wx:for="{{pointsRecords}}" wx:key="index">
+          <text class="points-time">{{item.time}}</text>
+          <text class="points-source">{{item.desc}}</text>
+          <text class="points-value {{item.isAdd ? 'add' : ''}}">{{item.displayPoints}}</text>
+        </view>
+        <view class="empty-line" wx:if="{{pointsRecords.length === 0}}">今天还没有积分记录</view>
+        <view class="more-link" wx:if="{{showPointsMore}}" bindtap="navigateToPoints">查看更多 ›</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="recipe-section">
+    <view class="section-header">
+      <text class="section-title">今日推荐食谱</text>
+      <text class="more-link-text" bindtap="navigateToRecipes">查看更多</text>
+    </view>
+    <scroll-view class="recipe-scroll" scroll-x>
+      <view class="recipe-card" wx:for="{{recipes}}" wx:key="id" bindtap="navigateToDishesDetail" data-id="{{item.id}}">
+        <image class="recipe-image" src="{{item.image}}" mode="aspectFill" />
+        <text class="recipe-name">{{item.name}}</text>
+      </view>
+      <view class="empty-recipe" wx:if="{{recipes.length === 0}}">暂无推荐食谱</view>
+    </scroll-view>
+  </view>
+</view>

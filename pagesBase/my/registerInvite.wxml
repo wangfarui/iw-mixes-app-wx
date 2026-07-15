@@ -1,0 +1,53 @@
+<view class="register-invite-page">
+  <view class="section-card">
+    <view class="setting-row">
+      <view class="setting-main">
+        <text class="setting-title">邀请码注册</text>
+        <text class="setting-desc">{{status.enabled ? '新用户验证码登录需要邀请码' : '新用户验证码登录自动创建账号'}}</text>
+      </view>
+      <switch checked="{{status.enabled}}" disabled="{{isSavingConfig}}" bindchange="handleEnabledChange" />
+    </view>
+  </view>
+
+  <view class="section-card invite-card">
+    <view class="card-title-row">
+      <text class="card-title">当前邀请码</text>
+      <text class="status-badge {{status.hasInvite ? 'active' : ''}}">{{status.hasInvite ? '有效' : '未生成'}}</text>
+    </view>
+
+    <view wx:if="{{status.hasInvite}}">
+      <view class="code-box">
+        <text class="code-text">{{formattedInviteCode}}</text>
+      </view>
+      <view class="meta-row">
+        <text class="meta-label">生成时间</text>
+        <text class="meta-value">{{status.createTime || '-'}}</text>
+      </view>
+      <view class="meta-row">
+        <text class="meta-label">过期时间</text>
+        <text class="meta-value">{{status.expireTime || '-'}}</text>
+      </view>
+      <view class="action-row">
+        <view class="invite-action-btn secondary" hover-class="invite-action-btn-hover" bindtap="handleCopy">复制邀请码</view>
+        <view
+          class="invite-action-btn danger {{isDeleting ? 'disabled' : ''}}"
+          hover-class="invite-action-btn-hover"
+          bindtap="handleDelete"
+        >
+          {{isDeleting ? '删除中...' : '删除邀请码'}}
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="empty-state">
+      <text class="empty-title">暂无邀请码</text>
+      <view
+        class="invite-action-btn primary empty-action {{isGenerating ? 'disabled' : ''}}"
+        hover-class="invite-action-btn-hover"
+        bindtap="handleGenerate"
+      >
+        {{isGenerating ? '生成中...' : '生成邀请码'}}
+      </view>
+    </view>
+  </view>
+</view>

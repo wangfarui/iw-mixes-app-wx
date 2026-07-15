@@ -1,0 +1,23 @@
+{
+  "mp-actionsheet": "weui-miniprogram/actionsheet/actionsheet",
+  "mp-badge": "weui-miniprogram/badge/badge",
+  "mp-cell": "weui-miniprogram/cell/cell",
+  "mp-cells": "weui-miniprogram/cells/cells",
+  "mp-checkbox": "weui-miniprogram/checkbox/checkbox",
+  "mp-checkbox-group": "weui-miniprogram/checkbox-group/checkbox-group",
+  "mp-dialog": "weui-miniprogram/dialog/dialog",
+  "mp-form": "weui-miniprogram/form/form",
+  "mp-form-page": "weui-miniprogram/form-page/form-page",
+  "mp-gallery": "weui-miniprogram/gallery/gallery",
+  "mp-grids": "weui-miniprogram/grids/grids",
+  "mp-half-screen-dialog": "weui-miniprogram/half-screen-dialog/half-screen-dialog",
+  "mp-icon": "weui-miniprogram/icon/icon",
+  "mp-loading": "weui-miniprogram/loading/loading",
+  "mp-msg": "weui-miniprogram/msg/msg",
+  "mp-navigation-bar": "weui-miniprogram/navigation-bar/navigation-bar",
+  "mp-searchbar": "weui-miniprogram/searchbar/searchbar",
+  "mp-slideview": "weui-miniprogram/slideview/slideview",
+  "mp-tabbar": "weui-miniprogram/tabbar/tabbar",
+  "mp-toptips": "weui-miniprogram/toptips/toptips",
+  "mp-uploader": "weui-miniprogram/uploader/uploader"
+}

@@ -1,0 +1,86 @@
+<view class="budget-page">
+  <view class="type-card">
+    <view class="type-tab {{budgetType === 1 ? 'active' : ''}}" data-type="1" bindtap="selectBudgetType">月预算</view>
+    <view class="type-tab {{budgetType === 2 ? 'active' : ''}}" data-type="2" bindtap="selectBudgetType">年预算</view>
+  </view>
+
+  <view class="total-card">
+    <view class="card-header">
+      <view class="card-title">{{budgetType === 1 ? '本月预算' : '年度预算'}}</view>
+      <view wx:if="{{totalBudget && totalBudget.id}}" class="text-btn" data-index="-1" bindtap="openActions">编辑</view>
+    </view>
+    <view wx:if="{{totalBudget && totalBudget.budgetAmount > 0}}">
+      <view class="budget-main">
+        <view class="remaining {{totalBudget.remainingAmount < 0 ? 'negative' : ''}}">¥{{totalBudget.remainingAmountText}}</view>
+        <view class="remaining-label">剩余预算</view>
+      </view>
+      <view class="progress-track">
+        <view class="progress-fill {{totalBudget.usedRatio >= 90 ? 'danger' : totalBudget.usedRatio >= 70 ? 'warn' : ''}}" style="width: {{totalBudget.usedRatio}}%;"></view>
+      </view>
+      <view class="budget-meta">
+        <text>已用 ¥{{totalBudget.usedAmountText}}</text>
+        <text>预算 ¥{{totalBudget.budgetAmountText}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-budget">
+      <view>暂无总预算</view>
+      <button class="add-btn" data-category="0" bindtap="openForm">添加总预算</button>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="card-header">
+      <view class="card-title">分类预算</view>
+      <view class="text-btn" data-category="1" bindtap="openForm">添加</view>
+    </view>
+    <view wx:for="{{categoryBudgets}}" wx:key="id" class="category-item" data-index="{{index}}" bindtap="goToRecords" bindlongpress="openActions">
+      <view class="category-head">
+        <view class="category-name">{{item.recordTypeName}}</view>
+        <view class="category-amount">¥{{item.usedAmountText}} / ¥{{item.budgetAmountText}}</view>
+      </view>
+      <view class="progress-track">
+        <view class="progress-fill {{item.usedRatio >= 90 ? 'danger' : item.usedRatio >= 70 ? 'warn' : ''}}" style="width: {{item.usedRatio}}%;"></view>
+      </view>
+      <view class="progress-text">{{item.usedRatio}}%</view>
+    </view>
+    <view wx:if="{{categoryBudgets.length === 0}}" class="empty">暂无分类预算</view>
+  </view>
+
+  <view wx:if="{{showForm}}" class="modal-mask" catchtap="closeForm" catchtouchmove="noop">
+    <view class="modal-card" catchtap="noop">
+      <view class="modal-title">{{isEditing ? '编辑预算' : (isCategoryForm ? '添加分类预算' : '添加总预算')}}</view>
+      <view wx:if="{{isCategoryForm}}" class="form-item">
+        <view class="label">记录分类</view>
+        <picker mode="selector" range="{{recordTypeOptions}}" range-key="dictName" value="{{recordTypeIndex}}" bindchange="onRecordTypeChange">
+          <view class="picker-box">{{recordTypeName || '请选择记录分类'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="label">预算金额</view>
+        <input class="input" type="digit" value="{{formData.budgetAmount}}" data-field="budgetAmount" placeholder="请输入预算金额" bindinput="handleInput" />
+      </view>
+      <view wx:if="{{budgetType === 1}}" class="form-row">
+        <view class="form-item half">
+          <view class="label">奖励积分</view>
+          <input class="input" type="number" value="{{formData.rewardPoints}}" data-field="rewardPoints" placeholder="可选" bindinput="handleInput" />
+        </view>
+        <view class="form-item half">
+          <view class="label">处罚积分</view>
+          <input class="input" type="number" value="{{formData.punishPoints}}" data-field="punishPoints" placeholder="可选" bindinput="handleInput" />
+        </view>
+      </view>
+      <view class="modal-actions">
+        <button class="cancel-btn" bindtap="closeForm">取消</button>
+        <button class="confirm-btn" bindtap="saveBudget">确认</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showActions}}" class="sheet-mask" catchtap="closeActions" catchtouchmove="noop">
+    <view class="sheet-panel" catchtap="noop">
+      <view class="sheet-item" bindtap="editBudget">编辑预算</view>
+      <view class="sheet-item danger" bindtap="confirmDeleteBudget">删除预算</view>
+      <view class="sheet-item cancel" bindtap="closeActions">取消</view>
+    </view>
+  </view>
+</view>

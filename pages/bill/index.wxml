@@ -1,0 +1,71 @@
+<view class="bill-page">
+  <view class="fixed-section">
+    <view class="statistics-section">
+      <view class="statistics-row">
+        <view class="date-picker">
+          <picker mode="date" fields="month" value="{{currentDate}}" bindchange="handleDateChange">
+            <view class="date-content">
+              <view class="date-wrapper">
+                <text class="year-text">{{currentYear}}年</text>
+                <text class="month-text">{{currentMonth}}月</text>
+              </view>
+              <text class="arrow-down">▼</text>
+            </view>
+          </picker>
+        </view>
+        <view class="amount-item">
+          <text class="amount-label">收入</text>
+          <text class="amount-value">{{statistics.income}}</text>
+        </view>
+        <view class="amount-item">
+          <text class="amount-label">支出</text>
+          <text class="amount-value">{{statistics.consume}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="function-section">
+      <view
+        class="function-item"
+        wx:for="{{functionButtons}}"
+        wx:key="text"
+        bindtap="handleFunctionClick"
+        data-type="{{item.type}}"
+      >
+        <image src="{{item.icon}}" mode="aspectFit" class="function-icon" />
+        <text class="function-text">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view
+    class="bill-list"
+    scroll-y
+    refresher-enabled
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="handleRefresh"
+    bindscrolltolower="handleScrollToLower"
+  >
+    <view
+      class="record-item"
+      wx:for="{{billList}}"
+      wx:key="id"
+      bindtap="handleRecordClick"
+      data-id="{{item.id}}"
+    >
+      <image src="{{item.recordIconPath}}" mode="aspectFit" class="record-icon" />
+      <view class="record-info">
+        <view class="record-source">{{item.displaySource}}</view>
+        <view class="record-type">{{item.recordTypeName}}{{item.ownerText}}</view>
+        <view class="record-time">{{item.recordTimeStr}}</view>
+      </view>
+      <text class="record-amount">{{item.amountText}}</text>
+    </view>
+
+    <view class="empty-list" wx:if="{{billList.length === 0 && loadMoreStatus !== 'loading'}}">
+      本月暂无账单记录
+    </view>
+
+    <view class="load-more">{{loadMoreText}}</view>
+  </scroll-view>
+</view>

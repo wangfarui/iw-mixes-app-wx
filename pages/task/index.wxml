@@ -1,0 +1,83 @@
+<view class="task-container">
+  <view class="view-switch">
+    <view class="switch-item {{currentView === 'recent' ? 'active' : ''}}" data-view="recent" bindtap="switchView">最近任务</view>
+    <view class="switch-item {{currentView === 'inbox' ? 'active' : ''}}" data-view="inbox" bindtap="switchView">收集箱</view>
+    <view class="switch-item {{currentView === 'done' ? 'active' : ''}}" data-view="done" bindtap="switchView">已完成</view>
+  </view>
+
+  <swiper class="swiper-container" current="{{swiperCurrent}}" bindchange="onSwiperChange" duration="300">
+    <swiper-item wx:for="{{viewKeys}}" wx:key="*this">
+      <scroll-view scroll-y class="swiper-scroll">
+        <view class="task-list">
+          <view
+            class="task-item"
+            wx:for="{{taskList}}"
+            wx:key="id"
+            bindlongpress="showActionSheet"
+            bindtap="navigateToDetail"
+            data-id="{{item.id}}"
+          >
+            <view class="task-content">
+              <view class="task-name-container">
+                <view class="task-name">{{item.taskName}}</view>
+                <view class="task-badges">
+                  <view wx:if="{{item.isTop === 1}}" class="task-top-badge">置顶</view>
+                  <view wx:if="{{item.showDeadlineBadge}}" class="task-deadline-badge {{item.deadlineBadgeClass}}">
+                    {{item.deadlineLabel}}
+                  </view>
+                </view>
+              </view>
+              <view class="task-info">
+                <view wx:if="{{item.taskGroupName && currentView !== 'inbox'}}" class="task-group">{{item.taskGroupName}}</view>
+                <view wx:if="{{item.deadlineDate && currentView !== 'done'}}" class="task-deadline">
+                  截止日期：{{item.deadlineDate}}
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="empty-task" wx:if="{{taskList.length === 0 && !loading}}">暂无任务</view>
+          <view class="empty-task" wx:if="{{loading}}">加载中...</view>
+        </view>
+      </scroll-view>
+    </swiper-item>
+  </swiper>
+
+  <view class="quick-add">
+    <input value="{{newTaskName}}" placeholder="输入任务名称" class="task-input" bindinput="onTaskNameInput" />
+    <picker mode="date" value="{{newTaskDeadline}}" bindchange="onDateChange" class="date-picker">
+      <view class="picker-text">{{newTaskDeadlineText}}</view>
+    </picker>
+    <button class="add-btn" bindtap="addTask" disabled="{{!newTaskName}}">添加</button>
+  </view>
+
+  <view wx:if="{{showPointsDialog}}" class="modal-mask">
+    <view class="modal-card">
+      <view class="modal-title">设置积分</view>
+      <view class="points-item">
+        <text class="label">奖励积分</text>
+        <input type="number" value="{{pointsForm.rewardPoints}}" class="points-input" placeholder="请输入正整数" bindinput="onRewardPointsInput" />
+      </view>
+      <view class="points-item">
+        <text class="label">处罚积分</text>
+        <input type="number" value="{{pointsForm.punishPoints}}" class="points-input" placeholder="请输入正整数" bindinput="onPunishPointsInput" />
+      </view>
+      <view class="modal-actions">
+        <button class="modal-btn secondary" bindtap="closePointsDialog">取消</button>
+        <button class="modal-btn primary" bindtap="savePoints">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showDeadlineDialog}}" class="modal-mask">
+    <view class="modal-card">
+      <view class="modal-title">设置截止日期</view>
+      <picker mode="date" value="{{deadlineForm.deadlineDate}}" bindchange="onDeadlineDateChange" class="deadline-picker">
+        <view class="picker-text">{{deadlineDateText}}</view>
+      </picker>
+      <view class="modal-actions">
+        <button class="modal-btn secondary" bindtap="closeDeadlineDialog">取消</button>
+        <button class="modal-btn primary" bindtap="saveDeadline">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

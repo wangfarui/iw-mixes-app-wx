@@ -1,0 +1,76 @@
+<view class="wardrobe-page">
+  <view class="form-panel">
+    <view class="row-between">
+      <view>
+        <view class="section-title">新增计划/记录</view>
+        <view class="section-subtitle">选择搭配并记录日期</view>
+      </view>
+    </view>
+    <view class="form-line form-top-line">
+      <view class="form-label">日期</view>
+      <picker class="picker-field" mode="date" value="{{formData.wearDate}}" bindchange="onWearDateChange">
+        <view>{{formData.wearDate}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">搭配</view>
+      <picker class="picker-field" mode="selector" range="{{outfitOptions}}" range-key="text" value="{{outfitIndex}}" bindchange="onOutfitChange">
+        <view>{{formData.outfitId ? outfitOptions[outfitIndex].text : '请选择搭配'}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">类型</view>
+      <picker class="picker-field" mode="selector" range="{{recordTypeOptions}}" range-key="text" value="{{recordTypeIndex}}" bindchange="onRecordTypeChange">
+        <view>{{recordTypeOptions[recordTypeIndex].text}}</view>
+      </picker>
+    </view>
+    <view class="tag-wrap">
+      <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleScene">{{item.text}}</view>
+    </view>
+    <view class="form-line">
+      <view class="form-label">天气</view>
+      <input class="form-input" value="{{formData.weatherText}}" placeholder="选填" data-field="weatherText" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">心情</view>
+      <input class="form-input" value="{{formData.moodText}}" placeholder="选填" data-field="moodText" bindinput="handleInput" />
+    </view>
+    <view class="primary-btn button-block" hover-class="tap-active" bindtap="submitRecord">保存记录</view>
+  </view>
+
+  <view class="filter-panel">
+    <view class="filter-row">
+      <picker class="picker-field" mode="date" fields="month" value="{{month}}" bindchange="onMonthChange">
+        <view>{{month}}</view>
+      </picker>
+      <view class="plain-btn filter-btn" hover-class="tap-active" bindtap="loadMonthRecords">刷新</view>
+    </view>
+  </view>
+
+  <view class="record-card" wx:for="{{records}}" wx:key="id">
+    <view class="row-between">
+      <view class="record-main">
+        <view class="item-title">{{item.outfitName || '自由搭配'}}</view>
+        <view class="item-meta">{{item.dateText}} · {{item.typeText}} · {{item.sceneNames}}</view>
+        <view class="item-meta">{{item.weatherText || '未记天气'}} · {{item.moodText || '未记心情'}} · {{item.itemCount || 0}}件</view>
+      </view>
+      <view class="chip {{item.recordType === 1 ? 'warn' : 'active'}}">{{item.typeText}}</view>
+    </view>
+    <scroll-view scroll-x class="record-image-row">
+      <view class="record-image-list">
+        <block wx:for="{{item.itemList}}" wx:for-item="child" wx:key="itemId">
+          <image wx:if="{{child.itemImage}}" class="record-thumb" src="{{child.itemImage}}" mode="aspectFill" />
+          <view wx:else class="record-thumb image-placeholder">无图</view>
+        </block>
+      </view>
+    </scroll-view>
+    <view class="card-actions">
+      <view wx:if="{{item.recordType === 1}}" class="plain-btn mini-btn" hover-class="tap-active" catchtap="markRecordWorn" data-id="{{item.id}}">标记已穿</view>
+      <view class="plain-btn mini-btn" hover-class="tap-active" catchtap="copyRecord" data-id="{{item.id}}">复制</view>
+      <view class="danger-btn mini-btn" hover-class="tap-active" catchtap="deleteRecord" data-id="{{item.id}}">删除</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!records.length && !loading}}" class="empty">本月暂无记录</view>
+  <view class="safe-bottom"></view>
+</view>

@@ -1,0 +1,26 @@
+<view class="invite-list-page">
+  <view wx:if="{{inviteList.length > 0}}" class="list">
+    <view wx:for="{{inviteList}}" wx:key="id" class="invite-item">
+      <view class="invite-header">
+        <text class="invite-code">{{item.inviteCode}}</text>
+        <view class="status-tag {{item.statusClass}}">
+          <text class="status-text">{{item.statusText}}</text>
+        </view>
+      </view>
+      <view class="invite-info">
+        <view class="info-text">邀请人：{{item.inviterName || '-'}}</view>
+        <view class="info-text">有效期：{{item.validHours}}小时</view>
+        <view class="info-text">过期时间：{{item.expireTimeText}}</view>
+        <view class="info-text">创建时间：{{item.createTimeText}}</view>
+      </view>
+      <view wx:if="{{item.status === 1}}" class="invite-actions">
+        <button class="btn-copy" data-code="{{item.inviteCode}}" bindtap="handleCopy">复制邀请码</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty">
+    <view class="empty-icon">邀</view>
+    <view class="empty-text">暂无邀请记录</view>
+  </view>
+</view>

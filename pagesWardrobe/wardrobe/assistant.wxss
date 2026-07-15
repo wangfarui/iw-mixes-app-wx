@@ -1,0 +1,24 @@
+@import "./wardrobe-common.wxss";
+@import "./outfit-list.wxss";
+
+.ai-textarea {
+  width: 100%;
+  min-height: 180rpx;
+  margin-top: 18rpx;
+  padding: 18rpx;
+  border-radius: 8rpx;
+  background: #f6f7f9;
+  color: #1f2329;
+  font-size: 26rpx;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.ai-summary {
+  margin-top: 12rpx;
+  color: #3c4654;
+  font-size: 26rpx;
+  line-height: 1.55;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}

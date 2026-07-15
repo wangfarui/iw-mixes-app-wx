@@ -1,0 +1,579 @@
+.year-page {
+  min-height: 100vh;
+  padding: 20rpx;
+  box-sizing: border-box;
+  background: #f5f5f5;
+}
+
+.year-header {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin: -20rpx -20rpx 20rpx;
+  padding: 20rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.year-header picker {
+  flex: 1;
+  min-width: 0;
+}
+
+.year-picker {
+  height: 64rpx;
+  padding: 0 20rpx;
+  border-radius: 8rpx;
+  background: #f5f5f5;
+  color: #333;
+  font-size: 28rpx;
+  line-height: 64rpx;
+}
+
+.year-tabs {
+  flex: none;
+  display: flex;
+  gap: 8rpx;
+}
+
+.year-tab {
+  min-width: 82rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background: #f5f5f5;
+  color: #666;
+  font-size: 25rpx;
+  line-height: 56rpx;
+  text-align: center;
+}
+
+.year-tab.active {
+  background: #5470c6;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.setting-card,
+.section-card,
+.summary-card {
+  margin-bottom: 20rpx;
+  border-radius: 12rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.setting-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 24rpx;
+  color: #555;
+  font-size: 26rpx;
+}
+
+.setting-card switch {
+  transform: scale(0.72);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.summary-card {
+  padding: 28rpx 20rpx;
+  color: #ffffff;
+  text-align: center;
+}
+
+.summary-card.single {
+  margin: 0 0 20rpx;
+}
+
+.summary-card.consume {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+}
+
+.summary-card.income {
+  background: linear-gradient(135deg, #07c160 0%, #69db7c 100%);
+}
+
+.summary-label {
+  font-size: 25rpx;
+  opacity: 0.9;
+}
+
+.summary-amount {
+  margin-top: 12rpx;
+  font-size: 46rpx;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.summary-sub {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  opacity: 0.82;
+}
+
+.section-card {
+  padding: 24rpx;
+}
+
+.net-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.net-card .section-title {
+  margin-bottom: 0;
+  line-height: 48rpx;
+}
+
+.section-head,
+.progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.section-title {
+  display: block;
+  margin-bottom: 22rpx;
+  color: #333;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.section-head .section-title {
+  margin-bottom: 0;
+}
+
+.section-subtitle {
+  margin-top: 8rpx;
+  color: #8a8f98;
+  font-size: 23rpx;
+  line-height: 1.4;
+}
+
+.mini-btn {
+  flex: none;
+  height: 52rpx;
+  padding: 0 22rpx;
+  border-radius: 26rpx;
+  background: #f0f4ff;
+  color: #5470c6;
+  font-size: 24rpx;
+  line-height: 52rpx;
+}
+
+.net-amount {
+  font-size: 38rpx;
+  font-weight: 700;
+  line-height: 48rpx;
+  white-space: nowrap;
+}
+
+.positive,
+.income-amount {
+  color: #07c160;
+}
+
+.negative,
+.rank-amount {
+  color: #ff6b35;
+}
+
+.trend-item {
+  display: flex;
+  gap: 18rpx;
+  padding: 16rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.trend-item:first-of-type,
+.progress-item:first-of-type,
+.rank-item:first-of-type {
+  border-top: 0;
+}
+
+.month-label {
+  flex: none;
+  width: 64rpx;
+  color: #666;
+  font-size: 24rpx;
+  line-height: 36rpx;
+}
+
+.trend-bars {
+  flex: 1;
+  min-width: 0;
+}
+
+.trend-row,
+.month-bar {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-height: 42rpx;
+}
+
+.trend-row text:first-child {
+  flex: none;
+  width: 28rpx;
+  color: #999;
+  font-size: 22rpx;
+}
+
+.trend-money,
+.progress-money {
+  flex: none;
+  min-width: 116rpx;
+  color: #666;
+  font-size: 22rpx;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.trend-track,
+.progress-track {
+  flex: 1;
+  min-width: 0;
+  height: 12rpx;
+  overflow: hidden;
+  border-radius: 10rpx;
+  background: #f0f1f3;
+}
+
+.progress-track {
+  height: 14rpx;
+  margin-top: 14rpx;
+}
+
+.trend-fill,
+.progress-fill {
+  height: 100%;
+  border-radius: 10rpx;
+}
+
+.consume-fill,
+.negative-bg {
+  background: #ff6b35;
+}
+
+.income-fill,
+.positive-bg {
+  background: #07c160;
+}
+
+.net-fill {
+  background: #5470c6;
+}
+
+.net-fill.positive-bg {
+  background: #07c160;
+}
+
+.net-fill.negative-bg {
+  background: #ff6b35;
+}
+
+.trend-legend {
+  display: flex;
+  align-items: center;
+  gap: 26rpx;
+  margin-top: 20rpx;
+  margin-bottom: 10rpx;
+}
+
+.trend-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  color: #666;
+  font-size: 23rpx;
+  line-height: 1;
+}
+
+.legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+.consume-dot {
+  background: #ff6b35;
+}
+
+.income-dot {
+  background: #07c160;
+}
+
+.net-dot {
+  background: #2f7cff;
+}
+
+.trend-canvas {
+  width: 100%;
+  height: 420rpx;
+}
+
+.negative-months {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 12rpx;
+  padding: 14rpx 18rpx;
+  border-radius: 10rpx;
+  background: #fff1f0;
+}
+
+.negative-label {
+  flex: none;
+  padding: 4rpx 10rpx;
+  border-radius: 6rpx;
+  background: #f04438;
+  color: #ffffff;
+  font-size: 21rpx;
+  line-height: 1.2;
+}
+
+.negative-text {
+  flex: 1;
+  min-width: 0;
+  color: #c0342b;
+  font-size: 24rpx;
+  line-height: 1.4;
+}
+
+.metric-grid,
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14rpx;
+  margin-bottom: 20rpx;
+}
+
+.insight-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metric-item,
+.insight-item {
+  padding: 18rpx 12rpx;
+  border-radius: 10rpx;
+  background: #f7f8fa;
+  text-align: center;
+}
+
+.metric-value-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  min-height: 46rpx;
+}
+
+.metric-value {
+  color: #5470c6;
+  font-size: 34rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metric-value.month-value {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 31rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metric-count-inline {
+  flex: none;
+  margin-left: 4rpx;
+  color: #8a8f98;
+  font-size: 22rpx;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.metric-unit {
+  margin-left: 4rpx;
+  color: #5470c6;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.metric-label,
+.insight-item text:first-child {
+  margin-top: 8rpx;
+  color: #777;
+  font-size: 22rpx;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  color: #555;
+  font-size: 26rpx;
+}
+
+.evaluation {
+  margin-top: 18rpx;
+  padding: 18rpx;
+  border-radius: 10rpx;
+  background: #fffbe8;
+  color: #8a5a00;
+  font-size: 25rpx;
+}
+
+.month-bar {
+  padding: 12rpx 0;
+}
+
+.month-bar .progress-track {
+  margin-top: 0;
+}
+
+.progress-item {
+  padding: 18rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.progress-head {
+  color: #333;
+  font-size: 26rpx;
+}
+
+.progress-head text:first-child {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progress-head text:last-child {
+  flex: none;
+  color: #666;
+  white-space: nowrap;
+}
+
+.progress-foot {
+  margin-top: 8rpx;
+  color: #999;
+  font-size: 22rpx;
+  text-align: right;
+}
+
+.expand-btn {
+  height: 58rpx;
+  margin-top: 8rpx;
+  border-radius: 29rpx;
+  background: #f7f8fa;
+  color: #5470c6;
+  font-size: 25rpx;
+  line-height: 58rpx;
+  text-align: center;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.rank-index {
+  flex: none;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #f7f8fa;
+  color: #666;
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 44rpx;
+  text-align: center;
+}
+
+.rank-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.rank-title {
+  color: #222;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.rank-desc,
+.rank-meta {
+  margin-top: 6rpx;
+  color: #999;
+  font-size: 23rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rank-amount {
+  flex: none;
+  font-size: 28rpx;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.rank-amount.income-amount {
+  color: #07c160;
+}
+
+.insight-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.insight-item text:nth-child(2) {
+  color: #333;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.insight-item text:last-child {
+  color: #999;
+  font-size: 22rpx;
+}
+
+.empty {
+  padding: 36rpx 0;
+  color: #999;
+  font-size: 26rpx;
+  text-align: center;
+}
+
+.loading-mask {
+  position: fixed;
+  right: 24rpx;
+  bottom: 48rpx;
+  z-index: 20;
+  padding: 12rpx 22rpx;
+  border-radius: 28rpx;
+  background: rgba(0, 0, 0, 0.68);
+  color: #ffffff;
+  font-size: 24rpx;
+}

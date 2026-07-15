@@ -1,0 +1,21 @@
+{
+  "name": "iw-mixes-app-wx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "IW 原生微信小程序项目",
+  "scripts": {
+    "scaffold:pages": "node scripts/scaffold-placeholder-pages.js",
+    "check:routes": "node scripts/check-routes.js"
+  },
+  "dependencies": {
+    "weui-miniprogram": "1.5.6"
+  },
+  "devDependencies": {},
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,118 @@
+<view class="wardrobe-page form-page wear-record-form">
+  <view class="form-panel">
+    <view>
+      <view class="section-title">{{formTitle}}</view>
+      <view class="section-subtitle">{{formSubtitle}}</view>
+    </view>
+    <view class="form-line form-top-line">
+      <view class="form-label">日期</view>
+      <picker class="picker-field" mode="date" value="{{formData.wearDate}}" bindchange="onWearDateChange">
+        <view>{{formData.wearDate}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="form-panel">
+    <view class="section-title">记录方式</view>
+    <view class="mode-row">
+      <view wx:for="{{modeOptions}}" wx:key="value" class="chip {{mode === item.value ? 'active' : ''}}" data-index="{{index}}" bindtap="onModeChange">{{item.text}}</view>
+    </view>
+
+    <view wx:if="{{mode === 'outfit'}}" class="mode-section">
+      <view class="selection-tools">
+        <input class="selection-search" value="{{outfitKeyword}}" placeholder="搜索搭配" confirm-type="search" bindinput="handleOutfitKeywordInput" bindconfirm="searchOutfits" />
+        <view class="plain-btn selection-search-btn" hover-class="tap-active" bindtap="searchOutfits">搜索</view>
+      </view>
+      <scroll-view scroll-y class="selection-scroll outfit-selection-scroll" lower-threshold="80" bindscrolltolower="loadMoreOutfits">
+        <view wx:for="{{outfitList}}" wx:key="id" class="outfit-select-card {{formData.outfitId === item.id ? 'selected' : ''}}" hover-class="tap-active" data-id="{{item.id}}" bindtap="selectOutfit">
+          <view class="row-between">
+            <view class="outfit-select-main">
+              <view class="select-name">{{item.outfitName}}</view>
+              <view wx:if="{{item.selectMetaText}}" class="select-meta">{{item.selectMetaText}}</view>
+              <view class="select-meta">{{item.itemCount || 0}}件 · {{item.lastWearDate || '未穿'}}</view>
+            </view>
+            <view wx:if="{{formData.outfitId === item.id}}" class="selected-badge">已选</view>
+          </view>
+          <scroll-view wx:if="{{item.itemList.length}}" scroll-x class="outfit-child-scroll">
+            <view class="outfit-child-list">
+              <view wx:for="{{item.itemList}}" wx:for-item="child" wx:key="itemId" class="outfit-child">
+                <image wx:if="{{child.itemImage}}" class="outfit-child-image" src="{{child.itemImage}}" mode="aspectFill" />
+                <view wx:else class="outfit-child-image image-placeholder">无图</view>
+                <view class="outfit-child-name">{{child.itemName}}</view>
+              </view>
+            </view>
+          </scroll-view>
+          <view wx:else class="select-meta outfit-empty-items">暂无衣物明细</view>
+        </view>
+        <view wx:if="{{!outfitList.length && !outfitLoading}}" class="empty small-empty">暂无可选搭配</view>
+        <view wx:if="{{outfitLoadMoreText}}" class="selection-load-more">{{outfitLoadMoreText}}</view>
+      </scroll-view>
+    </view>
+
+    <view wx:if="{{mode === 'items'}}" class="mode-section">
+      <view class="selection-tools">
+        <input class="selection-search" value="{{itemKeyword}}" placeholder="搜索衣物或标签" confirm-type="search" bindinput="handleItemKeywordInput" bindconfirm="searchItems" />
+        <view class="plain-btn selection-search-btn" hover-class="tap-active" bindtap="searchItems">搜索</view>
+      </view>
+      <scroll-view scroll-x class="item-filter-scroll">
+        <view class="item-filter-list">
+          <picker class="item-filter-picker" mode="selector" range="{{itemCategoryFilterOptions}}" range-key="text" value="{{itemCategoryFilterIndex}}" bindchange="onItemCategoryFilterChange">
+            <view class="filter-chip">{{itemCategoryFilterOptions[itemCategoryFilterIndex].text}}</view>
+          </picker>
+          <picker class="item-filter-picker" mode="selector" range="{{itemSubcategoryFilterOptions}}" range-key="text" value="{{itemSubcategoryFilterIndex}}" bindchange="onItemSubcategoryFilterChange">
+            <view class="filter-chip">{{itemSubcategoryFilterOptions[itemSubcategoryFilterIndex].text}}</view>
+          </picker>
+          <picker class="item-filter-picker" mode="selector" range="{{itemSeasonFilterOptions}}" range-key="text" value="{{itemSeasonFilterIndex}}" bindchange="onItemSeasonFilterChange">
+            <view class="filter-chip">{{itemSeasonFilterOptions[itemSeasonFilterIndex].text}}</view>
+          </picker>
+          <picker class="item-filter-picker" mode="selector" range="{{itemSceneFilterOptions}}" range-key="text" value="{{itemSceneFilterIndex}}" bindchange="onItemSceneFilterChange">
+            <view class="filter-chip">{{itemSceneFilterOptions[itemSceneFilterIndex].text}}</view>
+          </picker>
+          <picker class="item-filter-picker" mode="selector" range="{{itemStyleFilterOptions}}" range-key="text" value="{{itemStyleFilterIndex}}" bindchange="onItemStyleFilterChange">
+            <view class="filter-chip">{{itemStyleFilterOptions[itemStyleFilterIndex].text}}</view>
+          </picker>
+          <picker class="item-filter-picker" mode="selector" range="{{itemSortOptions}}" range-key="text" value="{{itemSortIndex}}" bindchange="onItemSortChange">
+            <view class="filter-chip">{{itemSortOptions[itemSortIndex].text}}</view>
+          </picker>
+          <view class="filter-chip filter-reset" hover-class="tap-active" bindtap="resetItemFilters">重置</view>
+        </view>
+      </scroll-view>
+      <view class="section-subtitle selection-summary">已选择 {{formData.itemIds.length}} 件衣物</view>
+      <scroll-view scroll-y class="selection-scroll item-selection-scroll" lower-threshold="80" bindscrolltolower="loadMoreItems">
+        <view class="select-grid">
+          <view wx:for="{{itemList}}" wx:key="id" class="select-item {{selectedMap[item.id] ? 'selected' : ''}}" hover-class="tap-active" data-id="{{item.id}}" bindtap="toggleItem">
+            <image wx:if="{{item.image}}" class="select-image" src="{{item.image}}" mode="aspectFill" />
+            <view wx:else class="select-image image-placeholder">暂无图片</view>
+            <view class="select-name">{{item.itemName}}</view>
+            <view class="select-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.statusName}}</view>
+            <view wx:if="{{item.customTagNames}}" class="select-tags">{{item.customTagNames}}</view>
+            <view wx:if="{{selectedMap[item.id]}}" class="selected-dot">✓</view>
+          </view>
+        </view>
+        <view wx:if="{{!itemList.length && !itemLoading}}" class="empty small-empty">暂无可选衣物</view>
+        <view wx:if="{{itemLoadMoreText}}" class="selection-load-more">{{itemLoadMoreText}}</view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view class="form-panel">
+    <view class="section-title">补充信息</view>
+    <view class="section-title form-section-title">场景</view>
+    <view class="tag-wrap">
+      <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleScene">{{item.text}}</view>
+    </view>
+    <view class="form-line">
+      <view class="form-label">天气</view>
+      <input class="form-input" value="{{formData.weatherText}}" placeholder="选填，例如 小雨 18度" data-field="weatherText" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">心情</view>
+      <input class="form-input" value="{{formData.moodText}}" placeholder="选填" data-field="moodText" bindinput="handleInput" />
+    </view>
+    <textarea class="form-textarea" value="{{formData.remark}}" placeholder="备注" data-field="remark" bindinput="handleInput" />
+  </view>
+
+  <view class="bottom-action-bar">
+    <view class="primary-btn bottom-submit {{submitting ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="submitRecord">{{submitting ? '保存中' : (isEdit ? '保存修改' : '保存记录')}}</view>
+  </view>
+</view>

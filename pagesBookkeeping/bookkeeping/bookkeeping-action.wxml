@@ -1,0 +1,136 @@
+<view class="action-page">
+  <view wx:if="{{isUpdateForm}}" class="status-warning">当前为编辑状态</view>
+
+  <view class="segment-card">
+    <view class="segment-item {{formData.recordCategory === 1 ? 'active' : ''}}" data-category="1" bindtap="selectCategory">支出</view>
+    <view class="segment-item {{formData.recordCategory === 2 ? 'active' : ''}}" data-category="2" bindtap="selectCategory">收入</view>
+  </view>
+
+  <view class="form-card">
+    <view class="form-row">
+      <view class="label">记账日期</view>
+      <picker mode="date" value="{{formData.recordDate}}" bindchange="onDateChange">
+        <view class="picker-box">{{formData.recordDate}}</view>
+      </picker>
+    </view>
+
+    <view class="form-row">
+      <view class="label">{{formData.recordCategory === 1 ? '支出项目' : '收入来源'}}</view>
+      <input class="input" value="{{formData.recordSource}}" maxlength="64" data-field="recordSource" bindinput="handleInput" />
+    </view>
+
+    <view class="form-row">
+      <view class="label">记账金额</view>
+      <input class="input amount-input" value="{{formData.amount}}" type="digit" placeholder="请输入金额" data-field="amount" bindinput="handleInput" />
+    </view>
+
+    <view wx:if="{{formData.recordCategory === 2}}" class="form-row switch-row">
+      <view class="label">激励记录</view>
+      <switch checked="{{isExcitationRecord}}" color="#07c160" bindchange="switchExcitationRecord" />
+    </view>
+
+    <view class="form-row switch-row">
+      <view class="label">不计入统计</view>
+      <switch checked="{{isNotStatistics}}" color="#07c160" bindchange="switchNotStatistics" />
+    </view>
+
+    <view wx:if="{{showSharedSwitch}}" class="form-row switch-row">
+      <view class="label">共享给家人</view>
+      <switch checked="{{isShared}}" color="#07c160" bindchange="switchShared" />
+    </view>
+
+    <view class="form-row">
+      <view class="label">分类</view>
+      <picker mode="selector" range="{{recordTypeOptions}}" range-key="dictName" value="{{recordTypeIndex}}" bindchange="onRecordTypeChange">
+        <view class="picker-box">{{recordTypeName || '请选择分类'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-row">
+      <view class="label">图标</view>
+      <view class="icon-selector" bindtap="showIconSelector">
+        <image wx:if="{{formData.recordIcon}}" src="{{selectedIconUrl}}" class="selected-icon" mode="aspectFit" />
+        <text wx:else class="placeholder">请选择图标</text>
+        <text wx:if="{{formData.recordIcon}}" class="clear-icon" catchtap="clearIcon">×</text>
+      </view>
+    </view>
+
+    <view class="form-block">
+      <view class="label block-label">标签</view>
+      <view class="tag-group">
+        <view
+          wx:for="{{tagOptions}}"
+          wx:key="id"
+          class="tag-chip {{item.selected ? 'selected' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="toggleTag"
+        >{{item.dictName}}</view>
+      </view>
+    </view>
+
+    <view class="form-row">
+      <view class="label">备注</view>
+      <input class="input" value="{{formData.remark}}" placeholder="请输入内容" data-field="remark" bindinput="handleInput" />
+    </view>
+
+    <view class="form-block">
+      <view class="label block-label">附件</view>
+      <view class="file-list">
+        <view wx:for="{{formData.fileList}}" wx:key="fileUrl" class="file-item">
+          <image src="{{item.fileUrl}}" class="file-thumbnail" mode="aspectFill" data-url="{{item.fileUrl}}" bindtap="previewImage" />
+          <view class="delete-file" data-index="{{index}}" bindtap="deleteFile">×</view>
+        </view>
+        <view class="upload-entry" bindtap="showUploadPopup">上传图片</view>
+      </view>
+    </view>
+  </view>
+
+  <button class="save-button" loading="{{isSubmitting}}" disabled="{{isSubmitting}}" bindtap="saveRecord">保存</button>
+
+  <view class="today-card">
+    <view class="today-header">
+      <text class="today-title">今日记录</text>
+      <text class="today-total">今日总消费：{{todayConsume}} 元</text>
+    </view>
+    <view wx:for="{{todayRecords}}" wx:key="id" class="today-item">
+      <view class="today-source">{{item.recordSourceText}}</view>
+      <view class="today-amount">{{item.amountText}}元</view>
+      <view class="today-time">{{item.recordTime}}</view>
+    </view>
+    <view wx:if="{{todayRecords.length === 0}}" class="empty">暂无记录</view>
+  </view>
+
+  <view wx:if="{{showIconPopup}}" class="popup-mask" catchtap="closeIconSelector" catchtouchmove="noop">
+    <view class="icon-popup" catchtap="noop">
+      <view class="popup-header">
+        <text class="popup-title">选择图标</text>
+        <text class="popup-close" bindtap="closeIconSelector">×</text>
+      </view>
+      <scroll-view scroll-y class="icon-list">
+        <view wx:for="{{iconList}}" wx:key="category" class="icon-category">
+          <view class="category-title">{{item.category}}</view>
+          <view class="category-icons">
+            <view
+              wx:for="{{item.icons}}"
+              wx:for-item="icon"
+              wx:key="recordIcon"
+              class="icon-item {{icon.selected ? 'selected' : ''}}"
+              data-icon="{{icon.recordIcon}}"
+              bindtap="selectIcon"
+            >
+              <image src="{{icon.path}}" class="icon-image" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view wx:if="{{showUploadPopup}}" class="upload-mask" catchtap="closeUploadPopup" catchtouchmove="noop">
+    <view class="upload-panel" catchtap="noop">
+      <button bindtap="takePhoto">拍照</button>
+      <button bindtap="chooseFromAlbum">从相册选择</button>
+      <button class="cancel" bindtap="closeUploadPopup">取消</button>
+    </view>
+  </view>
+</view>

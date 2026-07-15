@@ -1,0 +1,147 @@
+<view class="membership-page">
+  <view class="toolbar">
+    <view class="search-box">
+      <view class="search-icon"></view>
+      <input class="search-input" value="{{searchKeyword}}" placeholder="搜索名称/备注" placeholder-class="search-placeholder" bindinput="handleSearchInput" />
+      <view wx:if="{{searchKeyword}}" class="search-clear" bindtap="clearSearch">×</view>
+    </view>
+    <view class="filter-row">
+      <picker mode="selector" range="{{membershipTypeFilterOptions}}" range-key="dictName" value="{{membershipTypeFilterIndex}}" bindchange="onMembershipTypeFilterChange">
+        <view class="filter-select">
+          <text>{{membershipTypeFilterName}}</text>
+          <view class="select-arrow"></view>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{expiryTypeOptions}}" range-key="label" value="{{expiryTypeIndex}}" bindchange="onExpiryTypeChange">
+        <view class="filter-select">
+          <text>{{expiryTypeName}}</text>
+          <view class="select-arrow"></view>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{sortOptions}}" range-key="label" value="{{sortOptionIndex}}" bindchange="onSortChange">
+        <view class="filter-select">
+          <text>{{sortOptionName}}</text>
+          <view class="select-arrow"></view>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="summary-grid">
+    <view class="summary-card">
+      <view class="summary-title">本月合计</view>
+      <view class="summary-value">¥ {{summary.monthlyTotal}}</view>
+    </view>
+    <view class="summary-card">
+      <view class="summary-title">本年合计</view>
+      <view class="summary-value">¥ {{summary.yearlyTotal}}</view>
+    </view>
+    <view class="summary-card">
+      <view class="summary-title">订阅数量</view>
+      <view class="summary-value">{{summary.count}}</view>
+    </view>
+  </view>
+
+  <view class="subscription-list">
+    <view wx:for="{{displayList}}" wx:key="id" class="subscription-item" data-index="{{index}}" bindtap="openActions">
+      <view class="item-left">
+        <view class="item-title">
+          <text class="membership-name">{{item.membershipName}}</text>
+          <text class="type-tag">{{item.membershipTypeName}}</text>
+        </view>
+        <view class="price-row">
+          <text class="amount">¥ {{item.amountText}}</text>
+          <text class="cycle">/{{item.billingCycleText}}</text>
+        </view>
+        <view class="date-row">
+          <text>生效日期: {{item.startDateText}}</text>
+          <text>过期日期: {{item.endDateText}}</text>
+        </view>
+      </view>
+      <view class="item-right">
+        <view class="status-tag {{item.statusClass}}">{{item.statusText}}</view>
+        <view class="delete-button" data-index="{{index}}" catchtap="confirmDeleteFromList">
+          <view class="trash-icon">
+            <view class="trash-lid"></view>
+            <view class="trash-body"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{displayList.length === 0}}" class="empty">暂无会员订阅</view>
+  </view>
+
+  <view class="floating-add" bindtap="openForm">+</view>
+
+  <view wx:if="{{showForm}}" class="modal-mask" catchtap="closeForm" catchtouchmove="noop">
+    <view class="modal-card" catchtap="noop">
+      <view class="modal-title">{{isEditing ? '编辑订阅' : '新增订阅'}}</view>
+      <scroll-view scroll-y class="form-scroll">
+        <view class="form-item">
+          <view class="label">会员类型</view>
+          <picker mode="selector" range="{{membershipTypeOptions}}" range-key="dictName" value="{{membershipTypeIndex}}" bindchange="onMembershipTypeChange">
+            <view class="picker-box">{{membershipTypeName || '请选择会员类型'}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <view class="label">会员名称</view>
+          <input class="input" value="{{formData.membershipName}}" data-field="membershipName" placeholder="请输入会员名称" bindinput="handleInput" />
+        </view>
+        <view class="form-item">
+          <view class="label">金额</view>
+          <input class="input" type="digit" value="{{formData.amount}}" data-field="amount" placeholder="请输入金额" bindinput="handleInput" />
+        </view>
+        <view class="form-item">
+          <view class="label">计费周期</view>
+          <picker mode="selector" range="{{billingCycleOptions}}" range-key="dictName" value="{{billingCycleIndex}}" bindchange="onBillingCycleChange">
+            <view class="picker-box">{{billingCycleName || '请选择计费周期'}}</view>
+          </picker>
+        </view>
+        <view class="form-row">
+          <view class="form-item half">
+            <view class="label">开始日期</view>
+            <picker mode="date" value="{{formData.startDate}}" bindchange="onStartDateChange">
+              <view class="picker-box">{{formData.startDate || '请选择'}}</view>
+            </picker>
+          </view>
+          <view class="form-item half">
+            <view class="label">结束日期</view>
+            <picker mode="date" value="{{formData.endDate}}" bindchange="onEndDateChange">
+              <view class="picker-box">{{formData.endDate || '可选'}}</view>
+            </picker>
+          </view>
+        </view>
+        <view class="form-row">
+          <view class="form-item half">
+            <view class="label">提醒天数</view>
+            <input class="input" type="number" value="{{formData.remindDays}}" data-field="remindDays" placeholder="可选" bindinput="handleInput" />
+          </view>
+          <view class="form-item half">
+            <view class="label">支付方式</view>
+            <input class="input" value="{{formData.payWay}}" data-field="payWay" placeholder="可选" bindinput="handleInput" />
+          </view>
+        </view>
+        <view class="switch-line">
+          <text>自动续费</text>
+          <switch checked="{{formData.autoRenew}}" color="#07c160" bindchange="onAutoRenewChange" />
+        </view>
+        <view class="form-item">
+          <view class="label">备注</view>
+          <input class="input" value="{{formData.remark}}" data-field="remark" placeholder="可选" bindinput="handleInput" />
+        </view>
+      </scroll-view>
+      <view class="modal-actions">
+        <button class="cancel-btn" bindtap="closeForm">取消</button>
+        <button class="confirm-btn" bindtap="saveMembership">确认</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showActions}}" class="sheet-mask" catchtap="closeActions" catchtouchmove="noop">
+    <view class="sheet-panel" catchtap="noop">
+      <view class="sheet-item" catchtap="editMembership">编辑订阅</view>
+      <view class="sheet-item danger" catchtap="confirmDeleteMembership">删除订阅</view>
+      <view class="sheet-item cancel" catchtap="closeActions">取消</view>
+    </view>
+  </view>
+</view>

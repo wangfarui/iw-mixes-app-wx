@@ -1,0 +1,177 @@
+.bill-page {
+  min-height: 100vh;
+  padding: 20rpx;
+  background: #f8f8f8;
+}
+
+.fixed-section {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 20rpx;
+}
+
+.statistics-section {
+  padding: 30rpx 30rpx 0;
+  border-radius: 16rpx 16rpx 0 0;
+  background: #ffffff;
+}
+
+.statistics-row {
+  display: flex;
+  align-items: center;
+}
+
+.date-picker {
+  flex: 2;
+}
+
+.date-content {
+  display: flex;
+  align-items: center;
+}
+
+.date-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-right: 8rpx;
+}
+
+.year-text {
+  margin-bottom: 4rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.month-text {
+  color: #333;
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.arrow-down {
+  margin-top: 24rpx;
+  color: #666;
+  font-size: 22rpx;
+}
+
+.amount-item {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.amount-label {
+  margin-bottom: 4rpx;
+  color: #999;
+  font-size: 26rpx;
+}
+
+.amount-value {
+  color: #333;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.function-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 30rpx 0;
+  border-radius: 0 0 16rpx 16rpx;
+  background: #ffffff;
+}
+
+.function-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.function-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-bottom: 10rpx;
+}
+
+.function-text {
+  color: #666;
+  font-size: 24rpx;
+}
+
+.bill-list {
+  height: calc(100vh - 300rpx);
+  border-radius: 16rpx;
+  background: #ffffff;
+}
+
+.record-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 24rpx 0 24rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-item:active {
+  background: #f7f8fa;
+}
+
+.record-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-top: 4rpx;
+  padding: 16rpx;
+  border-radius: 50%;
+  background: #fff7df;
+}
+
+.record-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20rpx;
+}
+
+.record-source {
+  max-width: 100%;
+  color: #333;
+  font-size: 31rpx;
+  font-weight: 600;
+  line-height: 1.22;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.record-type {
+  margin-top: 4rpx;
+  margin-bottom: 3rpx;
+}
+
+.record-type,
+.record-time {
+  color: #999;
+  font-size: 24rpx;
+  line-height: 1.25;
+}
+
+.record-amount {
+  flex: none;
+  min-width: 180rpx;
+  padding-top: 2rpx;
+  padding-right: 30rpx;
+  color: #333;
+  font-size: 32rpx;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.empty-list,
+.load-more {
+  padding: 32rpx;
+  color: #a0a4aa;
+  font-size: 26rpx;
+  text-align: center;
+}

@@ -1,0 +1,131 @@
+@import "./wardrobe-common.wxss";
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+
+.stat-item {
+  min-width: 0;
+  padding: 16rpx 8rpx;
+  border-radius: 8rpx;
+  background: #f7f8fa;
+  text-align: center;
+}
+
+.stat-value {
+  color: #1f2329;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.stat-label {
+  margin-top: 6rpx;
+  color: #6f7680;
+  font-size: 22rpx;
+  white-space: nowrap;
+}
+
+.money-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-top: 18rpx;
+}
+
+.money-row > view {
+  padding: 18rpx;
+  border-radius: 8rpx;
+  background: #f7f8fa;
+}
+
+.money-label {
+  color: #6f7680;
+  font-size: 24rpx;
+}
+
+.money-value {
+  margin-top: 8rpx;
+  color: #ff6b35;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.stat-line {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 16rpx 0;
+  border-top: 1rpx solid #f0f1f3;
+}
+
+.stat-name {
+  flex: 0 0 140rpx;
+  color: #1f2329;
+  font-size: 26rpx;
+}
+
+.bar-wrap {
+  flex: 1;
+  height: 18rpx;
+  border-radius: 9rpx;
+  background: #eef1f5;
+  overflow: hidden;
+}
+
+.bar-fill {
+  max-width: 100%;
+  height: 18rpx;
+  border-radius: 9rpx;
+  background: #007aff;
+}
+
+.stat-count {
+  flex: 0 0 54rpx;
+  color: #4d535c;
+  font-size: 24rpx;
+  text-align: right;
+}
+
+.color-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.color-chip {
+  height: 50rpx;
+  padding: 0 18rpx;
+  border-radius: 25rpx;
+  background: #eef1f5;
+  color: #4d535c;
+  font-size: 24rpx;
+  line-height: 50rpx;
+}
+
+.rank-line {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 0;
+  border-top: 1rpx solid #f0f1f3;
+}
+
+.rank-image {
+  flex: none;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 8rpx;
+  background: #edf0f3;
+}
+
+.rank-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.small-empty {
+  padding: 34rpx 0 18rpx;
+}

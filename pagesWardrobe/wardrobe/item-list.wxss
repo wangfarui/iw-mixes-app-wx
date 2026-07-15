@@ -1,0 +1,59 @@
+@import "./wardrobe-common.wxss";
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16rpx;
+}
+
+.wardrobe-item-card {
+  min-width: 0;
+  padding: 14rpx;
+  box-sizing: border-box;
+}
+
+.wardrobe-item-image {
+  width: 100%;
+  height: 230rpx;
+  border-radius: 10rpx;
+  background: #edf0f3;
+}
+
+.item-title-row {
+  margin-top: 14rpx;
+}
+
+.color-dot {
+  flex: none;
+  width: 24rpx;
+  height: 24rpx;
+  border: 1rpx solid #d8dde3;
+  border-radius: 50%;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+
+.filter-row-secondary {
+  margin-top: 12rpx;
+}
+
+.compact-picker {
+  flex: 1;
+  min-width: 0;
+  height: 56rpx;
+  padding: 0 16rpx;
+  font-size: 24rpx;
+}
+
+.item-tags {
+  margin-top: 10rpx;
+  color: #2f6fdd;
+  font-size: 22rpx;
+  line-height: 1.4;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,36 @@
+@import "./base-common.wxss";
+
+.account-item {
+  align-items: center;
+}
+
+.account-item .item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-actions {
+  flex: 0 0 118rpx;
+  width: 118rpx;
+  justify-content: flex-end;
+}
+
+.password-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 112rpx;
+  height: 52rpx;
+  border-radius: 8rpx;
+  background: #eef5ff;
+  color: #007aff;
+  font-size: 22rpx;
+  font-weight: 600;
+  line-height: 52rpx;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.password-action:active {
+  opacity: 0.72;
+}

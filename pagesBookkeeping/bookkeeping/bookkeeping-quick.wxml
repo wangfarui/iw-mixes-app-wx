@@ -1,0 +1,165 @@
+<view class="quick-page">
+  <view class="category-selector">
+    <view class="category-item {{selectedCategory === 1 ? 'active' : ''}}" data-category="1" bindtap="selectCategory">支出</view>
+    <view class="category-item {{selectedCategory === 2 ? 'active' : ''}}" data-category="2" bindtap="selectCategory">收入</view>
+  </view>
+
+  <view class="actions-list">
+    <view wx:for="{{actions}}" wx:key="id" class="action-item" data-index="{{index}}" bindtap="openBookkeepingPanel">
+      <view class="icon-wrapper {{item.id === selectedActionId ? 'selected' : ''}}">
+        <image src="{{item.iconUrl}}" class="action-icon" mode="aspectFit" />
+      </view>
+      <text class="action-text">{{item.recordSource}}</text>
+    </view>
+    <view class="action-item" bindtap="openSettings">
+      <view class="icon-wrapper">
+        <image src="/static/bookkeeping/icon/qita/shezhi.svg" class="action-icon" mode="aspectFit" />
+      </view>
+      <text class="action-text">设置</text>
+    </view>
+  </view>
+
+  <view wx:if="{{actions.length === 0}}" class="empty">暂无快捷类别，请先点击设置添加</view>
+
+  <view wx:if="{{selectedCategory === 1 && !showPanel}}" class="voice-float-wrap">
+    <view wx:if="{{!isRecording && (voiceRecognizedText || voiceMessage)}}" class="voice-float-result">
+      <text wx:if="{{voiceRecognizedText}}" class="voice-text">{{voiceRecognizedText}}</text>
+      <text wx:if="{{voiceMessage}}" class="voice-message">{{voiceMessage}}</text>
+    </view>
+    <view wx:if="{{isRecording}}" class="voice-recording-panel">
+      <view class="voice-recording-status">
+        <view class="voice-recording-dot"></view>
+        <text>正在录音</text>
+      </view>
+      <view class="voice-recording-actions">
+        <button class="voice-recording-btn cancel" catchtap="cancelVoiceRecording">取消</button>
+        <button class="voice-recording-btn submit" catchtap="submitVoiceRecording">提交</button>
+      </view>
+    </view>
+    <button
+      wx:else
+      class="voice-fab {{isRecording ? 'recording' : ''}} {{isParsingVoice ? 'parsing' : ''}}"
+      disabled="{{isParsingVoice}}"
+      bindtap="toggleVoiceRecording"
+    >{{isParsingVoice ? '解析中' : '语音记账'}}</button>
+  </view>
+
+  <view wx:if="{{showPanel}}" class="dim-mask" catchtap="closeBookkeepingPanel" catchtouchmove="noop"></view>
+
+  <view wx:if="{{showPanel}}" class="bookkeeping-panel" catchtap="noop">
+    <view class="amount-display">{{amount}}</view>
+
+    <view class="remark-row">
+      <text class="remark-label">备注:</text>
+      <input class="remark-input" value="{{remark}}" maxlength="64" placeholder="点击填写备注" disabled="{{isSubmitting}}" bindinput="handleRemarkInput" />
+    </view>
+
+    <view wx:if="{{isVoiceDraft}}" class="voice-draft-row">
+      <text class="voice-draft-label">分类</text>
+      <picker class="voice-draft-picker-wrap" mode="selector" range="{{recordTypeOptions}}" range-key="dictName" value="{{recordTypeIndex}}" disabled="{{isSubmitting}}" bindchange="onRecordTypeChange">
+        <view class="voice-draft-picker {{formData.recordType ? '' : 'placeholder'}}">{{recordTypeName || '请选择分类'}}</view>
+      </picker>
+    </view>
+
+    <view class="number-keyboard">
+      <view class="keyboard-row">
+        <button class="key-btn" data-key="7" disabled="{{isSubmitting}}" bindtap="handleKey">7</button>
+        <button class="key-btn" data-key="8" disabled="{{isSubmitting}}" bindtap="handleKey">8</button>
+        <button class="key-btn" data-key="9" disabled="{{isSubmitting}}" bindtap="handleKey">9</button>
+        <picker mode="date" value="{{selectedDate}}" disabled="{{isSubmitting}}" bindchange="onDateChange" class="key-btn date-key">
+          <view class="date-key-content">
+            <text wx:if="{{isToday}}" class="calendar-icon">📅</text>
+            <text>{{dateButtonText}}</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="keyboard-row">
+        <button class="key-btn" data-key="4" disabled="{{isSubmitting}}" bindtap="handleKey">4</button>
+        <button class="key-btn" data-key="5" disabled="{{isSubmitting}}" bindtap="handleKey">5</button>
+        <button class="key-btn" data-key="6" disabled="{{isSubmitting}}" bindtap="handleKey">6</button>
+        <button class="key-btn function-key" disabled="{{isSubmitting}}" bindtap="openTagsPopup">标签</button>
+      </view>
+
+      <view class="keyboard-row">
+        <button class="key-btn" data-key="1" disabled="{{isSubmitting}}" bindtap="handleKey">1</button>
+        <button class="key-btn" data-key="2" disabled="{{isSubmitting}}" bindtap="handleKey">2</button>
+        <button class="key-btn" data-key="3" disabled="{{isSubmitting}}" bindtap="handleKey">3</button>
+        <button class="key-btn function-key" disabled="{{isSubmitting}}" bindtap="openMorePopup">更多</button>
+      </view>
+
+      <view class="keyboard-row">
+        <button class="key-btn" data-key="." disabled="{{isSubmitting}}" bindtap="handleKey">.</button>
+        <button class="key-btn" data-key="0" disabled="{{isSubmitting}}" bindtap="handleKey">0</button>
+        <button class="key-btn" data-key="back" disabled="{{isSubmitting}}" bindtap="handleKey">⌫</button>
+        <button class="key-btn submit-key {{isSubmitting ? 'submitting' : ''}}" loading="{{isSubmitting}}" disabled="{{isSubmitting}}" bindtap="submitBookkeeping">{{isSubmitting ? '提交中' : '完成'}}</button>
+      </view>
+    </view>
+
+    <view wx:if="{{isSubmitting}}" class="submit-status-mask" catchtap="noop" catchtouchmove="noop">
+      <view class="submit-status-card">
+        <view class="submit-status-spinner"></view>
+        <text class="submit-status-text">提交中...</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showTagsPopup || showMorePopup}}" class="option-mask" catchtap="closeOptionPopups" catchtouchmove="noop"></view>
+
+  <view wx:if="{{showTagsPopup}}" class="option-popup tags-popup" catchtap="noop">
+    <view class="tag-checkbox-grid">
+      <view
+        wx:for="{{tagOptions}}"
+        wx:key="id"
+        class="tag-checkbox-item {{item.selected ? 'selected' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="toggleTag"
+      >
+        <view class="tag-checkbox-box">{{item.selected ? '✓' : ''}}</view>
+        <text class="tag-checkbox-text">{{item.dictName}}</text>
+      </view>
+    </view>
+    <view wx:if="{{tagOptions.length === 0}}" class="popup-empty">暂无可选标签</view>
+  </view>
+
+  <view wx:if="{{showMorePopup}}" class="option-popup more-popup" catchtap="noop">
+    <view wx:if="{{selectedCategory === 2}}" class="more-row">
+      <text>激励记录:</text>
+      <switch checked="{{formData.isExcitationRecord === 1}}" color="#07c160" bindchange="switchExcitationRecord" />
+    </view>
+    <view class="more-row">
+      <text>不计入统计:</text>
+      <switch checked="{{formData.isStatistics === 0}}" color="#07c160" bindchange="switchStatistics" />
+    </view>
+    <view wx:if="{{showSharedSwitch}}" class="more-row">
+      <text>共享给家人:</text>
+      <switch checked="{{formData.shared === 1}}" color="#07c160" bindchange="switchShared" />
+    </view>
+    <view class="more-row">
+      <text>货币:</text>
+      <picker mode="selector" range="{{currencyTypes}}" range-key="text" value="{{currencyIndex}}" bindchange="onCurrencyChange">
+        <view class="currency-picker">
+          <text>{{currencyName}}</text>
+          <view class="currency-arrow"></view>
+        </view>
+      </picker>
+    </view>
+    <view class="more-row attachment-row">
+      <text>附件:</text>
+      <view class="file-list">
+        <view wx:for="{{formData.fileList}}" wx:key="fileUrl" class="file-item">
+          <image src="{{item.fileUrl}}" class="file-thumbnail" mode="aspectFill" data-url="{{item.fileUrl}}" bindtap="previewImage" />
+          <view class="delete-file" data-index="{{index}}" catchtap="deleteFile">×</view>
+        </view>
+        <view class="upload-entry" bindtap="openUploadPopup">上传图片</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showUploadPopup}}" class="upload-mask" catchtap="closeUploadPopup" catchtouchmove="noop"></view>
+  <view wx:if="{{showUploadPopup}}" class="upload-popup" catchtap="noop">
+    <button class="upload-option" bindtap="takePhoto">拍照</button>
+    <button class="upload-option" bindtap="chooseFromAlbum">从相册选择</button>
+    <button class="upload-option cancel" bindtap="closeUploadPopup">取消</button>
+  </view>
+</view>

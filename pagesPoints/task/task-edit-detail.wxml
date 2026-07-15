@@ -1,0 +1,24 @@
+<view class="points-page task-detail-page">
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+
+  <view wx:elif="{{!error}}" class="task-detail-content">
+    <view class="task-detail-header">
+      <input
+        class="task-name-input"
+        value="{{taskDetail.taskName}}"
+        placeholder="请输入任务名称"
+        placeholder-class="task-name-placeholder"
+        maxlength="128"
+        confirm-type="done"
+        bindinput="onTaskNameInput"
+      />
+      <view class="save-btn {{saving ? 'is-disabled' : ''}}" catchtap="saveTask">{{saving ? '保存中' : '保存'}}</view>
+    </view>
+    <textarea class="remark-editor" value="{{taskDetail.taskRemark}}" placeholder="添加备注..." bindinput="onRemarkInput" />
+  </view>
+
+  <view wx:else class="empty">
+    <view>{{error}}</view>
+    <button class="plain-btn retry-btn" bindtap="fetchTaskDetail">重试</button>
+  </view>
+</view>

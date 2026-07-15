@@ -1,0 +1,300 @@
+.budget-page {
+  min-height: 100vh;
+  padding: 20rpx;
+  background: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.type-card {
+  display: flex;
+  padding: 6rpx;
+  margin-bottom: 20rpx;
+  border-radius: 14rpx;
+  background: #ffffff;
+}
+
+.type-tab {
+  flex: 1;
+  height: 68rpx;
+  border-radius: 10rpx;
+  color: #666;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 68rpx;
+  text-align: center;
+}
+
+.type-tab.active {
+  background: #ffd400;
+  color: #111;
+}
+
+.total-card,
+.section-card {
+  margin-bottom: 20rpx;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-header,
+.category-head,
+.budget-meta,
+.modal-actions,
+.form-row {
+  display: flex;
+  align-items: center;
+}
+
+.card-header,
+.category-head,
+.budget-meta {
+  justify-content: space-between;
+}
+
+.card-title {
+  color: #222;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.text-btn {
+  color: #1989fa;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.budget-main {
+  padding: 34rpx 0 24rpx;
+  text-align: center;
+}
+
+.remaining {
+  color: #07c160;
+  font-size: 54rpx;
+  font-weight: 700;
+}
+
+.remaining.negative {
+  color: #f56c6c;
+}
+
+.remaining-label {
+  margin-top: 8rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.progress-track {
+  height: 14rpx;
+  overflow: hidden;
+  border-radius: 8rpx;
+  background: #f0f1f3;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  background: #07c160;
+}
+
+.progress-fill.warn {
+  background: #faad14;
+}
+
+.progress-fill.danger {
+  background: #f56c6c;
+}
+
+.budget-meta {
+  margin-top: 16rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.empty-budget,
+.empty {
+  padding: 36rpx 0;
+  color: #999;
+  font-size: 26rpx;
+  text-align: center;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 240rpx;
+  height: 72rpx;
+  margin: 24rpx auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: 36rpx;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.add-btn::after,
+.modal-actions button::after {
+  border: 0;
+}
+
+.category-item {
+  padding: 22rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.category-item:first-of-type {
+  border-top: 0;
+}
+
+.category-name {
+  flex: 1;
+  color: #333;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.category-amount {
+  flex: none;
+  margin-left: 16rpx;
+  color: #555;
+  font-size: 24rpx;
+  white-space: nowrap;
+}
+
+.progress-text {
+  margin-top: 8rpx;
+  color: #999;
+  font-size: 22rpx;
+  text-align: right;
+}
+
+.modal-mask,
+.sheet-mask {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-mask {
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-card {
+  width: 86vw;
+  padding: 32rpx;
+  border-radius: 18rpx;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.modal-title {
+  margin-bottom: 26rpx;
+  color: #222;
+  font-size: 32rpx;
+  font-weight: 700;
+  text-align: center;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-item.half {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-item.half:first-child {
+  margin-right: 16rpx;
+}
+
+.label {
+  margin-bottom: 12rpx;
+  color: #333;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.input,
+.picker-box {
+  height: 76rpx;
+  padding: 0 20rpx;
+  border-radius: 10rpx;
+  background: #f7f8fa;
+  color: #333;
+  font-size: 26rpx;
+  line-height: 76rpx;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  gap: 18rpx;
+  margin-top: 30rpx;
+}
+
+.modal-actions button {
+  flex: 1;
+  height: 78rpx;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 78rpx;
+}
+
+.cancel-btn {
+  background: #f0f1f3;
+  color: #555;
+}
+
+.confirm-btn {
+  background: #07c160;
+  color: #ffffff;
+}
+
+.sheet-mask {
+  align-items: flex-end;
+}
+
+.sheet-panel {
+  width: 100%;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-radius: 24rpx 24rpx 0 0;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.sheet-item {
+  height: 88rpx;
+  margin-bottom: 16rpx;
+  border-radius: 12rpx;
+  background: #f7f8fa;
+  color: #333;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 88rpx;
+  text-align: center;
+}
+
+.sheet-item.danger {
+  color: #f56c6c;
+}
+
+.sheet-item.cancel {
+  margin-bottom: 0;
+  color: #999;
+}

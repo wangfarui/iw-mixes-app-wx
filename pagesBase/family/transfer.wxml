@@ -1,0 +1,39 @@
+<view class="transfer-page">
+  <view class="tip-card">
+    <view class="tip-icon">!</view>
+    <view class="tip-text">转让群主后，您将成为普通成员，新群主将拥有管理家庭组的所有权限</view>
+  </view>
+
+  <view wx:if="{{memberList.length > 0}}" class="member-section">
+    <view class="section-title">选择新群主</view>
+    <view class="member-list">
+      <view
+        wx:for="{{memberList}}"
+        wx:key="id"
+        class="member-item {{selectedMemberId === item.id ? 'selected' : ''}}"
+        data-index="{{index}}"
+        bindtap="selectMember"
+      >
+        <image wx:if="{{item.avatar}}" src="{{item.avatar}}" class="member-avatar" mode="aspectFill" />
+        <view wx:else class="member-avatar-placeholder">人</view>
+        <view class="member-info">
+          <view class="member-name">{{item.displayName}}</view>
+        </view>
+        <view wx:if="{{selectedMemberId === item.id}}" class="check-icon">✓</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty">
+    <view class="empty-text">暂无可转让的成员</view>
+  </view>
+
+  <view class="btn-group">
+    <button
+      class="btn btn-primary"
+      disabled="{{!selectedMemberId || isTransferring}}"
+      loading="{{isTransferring}}"
+      bindtap="handleTransfer"
+    >确认转让</button>
+  </view>
+</view>

@@ -1,0 +1,58 @@
+<view class="wardrobe-page">
+  <view class="filter-panel">
+    <view class="filter-row">
+      <input class="filter-field" value="{{keyword}}" placeholder="搜索衣物或标签" confirm-type="search" bindinput="handleKeywordInput" bindconfirm="initPage" />
+      <view class="plain-btn filter-btn" hover-class="tap-active" bindtap="initPage">搜索</view>
+    </view>
+    <view class="filter-row filter-row-secondary">
+      <picker class="picker-field compact-picker" mode="selector" range="{{statusOptions}}" range-key="text" value="{{statusIndex}}" bindchange="onStatusChange">
+        <view>{{statusOptions[statusIndex].text}}</view>
+      </picker>
+      <picker class="picker-field compact-picker" mode="selector" range="{{itemStyleOptions}}" range-key="text" value="{{itemStyleIndex}}" bindchange="onItemStyleChange">
+        <view>{{itemStyleOptions[itemStyleIndex].text}}</view>
+      </picker>
+      <picker class="picker-field compact-picker" mode="selector" range="{{wearStateOptions}}" range-key="text" value="{{wearStateIndex}}" bindchange="onWearStateChange">
+        <view>{{wearStateOptions[wearStateIndex].text}}</view>
+      </picker>
+      <picker class="picker-field compact-picker" mode="selector" range="{{sortOptions}}" range-key="text" value="{{sortIndex}}" bindchange="onSortChange">
+        <view>{{sortOptions[sortIndex].text}}</view>
+      </picker>
+      <view class="plain-btn filter-btn" hover-class="tap-active" bindtap="resetFilters">重置</view>
+    </view>
+    <view class="button-row">
+      <view class="plain-btn" hover-class="tap-active" bindtap="goBatchAdd">批量入柜</view>
+      <view class="primary-btn" hover-class="tap-active" bindtap="goAdd">新增衣物</view>
+    </view>
+  </view>
+
+  <scroll-view class="tag-scroll" scroll-x>
+    <view class="tag-list">
+      <view wx:for="{{categories}}" wx:key="value" class="chip {{item.value === currentCategory ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectCategory">{{item.text}}</view>
+    </view>
+  </scroll-view>
+
+  <view class="item-grid">
+    <view class="item-card wardrobe-item-card" wx:for="{{list}}" wx:key="id">
+      <view bindtap="goEdit" data-id="{{item.id}}" hover-class="tap-active">
+        <image wx:if="{{item.image}}" class="wardrobe-item-image" src="{{item.image}}" mode="aspectFill" />
+        <view wx:else class="wardrobe-item-image image-placeholder">暂无图片</view>
+        <view class="row-between item-title-row">
+          <view class="item-title">{{item.itemName}}</view>
+          <view wx:if="{{item.colorHex}}" class="color-dot" style="background: {{item.colorHex}};"></view>
+        </view>
+        <view class="item-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.colorName || '未设颜色'}}</view>
+        <view class="item-meta">{{item.statusName}} · {{item.seasonNames}} · {{item.wearCountText}}</view>
+        <view class="item-meta">{{item.brand || '未设品牌'}} · ¥{{item.priceText}} · {{item.storageText}}</view>
+        <view wx:if="{{item.customTagNames}}" class="item-tags">{{item.customTagNames}}</view>
+      </view>
+      <view class="card-actions">
+        <view class="plain-btn mini-btn" hover-class="tap-active" catchtap="markWorn" data-id="{{item.id}}">已穿</view>
+        <view class="danger-btn mini-btn" hover-class="tap-active" catchtap="deleteItem" data-id="{{item.id}}">删除</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">暂无衣物</view>
+  <view wx:if="{{loadMoreText}}" class="load-more">{{loadMoreText}}</view>
+  <view class="safe-bottom"></view>
+</view>

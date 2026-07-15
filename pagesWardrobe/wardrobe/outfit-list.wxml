@@ -1,0 +1,47 @@
+<view class="wardrobe-page">
+  <view class="filter-panel">
+    <view class="filter-row">
+      <input class="filter-field" value="{{keyword}}" placeholder="搜索搭配" confirm-type="search" bindinput="handleKeywordInput" bindconfirm="initPage" />
+      <view class="plain-btn filter-btn" hover-class="tap-active" bindtap="initPage">搜索</view>
+    </view>
+    <view class="button-row">
+      <view class="plain-btn" hover-class="tap-active" bindtap="goAssistant">AI穿搭</view>
+      <view class="primary-btn" hover-class="tap-active" bindtap="goAdd">新建搭配</view>
+    </view>
+  </view>
+
+  <view class="outfit-card" wx:for="{{list}}" wx:key="id">
+    <view bindtap="goEdit" data-id="{{item.id}}" hover-class="tap-active">
+      <view class="row">
+        <image wx:if="{{item.coverImage}}" class="image-box" src="{{item.coverImage}}" mode="aspectFill" />
+        <view wx:else class="image-box image-placeholder">暂无封面</view>
+        <view class="outfit-main">
+          <view class="row-between">
+            <view class="item-title">{{item.outfitName}}</view>
+            <view class="item-value">{{item.wearCount || 0}}次</view>
+          </view>
+          <view class="item-meta">{{item.sceneNames}} · {{item.seasonNames}}</view>
+          <view class="item-meta">{{item.itemCount || 0}}件 · {{item.lastWearDate || '未穿'}}</view>
+          <view wx:if="{{item.customTagNames}}" class="item-meta">{{item.customTagNames}}</view>
+        </view>
+      </view>
+      <scroll-view scroll-x class="outfit-image-row">
+        <view class="outfit-image-list">
+          <block wx:for="{{item.itemList}}" wx:for-item="child" wx:key="itemId">
+            <image wx:if="{{child.itemImage}}" class="outfit-thumb" src="{{child.itemImage}}" mode="aspectFill" />
+            <view wx:else class="outfit-thumb image-placeholder">无图</view>
+          </block>
+        </view>
+      </scroll-view>
+    </view>
+    <view class="card-actions">
+      <view class="plain-btn mini-btn" hover-class="tap-active" catchtap="markWorn" data-id="{{item.id}}">已穿</view>
+      <view class="plain-btn mini-btn" hover-class="tap-active" catchtap="copyOutfit" data-id="{{item.id}}">复制</view>
+      <view class="danger-btn mini-btn" hover-class="tap-active" catchtap="deleteOutfit" data-id="{{item.id}}">删除</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">暂无搭配</view>
+  <view wx:if="{{loadMoreText}}" class="load-more">{{loadMoreText}}</view>
+  <view class="safe-bottom"></view>
+</view>

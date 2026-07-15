@@ -1,0 +1,158 @@
+.transfer-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx;
+  background: #f7f8fa;
+}
+
+.tip-card {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  background: #fff7e8;
+}
+
+.tip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 16rpx;
+  border-radius: 50%;
+  background: #ff9f0a;
+  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.tip-text {
+  flex: 1;
+  color: #c97b00;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.member-section {
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  margin-bottom: 16rpx;
+  padding: 0 8rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.member-list {
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.member-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.member-item:last-child {
+  border-bottom: 0;
+}
+
+.member-item:active {
+  background: #f7f8fa;
+}
+
+.member-item.selected {
+  background: #e9f8ef;
+}
+
+.member-avatar,
+.member-avatar-placeholder {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 20rpx;
+  border-radius: 40rpx;
+}
+
+.member-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #edf7ff;
+  color: #1989fa;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.member-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-name {
+  color: #333;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.check-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400rpx;
+}
+
+.empty-text {
+  color: #999;
+  font-size: 28rpx;
+}
+
+.btn-group {
+  padding: 0 24rpx;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border: 0;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 88rpx;
+}
+
+.btn::after {
+  border: 0;
+}
+
+.btn-primary {
+  background: #07c160;
+  color: #ffffff;
+}
+
+.btn-primary[disabled] {
+  background: #d8dde3;
+  color: #ffffff;
+}

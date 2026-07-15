@@ -1,0 +1,49 @@
+<view class="points-page">
+  <view class="form-card">
+    <view class="form-row">
+      <view class="form-label">任务名称</view>
+      <input class="form-input" value="{{formData.taskName}}" placeholder="请输入任务名称" data-field="taskName" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">任务备注</view>
+      <textarea class="form-textarea" value="{{formData.taskRemark}}" placeholder="请输入任务备注" data-field="taskRemark" bindinput="handleInput" auto-height />
+    </view>
+    <view class="form-row">
+      <view class="form-label">计划周期</view>
+      <picker class="filter-field" mode="selector" range="{{planCycleOptions}}" range-key="text" value="{{planCycleIndex}}" bindchange="onPlanCycleChange">
+        <view>{{planCycleName}}</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <view class="form-label">计划日期</view>
+      <picker class="filter-field" mode="date" value="{{formData.planDate}}" bindchange="onPlanDateChange">
+        <view>{{formData.planDate || '请选择计划日期'}}</view>
+      </picker>
+    </view>
+    <view wx:if="{{formData.planCycle === 5}}" class="form-row">
+      <view class="form-label">计划天数</view>
+      <input class="form-input" type="number" value="{{formData.cycleDays}}" placeholder="请输入计划天数" data-field="cycleDays" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">提前提醒天数</view>
+      <input class="form-input" type="number" value="{{formData.remindDays}}" placeholder="请输入提前提醒天数" data-field="remindDays" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">截止天数</view>
+      <input class="form-input" type="number" value="{{formData.deadlineDays}}" placeholder="请输入截止天数" data-field="deadlineDays" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">奖励积分</view>
+      <input class="form-input" type="number" value="{{formData.rewardPoints}}" placeholder="请输入奖励积分" data-field="rewardPoints" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">处罚积分</view>
+      <input class="form-input" type="number" value="{{formData.punishPoints}}" placeholder="请输入处罚积分" data-field="punishPoints" bindinput="handleInput" />
+    </view>
+  </view>
+
+  <view class="button-row">
+    <button class="primary-btn" bindtap="handleSubmit">保存</button>
+    <button class="plain-btn" bindtap="handleCancel">取消</button>
+  </view>
+</view>

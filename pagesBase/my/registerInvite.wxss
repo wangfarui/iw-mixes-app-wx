@@ -1,0 +1,168 @@
+.register-invite-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx;
+  background: #f7f8fa;
+}
+
+.section-card {
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 24rpx;
+}
+
+.setting-main {
+  min-width: 0;
+  padding-right: 24rpx;
+}
+
+.setting-title {
+  display: block;
+  color: #111827;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.setting-desc {
+  display: block;
+  margin-top: 8rpx;
+  color: #6b7280;
+  font-size: 26rpx;
+}
+
+.invite-card {
+  padding: 28rpx 24rpx;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  color: #111827;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.status-badge {
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 24rpx;
+  line-height: 44rpx;
+}
+
+.status-badge.active {
+  background: #e8f3ff;
+  color: #1677ff;
+}
+
+.code-box {
+  margin-top: 32rpx;
+  padding: 36rpx 24rpx;
+  border-radius: 12rpx;
+  background: #f5f7fb;
+  text-align: center;
+}
+
+.code-text {
+  color: #111827;
+  font-size: 56rpx;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 24rpx;
+  margin-top: 24rpx;
+}
+
+.meta-label {
+  flex: 0 0 auto;
+  color: #6b7280;
+  font-size: 26rpx;
+}
+
+.meta-value {
+  min-width: 0;
+  color: #111827;
+  font-size: 26rpx;
+  text-align: right;
+  word-break: break-all;
+}
+
+.action-row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 32rpx;
+}
+
+.invite-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 64rpx;
+  padding: 0 24rpx;
+  border-radius: 10rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.invite-action-btn.primary {
+  background: #1677ff;
+  color: #ffffff;
+}
+
+.invite-action-btn.secondary {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.invite-action-btn.danger {
+  background: #fff1f0;
+  color: #f56c6c;
+}
+
+.invite-action-btn.disabled {
+  opacity: 0.62;
+}
+
+.invite-action-btn-hover {
+  opacity: 0.86;
+}
+
+.empty-state {
+  padding: 48rpx 0 12rpx;
+  text-align: center;
+}
+
+.empty-title {
+  display: block;
+  margin-bottom: 28rpx;
+  color: #6b7280;
+  font-size: 28rpx;
+}
+
+.empty-action {
+  width: 320rpx;
+  margin: 0 auto;
+}

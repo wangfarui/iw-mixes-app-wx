@@ -1,0 +1,74 @@
+<view class="eat-page order-page">
+  <view class="filter-card order-filter-card">
+    <view class="filter-row order-search-row">
+      <input class="filter-field order-search-field" value="{{dishesName}}" placeholder="搜索菜品" bindinput="onSearchInput" confirm-type="search" bindconfirm="initPage" />
+      <button wx:if="{{dishesName}}" class="plain-btn order-clear-btn" bindtap="clearSearch">清空</button>
+      <button class="plain-btn order-search-btn" bindtap="initPage">搜索</button>
+    </view>
+  </view>
+
+  <scroll-view class="category-row order-category-row" scroll-x>
+    <view class="order-category-list">
+      <view wx:for="{{categories}}" wx:key="value" class="category-chip order-category-chip {{item.value === currentType ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectCategory">{{item.text}}</view>
+    </view>
+  </scroll-view>
+
+  <view class="dish-card order-dish-card {{item.inCart ? 'selected' : ''}}" wx:for="{{list}}" wx:key="id" bindtap="goDetail" data-index="{{index}}" data-id="{{item.id}}">
+    <image wx:if="{{item.image && !item.imageLoadError}}" class="dish-image" src="{{item.image}}" mode="aspectFill" data-index="{{index}}" binderror="onDishImageError" />
+    <view wx:else class="dish-image image-placeholder {{item.image ? 'image-placeholder-error' : ''}}">{{item.image ? '图片加载失败' : '暂无图片'}}</view>
+    <view class="item-main order-dish-main">
+      <view class="item-row">
+        <view class="item-title">{{item.dishesName}}</view>
+        <view class="item-value">¥{{item.priceText}}</view>
+      </view>
+      <view class="item-meta">{{item.dishesTypeName}} · {{item.useTime || 0}}分钟 · 难度{{item.difficultyFactor || 0}}</view>
+      <view class="order-dish-footer">
+        <view class="tag-row order-tag-row">
+          <view class="tag {{item.canOrder ? '' : 'danger'}}">{{item.statusName}}</view>
+        </view>
+        <view class="order-cart-action {{item.inCart ? 'selected' : ''}} {{!item.canOrder && !item.inCart ? 'disabled' : ''}}" catchtap="toggleCart" data-index="{{index}}">{{item.inCart ? '-' : '+'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">暂无菜品</view>
+  <view class="load-more">{{loadMoreText}}</view>
+
+  <view wx:if="{{cartCount > 0}}" class="order-cart-bar">
+    <view class="order-cart-summary" bindtap="openCartDrawer">
+      <view class="order-cart-title">
+        <text>购物车</text>
+        <text class="order-cart-badge">{{cartSummary.count}}</text>
+      </view>
+      <view class="order-cart-meta">¥{{cartSummary.totalPriceText}} · {{cartSummary.totalUseTime}}分钟</view>
+    </view>
+    <view class="order-cart-submit" catchtap="goCartConfirm">去下单</view>
+  </view>
+
+  <view wx:if="{{showCartDrawer}}" class="order-cart-mask" bindtap="closeCartDrawer"></view>
+  <view wx:if="{{showCartDrawer}}" class="order-cart-panel" catchtap="noop">
+    <view class="order-cart-header">
+      <view>
+        <view class="order-cart-heading">已选菜品</view>
+        <view class="order-cart-count">{{cartSummary.count}} 道 · ¥{{cartSummary.totalPriceText}} · {{cartSummary.totalUseTime}}分钟</view>
+      </view>
+      <view class="order-cart-clear" bindtap="clearCart">清空</view>
+    </view>
+    <scroll-view class="order-cart-list" scroll-y>
+      <view class="order-cart-item" wx:for="{{cartItems}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+        <image wx:if="{{item.image}}" class="order-cart-image" src="{{item.image}}" mode="aspectFill" />
+        <view wx:else class="order-cart-image image-placeholder">暂无图片</view>
+        <view class="order-cart-item-main">
+          <view class="item-title">{{item.dishesName}}</view>
+          <view class="item-meta">{{item.dishesTypeName}} · {{item.useTime || 0}}分钟</view>
+          <view class="item-value">¥{{item.priceText}}</view>
+        </view>
+        <view class="order-cart-remove" catchtap="removeCartItem" data-id="{{item.id}}">移除</view>
+      </view>
+    </scroll-view>
+    <view class="order-cart-footer">
+      <view class="plain-btn order-cart-cancel" bindtap="closeCartDrawer">继续点餐</view>
+      <view class="primary-btn order-cart-order" bindtap="goCartConfirm">确认下单</view>
+    </view>
+  </view>
+</view>

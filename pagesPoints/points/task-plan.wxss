@@ -1,0 +1,114 @@
+@import "./points-common.wxss";
+
+.task-plan-page {
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.task-plan-filter-row {
+  gap: 10rpx;
+}
+
+.task-plan-search {
+  flex: 1 1 0;
+  height: 62rpx;
+  padding: 0 16rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+}
+
+.task-plan-status-picker {
+  flex: 0 0 156rpx;
+  width: 156rpx;
+  height: 62rpx;
+  padding: 0 12rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+  text-align: center;
+}
+
+.task-plan-search-btn {
+  flex: 0 0 96rpx;
+  width: 96rpx;
+  min-width: 96rpx;
+  height: 62rpx;
+  padding: 0;
+  border-radius: 31rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+}
+
+.task-plan-item {
+  padding: 24rpx 22rpx 22rpx;
+}
+
+.task-plan-header {
+  align-items: flex-start;
+  gap: 14rpx;
+}
+
+.task-plan-title {
+  display: -webkit-box;
+  flex: 1;
+  min-width: 0;
+  line-height: 38rpx;
+  white-space: normal;
+  word-break: break-all;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.task-plan-status-tag {
+  margin-left: auto;
+}
+
+.task-plan-status-tag.is-active {
+  background: #e8f7ee;
+  color: #07c160;
+}
+
+.task-plan-status-tag.is-inactive {
+  background: #f4f4f5;
+  color: #909399;
+}
+
+.task-plan-date-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.task-plan-date-cell {
+  min-width: 0;
+  padding: 14rpx 16rpx;
+  border-radius: 8rpx;
+  background: #f7f8fa;
+  box-sizing: border-box;
+}
+
+.task-plan-date-label {
+  color: #888;
+  font-size: 22rpx;
+}
+
+.task-plan-date-value {
+  margin-top: 6rpx;
+  color: #222;
+  font-size: 27rpx;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.task-plan-created {
+  margin-top: 14rpx;
+}
+
+.task-plan-fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box;
+}

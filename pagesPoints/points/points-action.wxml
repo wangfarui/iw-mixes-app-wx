@@ -1,0 +1,21 @@
+<view class="points-page">
+  <view class="form-card">
+    <view class="segmented">
+      <view class="segment {{current === 0 ? 'active' : ''}}" data-index="0" bindtap="switchType">增加</view>
+      <view class="segment {{current === 1 ? 'active' : ''}}" data-index="1" bindtap="switchType">扣减</view>
+    </view>
+    <view class="form-row">
+      <view class="form-label">积分来源</view>
+      <input class="form-input" value="{{formData.source}}" placeholder="请输入积分来源" data-field="source" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">积分数量</view>
+      <input class="form-input" type="number" value="{{formData.inputPoints}}" placeholder="请输入积分" data-field="inputPoints" bindinput="handleInput" />
+    </view>
+    <view class="form-row">
+      <view class="form-label">备注</view>
+      <textarea class="form-textarea" value="{{formData.remark}}" placeholder="请输入内容" data-field="remark" bindinput="handleInput" auto-height />
+    </view>
+    <button class="primary-btn" bindtap="saveRecord">保存</button>
+  </view>
+</view>

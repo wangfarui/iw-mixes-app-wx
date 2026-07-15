@@ -1,0 +1,130 @@
+.invite-list-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx;
+  background: #f7f8fa;
+}
+
+.invite-item {
+  margin-bottom: 16rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.invite-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.invite-code {
+  color: #333;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+}
+
+.status-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.status-tag.pending {
+  background: #e9f8ef;
+}
+
+.status-tag.accepted {
+  background: #f0f1f3;
+}
+
+.status-tag.expired {
+  background: #fef0f0;
+}
+
+.status-text {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-tag.pending .status-text {
+  color: #07c160;
+}
+
+.status-tag.accepted .status-text {
+  color: #909399;
+}
+
+.status-tag.expired .status-text {
+  color: #f56c6c;
+}
+
+.invite-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-text {
+  margin-bottom: 8rpx;
+  color: #666;
+  font-size: 26rpx;
+}
+
+.info-text:last-child {
+  margin-bottom: 0;
+}
+
+.invite-actions {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.btn-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64rpx;
+  border: 0;
+  border-radius: 32rpx;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 64rpx;
+}
+
+.btn-copy::after {
+  border: 0;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400rpx;
+}
+
+.empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96rpx;
+  height: 96rpx;
+  margin-bottom: 24rpx;
+  border-radius: 32rpx;
+  background: #f0f1f3;
+  color: #999;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.empty-text {
+  color: #999;
+  font-size: 28rpx;
+}

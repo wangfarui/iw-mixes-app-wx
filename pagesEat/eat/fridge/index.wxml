@@ -1,0 +1,44 @@
+<view class="eat-page fridge-page">
+  <view class="filter-card">
+    <view class="filter-row filter-primary">
+      <input class="filter-field filter-name" value="{{filters.name}}" placeholder="食材名称" data-field="name" bindinput="handleFilterInput" confirm-type="search" bindconfirm="initPage" />
+      <picker class="filter-field filter-sort" mode="selector" range="{{sortOptions}}" range-key="text" value="{{sortIndex}}" bindchange="onSortChange">
+        <view>{{sortName}}</view>
+      </picker>
+      <view class="filter-toggle {{isFilterExpanded ? 'expanded' : ''}} {{filters.expireType || filters.section || filters.category ? 'active' : ''}}" bindtap="toggleFilter">
+        <view class="filter-toggle-icon"></view>
+      </view>
+    </view>
+    <view wx:if="{{isFilterExpanded}}" class="filter-row filter-secondary">
+      <picker class="filter-field" mode="selector" range="{{expireOptions}}" range-key="text" value="{{expireIndex}}" bindchange="onExpireChange">
+        <view>{{expireName || '过期类型'}}</view>
+      </picker>
+      <picker class="filter-field" mode="selector" range="{{sectionOptions}}" range-key="text" value="{{sectionIndex}}" bindchange="onSectionChange">
+        <view>{{sectionName || '分区'}}</view>
+      </picker>
+      <picker class="filter-field" mode="selector" range="{{categoryOptions}}" range-key="text" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view>{{categoryName || '分类'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="food-card {{item.isExpired ? 'expired' : ''}}" wx:for="{{list}}" wx:key="id" bindtap="goDetail" bindlongpress="openActions" data-index="{{index}}" data-id="{{item.id}}">
+    <view class="food-emoji">{{item.emoji}}</view>
+    <view class="item-main">
+      <view class="item-row">
+        <view class="item-title">{{item.name}}</view>
+        <view wx:if="{{item.isExpired}}" class="tag danger">已过期</view>
+        <view wx:elif="{{item.isExpiring}}" class="tag warn">即将过期</view>
+      </view>
+      <view class="item-meta">分类：{{item.categoryName}} · 分区：{{item.sectionName}}</view>
+      <view class="item-meta">数量：{{item.quantity || '-'}}</view>
+      <view class="item-meta">入库：{{item.addDate || '-'}} · 过期：{{item.expireText}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">暂无食材</view>
+  <view class="load-more">{{loadMoreText}}</view>
+  <view class="fridge-fab" bindtap="goAdd">
+    <text class="fridge-fab-plus">+</text>
+  </view>
+</view>

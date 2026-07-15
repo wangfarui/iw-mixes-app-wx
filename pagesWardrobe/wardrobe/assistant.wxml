@@ -1,0 +1,43 @@
+<view class="wardrobe-page">
+  <view class="form-panel">
+    <view class="section-title">AI穿搭助手</view>
+    <view class="section-subtitle">输入场景、天气、风格，基于衣柜生成候选</view>
+    <textarea class="ai-textarea" value="{{prompt}}" placeholder="例如 明天通勤，20度，有点正式" data-field="prompt" bindinput="handleInput" />
+    <view class="form-line">
+      <view class="form-label">天气</view>
+      <input class="form-input" value="{{weatherText}}" placeholder="可选，例如 小雨 18度" data-field="weatherText" bindinput="handleInput" />
+    </view>
+    <view class="button-row">
+      <view class="plain-btn {{!suggestions.length ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="changeBatch">换一批</view>
+      <view class="primary-btn {{loading ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="generate">{{loading ? '生成中' : '生成建议'}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{summary}}" class="panel">
+    <view class="row-between">
+      <view class="section-title">搭配建议</view>
+      <view class="chip active">{{source === 'ai' ? 'AI' : '候选'}}</view>
+    </view>
+    <view class="ai-summary">{{summary}}</view>
+  </view>
+
+  <view wx:for="{{suggestions}}" wx:key="index" class="suggestion-card panel">
+    <view class="row-between">
+      <view class="suggestion-main">
+        <view class="item-title">{{item.suggestionName}}</view>
+        <view class="item-meta">{{item.reason}}</view>
+      </view>
+      <view class="plain-btn compact-btn" hover-class="tap-active" data-index="{{index}}" bindtap="saveSuggestion">保存</view>
+    </view>
+    <scroll-view scroll-x class="outfit-image-row">
+      <view class="outfit-image-list">
+        <block wx:for="{{item.itemList}}" wx:for-item="child" wx:key="itemId">
+          <image wx:if="{{child.itemImage}}" class="outfit-thumb" src="{{child.itemImage}}" mode="aspectFill" />
+          <view wx:else class="outfit-thumb image-placeholder">无图</view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view wx:if="{{!suggestions.length && !loading && !summary}}" class="empty">输入需求后生成建议</view>
+</view>

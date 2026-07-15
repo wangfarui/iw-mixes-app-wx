@@ -1,0 +1,80 @@
+<view class="detail-page">
+  <view wx:if="{{groupInfo}}" class="content">
+    <view class="header-card">
+      <image wx:if="{{groupInfo.groupAvatar}}" src="{{groupInfo.groupAvatar}}" class="group-avatar" mode="aspectFill" />
+      <view wx:else class="group-avatar-placeholder">家</view>
+      <view class="group-name">{{groupInfo.groupName}}</view>
+      <view wx:if="{{groupInfo.groupDesc}}" class="group-desc">{{groupInfo.groupDesc}}</view>
+      <view class="member-count">{{memberCountText}}</view>
+    </view>
+
+    <view class="member-section">
+      <view class="section-title">成员列表</view>
+      <view class="member-list">
+        <view wx:for="{{memberList}}" wx:key="id" class="member-item">
+          <image wx:if="{{item.avatar}}" src="{{item.avatar}}" class="member-avatar" mode="aspectFill" />
+          <view wx:else class="member-avatar-placeholder">人</view>
+          <view class="member-info">
+            <view class="member-name">{{item.displayName}}</view>
+            <view class="member-role">{{item.roleText}}</view>
+          </view>
+          <view class="member-actions">
+            <view wx:if="{{item.canAssignRole}}" class="member-action role" data-index="{{index}}" bindtap="handleAssignRole">
+              <text class="member-action-text">角色</text>
+            </view>
+            <view wx:if="{{item.canRemove}}" class="member-action danger" data-index="{{index}}" bindtap="handleRemoveMember">
+              <text class="member-action-text">移除</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="action-section">
+      <view class="action-btn" bindtap="handleQueryScopeChange">
+        <view class="action-text">查看范围</view>
+        <view class="action-right">
+          <text class="action-value">{{queryScopeText}}</text>
+          <text wx:if="{{!isChildRole}}" class="row-arrow">›</text>
+        </view>
+      </view>
+      <view class="setting-tip">{{isChildRole ? '儿童固定为仅自己' : '共享功能会按此范围展示'}}</view>
+    </view>
+
+    <view class="action-section">
+      <view class="action-btn setting">
+        <view class="action-text">新建自动共享</view>
+        <switch
+          checked="{{defaultShared}}"
+          disabled="{{isChildRole || isUpdatingDefaultShared}}"
+          color="#07c160"
+          bindchange="handleDefaultSharedChange"
+        />
+      </view>
+      <view class="setting-tip">{{isChildRole ? '儿童固定为开启' : '新建内容时会自动共享给家庭'}}</view>
+    </view>
+
+    <view wx:if="{{canInvite}}" class="action-section">
+      <view class="action-btn" bindtap="goInvite">
+        <view class="action-icon green">邀</view>
+        <view class="action-text">邀请成员</view>
+        <text class="row-arrow">›</text>
+      </view>
+      <view wx:if="{{isOwner}}" class="action-btn" bindtap="goManage">
+        <view class="action-icon blue">管</view>
+        <view class="action-text">管理家庭组</view>
+        <text class="row-arrow">›</text>
+      </view>
+    </view>
+
+    <view wx:if="{{!isOwner}}" class="action-section">
+      <view class="action-btn danger center" bindtap="handleQuit">
+        <view class="action-text danger-text">退出家庭组</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="loading">
+    <text>{{isLoading ? '加载中...' : '暂无家庭组'}}</text>
+  </view>
+</view>

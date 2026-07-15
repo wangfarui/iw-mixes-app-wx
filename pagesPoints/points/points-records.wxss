@@ -1,0 +1,29 @@
+@import "./points-common.wxss";
+
+.points-records-filter-row {
+  gap: 10rpx;
+}
+
+.points-records-date {
+  flex: 1 1 0;
+  height: 62rpx;
+  padding: 0 14rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+  text-align: center;
+}
+
+.points-records-reset {
+  flex: 0 0 104rpx;
+  width: 104rpx;
+  min-width: 104rpx;
+  height: 62rpx;
+  padding: 0;
+  border-radius: 31rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+}
+
+.points-records-stats {
+  margin-top: 18rpx;
+}

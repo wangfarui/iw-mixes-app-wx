@@ -1,0 +1,49 @@
+<view class="eat-page">
+  <view class="form-card">
+    <view class="form-line">
+      <view class="form-label">食材名称</view>
+      <view class="food-emoji" bindtap="toggleEmojiPicker">{{formData.emoji}}</view>
+      <input class="form-input" value="{{formData.name}}" placeholder="请输入食材名称" data-field="name" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">分类</view>
+      <picker class="picker-field" mode="selector" range="{{categoryOptions}}" range-key="text" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view>{{categoryName || '请选择分类'}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">分区</view>
+      <picker class="picker-field" mode="selector" range="{{sectionOptions}}" range-key="text" value="{{sectionIndex}}" bindchange="onSectionChange">
+        <view>{{sectionName || '请选择分区'}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">数量</view>
+      <input class="form-input" value="{{formData.quantity}}" placeholder="例：500g / 3个 / 1盒" data-field="quantity" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">入库日期</view>
+      <picker class="picker-field" mode="date" value="{{formData.addDate}}" bindchange="onAddDateChange">
+        <view>{{formData.addDate || '选择入库日期'}}</view>
+      </picker>
+    </view>
+    <view class="form-line">
+      <view class="form-label">过期日期</view>
+      <picker class="picker-field" mode="date" value="{{formData.expireDate}}" bindchange="onExpireDateChange">
+        <view>{{formData.expireDate || '选择过期日期'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view wx:if="{{showEmojiPicker}}" class="section-card">
+    <view class="section-title">选择图标</view>
+    <view class="emoji-grid">
+      <view wx:for="{{emojiList}}" wx:key="*this" class="emoji-item {{item === formData.emoji ? 'active' : ''}}" data-emoji="{{item}}" bindtap="selectEmoji">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="button-row">
+    <button class="plain-btn" bindtap="goBack">取消</button>
+    <button class="primary-btn" bindtap="saveFood">{{isEdit ? '保存' : '新增'}}</button>
+  </view>
+</view>

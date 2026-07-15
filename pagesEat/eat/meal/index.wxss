@@ -1,0 +1,22 @@
+@import "../eat-common.wxss";
+
+.reset-btn {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56rpx;
+  padding: 0 22rpx;
+  border-radius: 8rpx;
+  background: #eef5ff;
+  color: #007aff;
+  font-size: 24rpx;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.reset-btn:active {
+  background: #dcecff;
+}

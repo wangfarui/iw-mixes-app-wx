@@ -1,0 +1,27 @@
+<view class="setting-page">
+  <view class="category-selector">
+    <view class="category-item {{selectedCategory === 1 ? 'active' : ''}}" data-category="1" bindtap="selectCategory">支出</view>
+    <view class="category-item {{selectedCategory === 2 ? 'active' : ''}}" data-category="2" bindtap="selectCategory">收入</view>
+  </view>
+
+  <view class="action-list">
+    <view wx:for="{{actions}}" wx:key="id" class="action-item">
+      <view class="action-main">
+        <image src="{{item.iconUrl}}" class="action-icon" mode="aspectFit" />
+        <view class="action-name">{{item.recordSource}}</view>
+      </view>
+      <view class="action-tools">
+        <view class="sort-actions">
+          <view class="icon-button sort {{index === 0 ? 'disabled' : ''}}" data-index="{{index}}" data-dir="-1" bindtap="moveAction">↑</view>
+          <view class="icon-button sort {{index === actions.length - 1 ? 'disabled' : ''}}" data-index="{{index}}" data-dir="1" bindtap="moveAction">↓</view>
+        </view>
+        <view class="icon-button primary" data-id="{{item.id}}" bindtap="editAction">改</view>
+        <view class="icon-button danger" data-index="{{index}}" bindtap="confirmDelete">删</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{actions.length === 0}}" class="empty">暂无记账行为</view>
+
+  <button class="add-button" bindtap="addCategory">添加类别</button>
+</view>

@@ -1,0 +1,73 @@
+.security-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx;
+  background: #f7f8fa;
+}
+
+.list-card {
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 104rpx;
+  box-sizing: border-box;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.list-row:last-child {
+  border-bottom: 0;
+}
+
+.list-row:active {
+  background: #f7f8fa;
+}
+
+.row-label {
+  flex: 0 0 auto;
+  color: #333333;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.row-right {
+  min-width: 0;
+  margin-left: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.row-value {
+  max-width: 420rpx;
+  color: #666666;
+  font-size: 28rpx;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.row-arrow {
+  flex: 0 0 auto;
+  color: #c0c4cc;
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+.danger-row .row-label,
+.danger-arrow {
+  color: #f56c6c;
+}
+
+.danger-tip {
+  display: block;
+  margin-top: 12rpx;
+  color: #999999;
+  font-size: 24rpx;
+}

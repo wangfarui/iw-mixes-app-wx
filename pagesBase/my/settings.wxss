@@ -1,0 +1,65 @@
+.settings-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  background: #f7f8fa;
+}
+
+.settings-card {
+  margin-bottom: 20rpx;
+  padding: 0 24rpx;
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.settings-card:last-child {
+  margin-bottom: 0;
+}
+
+.card-title {
+  padding: 24rpx 0 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  color: #666666;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.settings-row:last-child {
+  border-bottom: 0;
+}
+
+.settings-row.clickable:active {
+  background: #f7f8fa;
+}
+
+.row-label {
+  color: #333333;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.row-right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.row-value {
+  color: #999999;
+  font-size: 26rpx;
+}
+
+.row-arrow {
+  color: #c0c4cc;
+  font-size: 40rpx;
+  line-height: 1;
+}

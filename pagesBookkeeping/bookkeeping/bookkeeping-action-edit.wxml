@@ -1,0 +1,71 @@
+<view class="action-edit-page">
+  <view class="form-card">
+    <view class="form-item">
+      <view class="form-label">记录类型 <text class="required">*</text></view>
+      <picker mode="selector" range="{{recordCategoryOptions}}" range-key="text" value="{{recordCategoryIndex}}" bindchange="onRecordCategoryChange">
+        <view class="picker-box">{{recordCategoryOptions[recordCategoryIndex].text}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">记录来源 <text class="required">*</text></view>
+      <input class="form-input" value="{{formData.recordSource}}" placeholder="请输入记录来源" data-field="recordSource" bindinput="handleInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">记录分类 <text class="required">*</text></view>
+      <picker mode="selector" range="{{recordTypeOptions}}" range-key="dictName" value="{{recordTypeIndex}}" bindchange="onRecordTypeChange">
+        <view class="picker-box">{{recordTypeName || '请选择记录分类'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">记录图标</view>
+      <view class="icon-selector" bindtap="showIconSelector">
+        <image wx:if="{{formData.recordIcon}}" src="{{selectedIconUrl}}" class="selected-icon" mode="aspectFit" />
+        <text wx:else class="icon-placeholder">请选择图标</text>
+      </view>
+    </view>
+
+    <view class="form-item last">
+      <view class="form-label">记录标签</view>
+      <view class="tag-group">
+        <view
+          wx:for="{{tagOptions}}"
+          wx:key="id"
+          class="tag-chip {{item.selected ? 'selected' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="toggleTag"
+        >{{item.dictName}}</view>
+      </view>
+    </view>
+  </view>
+
+  <button class="save-button" loading="{{isSubmitting}}" disabled="{{isSubmitting}}" bindtap="submitForm">保存</button>
+
+  <view wx:if="{{showIconPopup}}" class="popup-mask" catchtap="closeIconSelector" catchtouchmove="noop">
+    <view class="icon-popup" catchtap="noop">
+      <view class="popup-header">
+        <text class="popup-title">选择图标</text>
+        <text class="popup-close" bindtap="closeIconSelector">×</text>
+      </view>
+      <scroll-view scroll-y class="icon-list">
+        <view wx:for="{{iconList}}" wx:key="category" class="icon-category">
+          <view class="category-title">{{item.category}}</view>
+          <view class="category-icons">
+            <view
+              wx:for="{{item.icons}}"
+              wx:for-item="icon"
+              wx:key="recordIcon"
+              class="icon-item {{icon.selected ? 'selected' : ''}}"
+              data-icon="{{icon.recordIcon}}"
+              bindtap="selectIcon"
+            >
+              <image src="{{icon.path}}" class="icon-image" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

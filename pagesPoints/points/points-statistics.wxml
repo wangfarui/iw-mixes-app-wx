@@ -1,0 +1,38 @@
+<view class="points-page">
+  <view class="card total-card">
+    <view class="total-label">当前积分</view>
+    <view class="total-value">{{totalPoints}}分</view>
+  </view>
+
+  <view class="filter-card">
+    <view class="filter-row">
+      <picker class="filter-field" mode="date" value="{{rangeStart}}" bindchange="onStartDateChange">
+        <view>{{rangeStart || '开始日期'}}</view>
+      </picker>
+      <picker class="filter-field" mode="date" value="{{rangeEnd}}" bindchange="onEndDateChange">
+        <view>{{rangeEnd || '结束日期'}}</view>
+      </picker>
+      <button class="plain-btn" bindtap="resetRange">重置</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-label">{{showCurrentMonth ? '本月新增积分' : '筛选新增积分'}}</view>
+        <view class="stat-value positive">+{{statistics.increasePoints || 0}}</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-label">{{showCurrentMonth ? '本月扣减积分' : '筛选扣减积分'}}</view>
+        <view class="stat-value negative">{{statistics.deductPoints || 0}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="item-row">
+      <view class="item-title">净变化</view>
+      <view class="item-value {{netPoints >= 0 ? 'positive' : 'negative'}}">{{netPointsText}}分</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,96 @@
+@import "./points-common.wxss";
+
+.task-list-page {
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.task-list-filter {
+  padding: 20rpx;
+}
+
+.task-list-search {
+  display: block;
+  width: 100%;
+  height: 62rpx;
+  padding: 0 16rpx;
+  font-size: 24rpx;
+  line-height: 62rpx;
+}
+
+.task-list-item {
+  padding: 24rpx 22rpx 22rpx;
+}
+
+.task-list-header {
+  align-items: flex-start;
+  gap: 14rpx;
+}
+
+.task-list-title {
+  display: -webkit-box;
+  flex: 1;
+  min-width: 0;
+  line-height: 38rpx;
+  white-space: normal;
+  word-break: break-all;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.task-list-side {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  max-width: 292rpx;
+}
+
+.task-list-submit {
+  flex: 0 0 92rpx;
+  width: 92rpx;
+  min-width: 92rpx;
+  height: 50rpx;
+  padding: 0;
+  border-radius: 25rpx;
+  font-size: 23rpx;
+  line-height: 50rpx;
+}
+
+.task-list-submit::after {
+  border: 0;
+}
+
+.task-list-remark {
+  margin-top: 14rpx;
+  padding: 12rpx 14rpx;
+  border-radius: 8rpx;
+  background: #f7f8fa;
+  color: #777;
+  line-height: 34rpx;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.task-list-fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.task-list-modal {
+  max-width: 650rpx;
+}
+
+.task-list-modal-actions {
+  justify-content: flex-end;
+}
+
+.task-list-modal-actions .task-list-modal-btn {
+  flex: 0 0 144rpx;
+  width: 144rpx;
+  min-width: 144rpx;
+}
