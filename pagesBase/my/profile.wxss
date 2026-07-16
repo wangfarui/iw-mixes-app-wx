@@ -117,26 +117,35 @@
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 16rpx;
+  gap: 18rpx;
+  margin-top: 32rpx;
 }
 
 .modal-btn {
-  min-width: 150rpx;
-  height: 72rpx;
-  border-radius: 8rpx;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  height: 78rpx;
+  border-radius: 40rpx;
   font-size: 28rpx;
-  line-height: 72rpx;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .modal-btn.secondary {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: #f0f1f3;
+  color: #555555;
 }
 
 .modal-btn.primary {
-  background: #1677ff;
+  background: #07c160;
   color: #ffffff;
+}
+
+.modal-btn-active {
+  opacity: 0.72;
 }
 
 .action-sheet {

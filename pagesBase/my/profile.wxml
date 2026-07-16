@@ -31,13 +31,13 @@
     </view>
   </view>
 
-  <view wx:if="{{showEditNameDialog}}" class="modal-mask">
-    <view class="modal-card">
+  <view wx:if="{{showEditNameDialog}}" class="modal-mask" catchtap="closeEditNameDialog" catchtouchmove="noop">
+    <view class="modal-card" catchtap="noop">
       <view class="modal-title">编辑姓名</view>
       <input class="modal-input" value="{{editName}}" placeholder="请输入新姓名" maxlength="20" bindinput="onEditNameInput" />
       <view class="modal-actions">
-        <button class="modal-btn secondary" bindtap="closeEditNameDialog">取消</button>
-        <button class="modal-btn primary" bindtap="submitEditName">保存</button>
+        <view class="modal-btn secondary" hover-class="modal-btn-active" catchtap="closeEditNameDialog">取消</view>
+        <view class="modal-btn primary" hover-class="modal-btn-active" catchtap="submitEditName">保存</view>
       </view>
     </view>
   </view>
