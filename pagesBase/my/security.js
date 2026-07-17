@@ -1,8 +1,4 @@
 const securityApi = require('../../api/security')
-const { stopVersionPolling } = require('../../api/login')
-const sessionStore = require('../../stores/session')
-const familyStore = require('../../stores/family')
-const { redirectToLogin } = require('../../utils/auth')
 
 Page({
   data: {
@@ -117,27 +113,6 @@ Page({
   },
 
   handleDeleteAccount() {
-    wx.showModal({
-      title: '确认注销',
-      content: '注销后账号将被永久删除，且无法恢复。是否继续？',
-      confirmText: '确认注销',
-      cancelText: '取消',
-      success: async (res) => {
-        if (!res.confirm) return
-        wx.showLoading({ title: '处理中...' })
-        try {
-          const http = require('../../api/request')
-          await http.get('/auth-service/user/deletion')
-          stopVersionPolling()
-          sessionStore.clearLoginSession()
-          familyStore.clearGroup()
-          redirectToLogin()
-        } catch (error) {
-          wx.showToast({ title: '注销失败', icon: 'error' })
-        } finally {
-          wx.hideLoading()
-        }
-      }
-    })
+    this.goSecurityAction('account', 'delete')
   }
 })

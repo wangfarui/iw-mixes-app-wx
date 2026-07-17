@@ -34,5 +34,5 @@
       <text class="row-arrow danger-arrow">›</text>
     </view>
   </view>
-  <text class="danger-tip">注销后账号将被永久删除，数据无法恢复。</text>
+  <text class="danger-tip">注销后原账号及数据将保留，但账号无法恢复登录；手机号、邮箱和用户名可用于新账号。</text>
 </view>

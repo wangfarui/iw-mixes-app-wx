@@ -20,7 +20,8 @@ const SECURITY_OPERATION = {
   UNBIND_EMAIL: 6,
   EDIT_USERNAME: 7,
   SET_PASSWORD: 8,
-  CHANGE_PASSWORD: 9
+  CHANGE_PASSWORD: 9,
+  DELETE_ACCOUNT: 10
 }
 
 function getUserInfo() {
@@ -55,6 +56,10 @@ function editPassword(data) {
   return http.put('/auth-service/user/security/password', data)
 }
 
+function deleteAccount(data) {
+  return http.request('/auth-service/user/security/account', 'DELETE', data)
+}
+
 module.exports = {
   CONTACT_TYPE,
   VERIFY_METHOD,
@@ -66,5 +71,6 @@ module.exports = {
   updateContact,
   unbindContact,
   editUsername,
-  editPassword
+  editPassword,
+  deleteAccount
 }

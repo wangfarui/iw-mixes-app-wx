@@ -226,3 +226,19 @@
   font-size: 28rpx;
   overflow-wrap: anywhere;
 }
+
+.account-deletion-notice {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 24rpx;
+  padding: 24rpx;
+  border-left: 6rpx solid #d92d20;
+  border-radius: 6rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+  background: #fef3f2;
+  color: #912018;
+  font-size: 26rpx;
+  line-height: 1.55;
+}

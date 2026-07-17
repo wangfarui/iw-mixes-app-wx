@@ -1,5 +1,11 @@
 const securityApi = require('../../api/security')
 const loginHistoryStore = require('../../stores/login-history')
+const sessionStore = require('../../stores/session')
+const familyStore = require('../../stores/family')
+const dictStore = require('../../stores/dict')
+const eatCartStore = require('../../stores/eat-cart')
+const { stopVersionPolling } = require('../../api/login')
+const { redirectToLogin } = require('../../utils/auth')
 
 const { CONTACT_TYPE, VERIFY_METHOD, SECURITY_OPERATION } = securityApi
 
@@ -12,7 +18,8 @@ const ACTION_CONFIG = {
   'email:unbind': { title: '解绑邮箱', operation: SECURITY_OPERATION.UNBIND_EMAIL, contactType: CONTACT_TYPE.EMAIL, unbind: true },
   'username:edit': { title: '修改用户名', operation: SECURITY_OPERATION.EDIT_USERNAME, username: true },
   'password:set': { title: '设置密码', operation: SECURITY_OPERATION.SET_PASSWORD, password: true },
-  'password:change': { title: '修改密码', operation: SECURITY_OPERATION.CHANGE_PASSWORD, password: true }
+  'password:change': { title: '修改密码', operation: SECURITY_OPERATION.CHANGE_PASSWORD, password: true },
+  'account:delete': { title: '注销账号', operation: SECURITY_OPERATION.DELETE_ACCOUNT, accountDeletion: true }
 }
 
 Page({
@@ -56,7 +63,7 @@ Page({
     this.setData({
       config,
       pageTitle: config.title,
-      nextStepText: config.unbind ? '确认解绑' : config.username ? '设置用户名' : config.password ? '设置密码' : '验证新联系方式',
+      nextStepText: config.accountDeletion ? '确认注销' : config.unbind ? '确认解绑' : config.username ? '设置用户名' : config.password ? '设置密码' : '验证新联系方式',
       contactPlaceholder: config.contactType === CONTACT_TYPE.PHONE ? '请输入新手机号' : '请输入新邮箱'
     })
     this.loadUserInfo()
@@ -175,7 +182,7 @@ Page({
       if (!this.securityTicket) {
         throw new Error('安全票据缺失')
       }
-      this.setData({ step: this.config.unbind ? 'confirm' : 'target' })
+      this.setData({ step: this.config.unbind || this.config.accountDeletion ? 'confirm' : 'target' })
     } finally {
       this.setData({ isVerifying: false })
     }
@@ -321,6 +328,43 @@ Page({
         }))
       }
     })
+  },
+
+  confirmAccountDeletion() {
+    if (this.data.isSubmitting) return
+    wx.showModal({
+      title: '最终确认',
+      content: '注销后原账号无法恢复登录，并会撤回该账号原先共享给家庭组的记账记录。确认继续注销？',
+      confirmText: '确认注销',
+      confirmColor: '#d92d20',
+      success: (res) => {
+        if (!res.confirm) return
+        this.submitAccountDeletion()
+      }
+    })
+  },
+
+  async submitAccountDeletion() {
+    this.setData({ isSubmitting: true })
+    wx.showLoading({ title: '注销中...' })
+    try {
+      await securityApi.deleteAccount({ securityTicket: this.securityTicket })
+      stopVersionPolling()
+      sessionStore.clearLoginSession()
+      familyStore.clearGroup()
+      dictStore.clearDictCache()
+      eatCartStore.clearCartItems()
+      loginHistoryStore.clearHistory()
+      const app = getApp()
+      if (app && app.globalData) {
+        app.globalData.userInfo = null
+      }
+      wx.showToast({ title: '账号已注销', icon: 'success' })
+      setTimeout(() => redirectToLogin(), 500)
+    } finally {
+      wx.hideLoading()
+      this.setData({ isSubmitting: false })
+    }
   },
 
   async runSubmit(request) {

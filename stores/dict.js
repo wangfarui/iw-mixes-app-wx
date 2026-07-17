@@ -73,6 +73,13 @@ function getDictNameByCode(dictType, dictCode, defaultName = '') {
   return item ? item.dictName : defaultName
 }
 
+function clearDictCache() {
+  dictTypeArray = []
+  dictArrayMap = {}
+  wx.removeStorageSync(DICT_TYPE_KEY)
+  wx.removeStorageSync(DICT_DATA_KEY)
+}
+
 module.exports = {
   dictTypeEnum,
   setDictTypeArray,
@@ -83,5 +90,6 @@ module.exports = {
   getDictDataWithDataSelectCode,
   getDictDataWithDataSelectId,
   getDictNameById,
-  getDictNameByCode
+  getDictNameByCode,
+  clearDictCache
 }

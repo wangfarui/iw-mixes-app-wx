@@ -81,7 +81,21 @@
     </view>
   </view>
 
-  <view wx:if="{{step === 'confirm'}}" class="confirm-section">
+  <view wx:if="{{step === 'confirm' && config.accountDeletion}}" class="confirm-section">
+    <view class="warning-mark">!</view>
+    <view class="confirm-title">注销账号</view>
+    <view class="account-deletion-notice">
+      <text>账号注销后将无法恢复，也无法再次登录，请谨慎操作。</text>
+      <text>手机号和邮箱可用于注册或绑定新账号，用户名可由新账号重新设置。</text>
+      <text>新账号不会继承原账号个人数据。</text>
+      <text>注销时会退出当前家庭组，原先共享的记账记录将不再对原家庭成员展示。</text>
+    </view>
+    <view class="danger-button {{isSubmitting ? 'disabled' : ''}}" bindtap="confirmAccountDeletion">
+      {{isSubmitting ? '注销中...' : '确认注销账号'}}
+    </view>
+  </view>
+
+  <view wx:if="{{step === 'confirm' && config.unbind}}" class="confirm-section">
     <view class="warning-mark">!</view>
     <view class="confirm-title">{{pageTitle}}</view>
     <view class="confirm-value">
