@@ -79,7 +79,7 @@
   margin-top: 10rpx;
   margin-right: 12rpx;
   border-radius: 50%;
-  background: #1677ff;
+  background: #276a57;
 }
 
 .feature-text {

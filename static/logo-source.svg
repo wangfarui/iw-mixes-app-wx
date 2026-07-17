@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Ruijing Daily brand mark">
+  <rect width="1024" height="1024" rx="224" fill="#faf7f0"/>
+  <circle cx="512" cy="236" r="76" fill="#f2b84b"/>
+  <path
+    d="M238 532 440 350c42-38 102-38 144 0l202 182v210c0 47-38 85-85 85H323c-47 0-85-38-85-85Z"
+    fill="#276a57"
+  />
+  <path
+    d="M326 566 472 434c23-21 57-21 80 0l146 132v157c0 14-11 25-25 25H351c-14 0-25-11-25-25Z"
+    fill="#faf7f0"
+  />
+  <path d="M512 706V536" fill="none" stroke="#276a57" stroke-linecap="round" stroke-width="34"/>
+  <path
+    d="M492 623c-93-3-151-59-151-145 89 1 151 55 151 145Z"
+    fill="#e7685d"
+  />
+  <path
+    d="M532 572c7-91 66-146 154-143-7 88-67 146-154 143Z"
+    fill="#5ba888"
+  />
+</svg>

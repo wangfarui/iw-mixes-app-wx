@@ -1,6 +1,7 @@
 <view class="login-page">
   <view class="login-panel">
-    <view class="brand">IW服务平台</view>
+    <image class="brand-logo" src="/static/logo.png" mode="aspectFit" />
+    <view class="brand">瑞菁日常</view>
     <view class="brand-subtitle">欢迎回来</view>
 
     <view class="weui-cells weui-cells_form login-form">

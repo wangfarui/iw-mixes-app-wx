@@ -9,7 +9,15 @@
 
 .login-panel {
   width: 100%;
-  margin-top: 15vh;
+  margin-top: 9vh;
+}
+
+.brand-logo {
+  display: block;
+  width: 144rpx;
+  height: 144rpx;
+  margin: 0 auto 24rpx;
+  border-radius: 32rpx;
 }
 
 .brand {

@@ -1,11 +1,11 @@
 const aboutConfig = {
   logo: '/static/logo.png',
-  desc: '为个人、家庭提供生活服务帮助的小帮手。',
+  desc: '面向个人与家庭的日常生活管理助手，集中打理财务、餐食、穿搭与任务。',
   owner: 'Wray',
   features: [
-    '多场景生活管理，帮助建立清晰习惯',
-    '轻量记录与提醒，让日常更高效',
-    '数据汇总与趋势洞察，辅助规划'
+    '钱、饭、衣、事集中管理，让日常信息更清楚',
+    '支持个人记录与家庭共享，协作安排更省心',
+    '通过统计、提醒与智能建议，帮助生活更有序'
   ],
   contacts: [
     { label: '联系邮箱', value: 'wray20156294@gmail.com' }
@@ -15,7 +15,7 @@ const aboutConfig = {
 
 Page({
   data: {
-    appName: '瑞菁小帮手',
+    appName: '瑞菁日常',
     appVersion: '1.0.0',
     aboutConfig,
     contactList: aboutConfig.contacts.filter((item) => item.value),
@@ -27,7 +27,6 @@ Page({
     if (typeof wx.getAppBaseInfo === 'function') {
       const info = wx.getAppBaseInfo()
       this.setData({
-        appName: info.appName || this.data.appName,
         appVersion: info.appVersion || this.data.appVersion
       })
     }
