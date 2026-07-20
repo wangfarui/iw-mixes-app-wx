@@ -1,37 +1,59 @@
-<view class="login-page">
+<view class="login-page" bindtap="closeHistoryDropdown">
   <view class="login-panel">
     <image class="brand-logo" src="/static/logo.png" mode="aspectFit" />
     <view class="brand">瑞菁日常</view>
     <view class="brand-subtitle">欢迎回来</view>
 
     <view class="weui-cells weui-cells_form login-form">
-      <view class="weui-cell">
-        <view class="weui-cell__bd">
-          <input
-            class="weui-input"
-            value="{{form.account}}"
-            maxlength="{{accountMaxLength}}"
-            placeholder="{{accountPlaceholder}}"
-            bindinput="onAccountInput"
-          />
-        </view>
-      </view>
-
-      <view class="saved-history-row" wx:if="{{historyRecords.length}}">
-        <picker
-          class="history-picker"
-          mode="selector"
-          range="{{historyRecords}}"
-          range-key="label"
-          value="{{historyRecordIndex}}"
-          bindchange="onHistoryChange"
-        >
-          <view class="history-trigger">
-            <text>{{historyLabel}}（{{historyRecords.length}}）</text>
-            <view class="history-chevron"></view>
+      <view class="account-field">
+        <view class="weui-cell account-cell {{isHistoryOpen ? 'is-open' : ''}}">
+          <view class="weui-cell__bd">
+            <input
+              class="weui-input"
+              value="{{form.account}}"
+              maxlength="{{accountMaxLength}}"
+              placeholder="{{accountPlaceholder}}"
+              bindinput="onAccountInput"
+            />
           </view>
-        </picker>
-        <view wx:if="{{canDeleteHistory}}" class="history-delete" bindtap="deleteCurrentHistory">删除当前</view>
+          <view
+            wx:if="{{historyRecords.length}}"
+            class="account-history-toggle"
+            hover-class="account-history-toggle-active"
+            catchtap="toggleHistoryDropdown"
+            aria-role="button"
+            aria-label="{{isHistoryOpen ? '收起已保存账号' : '展开已保存账号'}}"
+          >
+            <view class="history-chevron {{isHistoryOpen ? 'is-open' : ''}}"></view>
+          </view>
+        </view>
+
+        <view wx:if="{{isHistoryOpen && historyRecords.length}}" class="history-dropdown" catchtap="preventTap">
+          <scroll-view class="history-list" style="height: {{historyListHeight}}rpx;" scroll-y enhanced show-scrollbar="{{false}}">
+            <view
+              wx:for="{{historyRecords}}"
+              wx:key="account"
+              class="history-item {{form.account === item.account ? 'is-current' : ''}}"
+              data-index="{{index}}"
+              hover-class="history-item-active"
+              catchtap="selectHistory"
+              aria-role="button"
+              aria-label="选择账号 {{item.account}}"
+            >
+              <text class="history-account">{{item.account}}</text>
+              <view
+                class="history-delete"
+                data-index="{{index}}"
+                hover-class="history-delete-active"
+                catchtap="deleteHistory"
+                aria-role="button"
+                aria-label="删除账号 {{item.account}}"
+              >
+                <view class="weui-icon-delete"></view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
       </view>
 
       <view class="weui-cell" wx:if="{{loginWay === '3'}}">

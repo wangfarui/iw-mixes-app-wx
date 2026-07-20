@@ -34,9 +34,8 @@ Page({
     showFirstLoginLoading: false,
     loadingProgress: 0,
     historyRecords: [],
-    historyRecordIndex: 0,
-    historyLabel: '已保存账号',
-    canDeleteHistory: false
+    historyListHeight: 0,
+    isHistoryOpen: false
   },
 
   onLoad() {
@@ -50,11 +49,9 @@ Page({
 
   onAccountInput(event) {
     const account = event.detail.value
-    const historyRecordIndex = this.data.historyRecords.findIndex((item) => item.account === account.trim())
     this.setData({
       'form.account': account,
-      historyRecordIndex: historyRecordIndex >= 0 ? historyRecordIndex : 0,
-      canDeleteHistory: historyRecordIndex >= 0
+      isHistoryOpen: false
     })
   },
 
@@ -91,16 +88,11 @@ Page({
       loginWay,
       accountPlaceholder: isPhone ? '请输入手机号' : isEmail ? '请输入邮箱' : '请输入用户名/邮箱/手机号',
       accountMaxLength: isPhone ? 11 : 64,
-      'form.verificationCode': ''
+      'form.verificationCode': '',
+      isHistoryOpen: false
     }, () => {
       this.loadLoginHistory(loginWay, true)
     })
-  },
-
-  getHistoryLabel(loginWay) {
-    if (loginWay === LOGIN_WAY.PHONE) return '已保存手机号'
-    if (loginWay === LOGIN_WAY.EMAIL) return '已保存邮箱'
-    return '已保存账号'
   },
 
   loadLoginHistory(loginWay, fillFirstRecord) {
@@ -115,9 +107,8 @@ Page({
     const record = historyRecordIndex >= 0 ? historyRecords[historyRecordIndex] : null
     const data = {
       historyRecords,
-      historyRecordIndex: Math.max(historyRecordIndex, 0),
-      historyLabel: this.getHistoryLabel(loginWay),
-      canDeleteHistory: Boolean(record)
+      historyListHeight: Math.min(historyRecords.length, 4) * 88,
+      isHistoryOpen: false
     }
 
     if (fillFirstRecord) {
@@ -128,16 +119,32 @@ Page({
     this.setData(data)
   },
 
-  onHistoryChange(event) {
-    const historyRecordIndex = Number(event.detail.value)
+  toggleHistoryDropdown() {
+    if (!this.data.historyRecords.length) return
+
+    const isHistoryOpen = !this.data.isHistoryOpen
+    if (isHistoryOpen) {
+      wx.hideKeyboard()
+    }
+    this.setData({ isHistoryOpen })
+  },
+
+  closeHistoryDropdown() {
+    if (!this.data.isHistoryOpen) return
+    this.setData({ isHistoryOpen: false })
+  },
+
+  preventTap() {},
+
+  selectHistory(event) {
+    const historyRecordIndex = Number(event.currentTarget.dataset.index)
     const record = this.data.historyRecords[historyRecordIndex]
     if (!record) return
 
     const data = {
-      historyRecordIndex,
-      canDeleteHistory: true,
       'form.account': record.account,
-      'form.verificationCode': ''
+      'form.verificationCode': '',
+      isHistoryOpen: false
     }
     if (this.data.loginWay === LOGIN_WAY.PASSWORD) {
       data['form.password'] = record.password
@@ -145,23 +152,27 @@ Page({
     this.setData(data)
   },
 
-  deleteCurrentHistory() {
-    if (!this.data.canDeleteHistory) return
-    const record = this.data.historyRecords[this.data.historyRecordIndex]
+  deleteHistory(event) {
+    const historyRecordIndex = Number(event.currentTarget.dataset.index)
+    const record = this.data.historyRecords[historyRecordIndex]
     if (!record) return
 
-    wx.showModal({
-      title: '删除登录记录',
-      content: `确认删除「${record.account}」的缓存记录吗？`,
-      confirmText: '删除',
-      confirmColor: '#fa5151',
-      success: (res) => {
-        if (!res.confirm) return
-        loginHistoryStore.removeHistory(this.data.loginWay, record.account)
-        this.loadLoginHistory(this.data.loginWay, true)
-        wx.showToast({ title: '已删除', icon: 'success' })
-      }
-    })
+    const currentAccount = String(this.data.form.account || '').trim()
+    const historyRecords = loginHistoryStore.removeHistory(this.data.loginWay, record.account)
+    const data = {
+      historyRecords,
+      historyListHeight: Math.min(historyRecords.length, 4) * 88,
+      isHistoryOpen: historyRecords.length > 0
+    }
+
+    if (currentAccount === record.account) {
+      data['form.account'] = ''
+      data['form.password'] = ''
+      data['form.verificationCode'] = ''
+    }
+
+    this.setData(data)
+    wx.showToast({ title: '已删除', icon: 'success' })
   },
 
   isValidPhoneNumber(phone) {
@@ -244,6 +255,8 @@ Page({
   handleLogin() {
     if (this.data.isSubmitting) return
 
+    this.closeHistoryDropdown()
+
     if (!this.data.form.account) {
       wx.showToast({ icon: 'none', title: '请输入账号' })
       return
@@ -307,14 +320,12 @@ Page({
 
   async doPasswordLogin() {
     this.setData({ isSubmitting: true })
-    wx.showLoading({ title: '登录中' })
 
     try {
       const res = await loginByPasswordApi(this.data.form)
       this.loginSuccessAfter(res)
     } finally {
       this.setData({ isSubmitting: false })
-      wx.hideLoading()
     }
   },
 
@@ -331,7 +342,6 @@ Page({
     }
 
     this.setData({ isSubmitting: true })
-    wx.showLoading({ title: '登录中' })
 
     try {
       const res = await loginByVerificationCodeApi(loginForm)
@@ -343,7 +353,6 @@ Page({
       this.loginSuccessAfter(res)
     } finally {
       this.setData({ isSubmitting: false })
-      wx.hideLoading()
     }
   },
 
@@ -379,7 +388,6 @@ Page({
     }
 
     this.setData({ isSubmittingInvite: true })
-    wx.showLoading({ title: '注册中' })
     try {
       const res = await registerByVerificationCodeInviteApi({
         registerTicket: this.data.registerTicket,
@@ -389,7 +397,6 @@ Page({
       this.loginSuccessAfter(res)
     } finally {
       this.setData({ isSubmittingInvite: false })
-      wx.hideLoading()
     }
   },
 
