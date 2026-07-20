@@ -105,3 +105,17 @@ https://api.itwray.com
 - 不要猜接口字段含义，优先查本项目已有原生页面、`api`、`stores` 和 `../iw-mixes-server` 后端 Controller。
 - 只有需要旧实现对照时才查 `../iw-mixes-app` 页面和 API，不要默认修改归档项目。
 - 如果迁移中遇到字段语义、交互取舍或组件替换不确定，先问用户。
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in this repository's GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Triage uses the five canonical engineering-skill labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Domain documentation uses the single-context layout. See `docs/agents/domain.md`.
