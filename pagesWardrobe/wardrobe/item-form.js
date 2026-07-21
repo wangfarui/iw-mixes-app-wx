@@ -673,11 +673,16 @@ Page({
       status: helper.normalizeStatus(form.status),
       remark: form.remark || ''
     }
-    if (form.id) {
-      payload.id = form.id
-      await wardrobeApi.updateItem(payload)
-    } else {
-      await wardrobeApi.addItem(payload)
+    try {
+      if (form.id) {
+        payload.id = form.id
+        await wardrobeApi.updateItem(payload)
+      } else {
+        await wardrobeApi.addItem(payload)
+      }
+    } catch (error) {
+      wx.showToast({ title: (error && error.message) || '保存失败', icon: 'none' })
+      return
     }
     wx.showToast({ title: '已保存', icon: 'success' })
     if (!form.id && this.data.continueAdd) {
