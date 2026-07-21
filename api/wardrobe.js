@@ -68,6 +68,10 @@ function startOptimizeItemImage(data) {
   return http.post('/wardrobe/assistant/item-image/optimize/start', data)
 }
 
+function retryOptimizeItemImage(taskId) {
+  return http.post(`/wardrobe/assistant/item-image/optimize/retry?taskId=${encodeURIComponent(taskId)}`)
+}
+
 function getOptimizeItemImageStatus(taskId) {
   return http.get('/wardrobe/assistant/item-image/optimize/status', { taskId })
 }
@@ -138,6 +142,7 @@ module.exports = {
   aiSuggestOutfits,
   recognizeItemDraft,
   startOptimizeItemImage,
+  retryOptimizeItemImage,
   getOptimizeItemImageStatus,
   getLatestOptimizeItemImageTask,
   markOutfitWorn,

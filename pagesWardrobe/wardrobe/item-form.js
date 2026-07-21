@@ -67,6 +67,11 @@ Page({
     imageOptimizeLoading: false,
     imageOptimizeSummary: '',
     imageOptimizeTaskId: '',
+    imageOptimizeStatus: '',
+    imageOptimizeRetryable: false,
+    imageOptimizeButtonText: '一键优化',
+    imageOptimizeButtonDisabled: false,
+    imageOptimizeSourceLocked: false,
     optimizedImageDeleting: false
   },
 
@@ -107,7 +112,8 @@ Page({
     }
     this.setData({
       formData,
-      ...this.formOptionData(formData)
+      ...this.formOptionData(formData),
+      ...this.imageOptimizeIdleState('', Boolean(formData.optimizedImage))
     })
     this.recoverImageOptimizeTask(formData.id)
   },
@@ -239,8 +245,7 @@ Page({
     wx.hideLoading()
     if (this.data.imageOptimizeLoading) {
       this.setData({
-        imageOptimizeLoading: false,
-        imageOptimizeTaskId: ''
+        imageOptimizeLoading: false
       })
     }
   },
@@ -267,7 +272,7 @@ Page({
   },
 
   chooseFile() {
-    if (this.data.aiDraftLoading || this.data.imageOptimizeLoading || this.data.optimizedImageDeleting) return
+    if (this.data.aiDraftLoading || this.data.imageOptimizeSourceLocked || this.data.optimizedImageDeleting) return
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
@@ -344,30 +349,14 @@ Page({
 
   buildImageOptimizePayload() {
     const form = this.data.formData
-    const categoryOption = this.data.categoryOptions[this.data.categoryIndex] || {}
-    const itemStyleOption = this.data.itemStyleOptions[this.data.itemStyleIndex] || {}
     return {
       itemId: Number(form.id || 0),
-      imageUrl: form.originalImage || '',
-      itemName: form.itemName || '',
-      category: Number(form.category || 0),
-      categoryName: categoryOption.text || '',
-      itemStyle: Number(form.itemStyle || 0),
-      itemStyleName: itemStyleOption.value ? itemStyleOption.text || '' : '',
-      colorName: form.colorName || '',
-      seasonTags: form.seasonTags || '',
-      sceneTags: form.sceneTags || '',
-      styleTags: form.styleTags || '',
-      brand: form.brand || '',
-      material: form.material || '',
-      customTags: form.customTags || '',
-      remark: form.remark || '',
       prompt: this.data.aiDraftPrompt || ''
     }
   },
 
   async optimizeItemImage() {
-    if (this.data.aiDraftLoading || this.data.imageOptimizeLoading || this.data.optimizedImageDeleting) return
+    if (this.data.aiDraftLoading || this.data.imageOptimizeButtonDisabled || this.data.optimizedImageDeleting) return
     if (!this.data.formData.id) {
       wx.showToast({ title: '请先保存衣物', icon: 'none' })
       return
@@ -377,28 +366,44 @@ Page({
       return
     }
 
+    const retrying = this.data.imageOptimizeRetryable && Boolean(this.data.imageOptimizeTaskId)
     const token = (this.optimizePollToken || 0) + 1
     this.optimizePollToken = token
     this.setData({
       imageOptimizeLoading: true,
-      imageOptimizeSummary: '自动优化中',
-      imageOptimizeTaskId: ''
+      imageOptimizeSummary: retrying ? '正在重新排队' : '正在排队',
+      imageOptimizeStatus: 'queued',
+      imageOptimizeButtonText: '优化中…',
+      imageOptimizeButtonDisabled: true,
+      imageOptimizeSourceLocked: true
     })
     try {
-      const startRes = await wardrobeApi.startOptimizeItemImage(this.buildImageOptimizePayload())
+      const startRes = retrying
+        ? await wardrobeApi.retryOptimizeItemImage(this.data.imageOptimizeTaskId)
+        : await wardrobeApi.startOptimizeItemImage(this.buildImageOptimizePayload())
       if (!this.pageActive || this.optimizePollToken !== token) return
       const startData = startRes.data || {}
       if (!startData.taskId) throw new Error('图片优化任务启动失败')
-      this.setData({ imageOptimizeTaskId: startData.taskId })
-      if ((startData.status || 'processing') !== 'processing') {
-        this.handleImageOptimizeTaskResult(startData, { showToast: true })
+      if (this.handleImageOptimizeTaskResult(startData, { showToast: true })) {
         return
       }
-      this.setData({ imageOptimizeSummary: '自动优化中' })
       this.pollImageOptimizeTask(startData.taskId, token, { showToast: true })
     } catch (error) {
       if (!this.pageActive || this.optimizePollToken !== token) return
-      this.finishImageOptimizeFailure(error, { showToast: true })
+      if (retrying) {
+        this.setData({
+          imageOptimizeLoading: false,
+          imageOptimizeStatus: 'failed',
+          imageOptimizeRetryable: true,
+          imageOptimizeButtonText: '重新优化',
+          imageOptimizeButtonDisabled: false,
+          imageOptimizeSourceLocked: false
+        })
+        wx.showToast({ title: '重试失败', icon: 'none' })
+      } else {
+        this.setData(this.imageOptimizeIdleState((error && error.message) || '启动优化失败', false))
+        wx.showToast({ title: '启动失败', icon: 'none' })
+      }
     }
   },
 
@@ -410,29 +415,18 @@ Page({
       const res = await wardrobeApi.getLatestOptimizeItemImageTask(itemId)
       if (!this.pageActive || this.latestOptimizeQueryToken !== queryToken) return
       const data = res.data || {}
-      if (data.status !== 'processing' || !data.taskId) {
-        const nextData = {}
-        if (this.data.imageOptimizeLoading) {
-          nextData.imageOptimizeLoading = false
-          nextData.imageOptimizeTaskId = ''
-        }
-        if (data.status === 'success' && data.itemImage && data.itemImage !== this.data.formData.optimizedImage) {
-          nextData['formData.optimizedImage'] = data.itemImage
-          nextData['formData.itemImage'] = data.itemImage
-        }
-        if (Object.keys(nextData).length > 0) {
-          this.setData(nextData)
-        }
+      if (!data.taskId) {
+        this.setData(this.imageOptimizeIdleState())
+        return
+      }
+      if (!['queued', 'running'].includes(data.status)) {
+        this.handleImageOptimizeTaskResult(data)
         return
       }
       if (this.data.imageOptimizeLoading && this.data.imageOptimizeTaskId === data.taskId) return
       const token = (this.optimizePollToken || 0) + 1
       this.optimizePollToken = token
-      this.setData({
-        imageOptimizeLoading: true,
-        imageOptimizeSummary: '自动优化中',
-        imageOptimizeTaskId: data.taskId
-      })
+      this.setData(this.imageOptimizeActiveState(data))
       this.pollImageOptimizeTask(data.taskId, token, { showToast: true })
     } catch (error) {
       // 进入编辑页时恢复异步任务失败不打断表单编辑。
@@ -440,7 +434,7 @@ Page({
   },
 
   async pollImageOptimizeTask(taskId, token, options = {}) {
-    for (let index = 0; index < 80; index += 1) {
+    for (let index = 0; index < 300; index += 1) {
       await delay(3000)
       if (!this.isCurrentImageOptimizeTask(taskId, token)) return null
       try {
@@ -450,7 +444,7 @@ Page({
         if (this.handleImageOptimizeTaskResult(data, options)) {
           return data
         }
-        this.setData({ imageOptimizeSummary: '自动优化中' })
+        this.setData(this.imageOptimizeActiveState(data))
       } catch (error) {
         if (this.isCurrentImageOptimizeTask(taskId, token)) {
           this.finishImageOptimizeFailure(error, options)
@@ -459,24 +453,32 @@ Page({
       }
     }
     if (this.isCurrentImageOptimizeTask(taskId, token)) {
-      this.finishImageOptimizeFailure(new Error('图片优化超时'), options)
+      this.setData({
+        imageOptimizeLoading: false,
+        imageOptimizeSummary: '任务仍在后台处理，重新进入页面可继续查看'
+      })
     }
     return null
   },
 
   handleImageOptimizeTaskResult(data, options = {}) {
-    const status = data.status || 'processing'
-    if (status === 'success') {
-      if (!data.itemImage) {
-        this.finishImageOptimizeFailure(new Error('图片优化结果为空'), options)
-        return true
-      }
+    const status = data.status || ''
+    if (status === 'queued' || status === 'running') {
+      this.setData(this.imageOptimizeActiveState(data))
+      return false
+    }
+    if (status === 'succeeded' && data.itemImage) {
       this.setData({
         'formData.optimizedImage': data.itemImage,
         'formData.itemImage': data.itemImage,
         imageOptimizeLoading: false,
         imageOptimizeSummary: '图片已自动优化',
-        imageOptimizeTaskId: ''
+        imageOptimizeTaskId: data.taskId || '',
+        imageOptimizeStatus: 'succeeded',
+        imageOptimizeRetryable: false,
+        imageOptimizeButtonText: '已优化',
+        imageOptimizeButtonDisabled: true,
+        imageOptimizeSourceLocked: false
       })
       if (options.showToast && this.pageActive) {
         wx.showToast({ title: '优化完成', icon: 'success' })
@@ -484,10 +486,69 @@ Page({
       return true
     }
     if (status === 'failed') {
-      this.finishImageOptimizeFailure(new Error(data.errorMessage || '图片优化失败'), options)
+      this.setData({
+        imageOptimizeLoading: false,
+        imageOptimizeSummary: data.errorMessage || '图片优化失败',
+        imageOptimizeTaskId: data.taskId || this.data.imageOptimizeTaskId,
+        imageOptimizeStatus: 'failed',
+        imageOptimizeRetryable: Boolean(data.retryable),
+        imageOptimizeButtonText: data.retryable ? '重新优化' : '优化失败',
+        imageOptimizeButtonDisabled: !data.retryable,
+        imageOptimizeSourceLocked: false
+      })
+      if (options.showToast && this.pageActive) {
+        wx.showToast({ title: '优化失败', icon: 'none' })
+      }
+      return true
+    }
+    if (status === 'succeeded' && !data.itemImage) {
+      this.setData(this.imageOptimizeIdleState('优化图已删除，可重新优化'))
+      return true
+    }
+    if (status === 'cancelled') {
+      this.setData({
+        imageOptimizeLoading: false,
+        imageOptimizeSummary: data.errorMessage || '任务已取消',
+        imageOptimizeTaskId: data.taskId || '',
+        imageOptimizeStatus: 'cancelled',
+        imageOptimizeRetryable: false,
+        imageOptimizeButtonText: '任务已取消',
+        imageOptimizeButtonDisabled: true,
+        imageOptimizeSourceLocked: false
+      })
       return true
     }
     return false
+  },
+
+  imageOptimizeActiveState(data = {}) {
+    const status = data.status === 'queued' ? 'queued' : 'running'
+    return {
+      imageOptimizeLoading: true,
+      imageOptimizeSummary: status === 'queued' ? '已排队，等待优化' : '自动优化中',
+      imageOptimizeTaskId: data.taskId || this.data.imageOptimizeTaskId,
+      imageOptimizeStatus: status,
+      imageOptimizeRetryable: false,
+      imageOptimizeButtonText: '优化中…',
+      imageOptimizeButtonDisabled: true,
+      imageOptimizeSourceLocked: true
+    }
+  },
+
+  imageOptimizeIdleState(summary = '', optimizedImageExists) {
+    const hasOptimizedImage = optimizedImageExists === undefined
+      ? Boolean(this.data.formData.optimizedImage)
+      : Boolean(optimizedImageExists)
+    return {
+      imageOptimizeLoading: false,
+      imageOptimizeSummary: summary,
+      imageOptimizeTaskId: '',
+      imageOptimizeStatus: hasOptimizedImage ? 'succeeded' : '',
+      imageOptimizeRetryable: false,
+      imageOptimizeButtonText: hasOptimizedImage ? '已优化' : '一键优化',
+      imageOptimizeButtonDisabled: hasOptimizedImage,
+      imageOptimizeSourceLocked: false
+    }
   },
 
   deleteOptimizedImage() {
@@ -507,7 +568,7 @@ Page({
             'formData.optimizedImage': '',
             'formData.itemImage': this.data.formData.originalImage || '',
             optimizedImageDeleting: false,
-            imageOptimizeSummary: '优化图已删除'
+            ...this.imageOptimizeIdleState('优化图已删除', false)
           })
           wx.showToast({ title: '已删除', icon: 'success' })
         } catch (error) {
@@ -520,8 +581,9 @@ Page({
   finishImageOptimizeFailure(error, options = {}) {
     this.setData({
       imageOptimizeLoading: false,
-      imageOptimizeSummary: '自动优化失败',
-      imageOptimizeTaskId: ''
+      imageOptimizeSummary: (error && error.message) || '任务状态查询失败',
+      imageOptimizeButtonDisabled: ['queued', 'running'].includes(this.data.imageOptimizeStatus),
+      imageOptimizeSourceLocked: ['queued', 'running'].includes(this.data.imageOptimizeStatus)
     })
     if (options.showToast && this.pageActive) {
       const errorMessage = error && error.message === '图片过大，优化失败'
@@ -636,7 +698,7 @@ Page({
         formData: nextFormData,
         ...this.formOptionData(nextFormData),
         aiDraftSummary: '',
-        imageOptimizeSummary: ''
+        ...this.imageOptimizeIdleState('', false)
       })
       return
     }

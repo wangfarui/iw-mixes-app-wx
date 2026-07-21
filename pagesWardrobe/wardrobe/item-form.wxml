@@ -31,7 +31,7 @@
     <view class="form-line image-form-line">
       <view class="form-label">原图</view>
       <view class="image-field-row">
-        <view class="form-input tap-field image-upload-field {{(imageOptimizeLoading || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="chooseFile">{{formData.originalImage ? '已上传，点击更换' : '点击上传图片'}}</view>
+        <view class="form-input tap-field image-upload-field {{(imageOptimizeSourceLocked || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="chooseFile">{{imageOptimizeSourceLocked ? '优化中，暂不能更换' : (formData.originalImage ? '已上传，点击更换' : '点击上传图片')}}</view>
       </view>
     </view>
     <view class="image-preview-grid">
@@ -55,11 +55,11 @@
     </view>
     <view wx:if="{{formData.id}}" class="image-ai-action-row">
       <view class="plain-btn image-ai-btn {{(!formData.originalImage || aiDraftLoading || imageOptimizeLoading || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="recognizeCurrentImage">识别当前图片</view>
-      <view class="primary-btn image-ai-btn {{(!formData.originalImage || aiDraftLoading || imageOptimizeLoading || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="optimizeItemImage">一键优化</view>
+      <view class="primary-btn image-ai-btn {{(!formData.originalImage || aiDraftLoading || imageOptimizeButtonDisabled || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="optimizeItemImage">{{imageOptimizeButtonText}}</view>
     </view>
     <view wx:if="{{imageOptimizeLoading}}" class="ai-waiting image-optimize-waiting">
       <view class="ai-spinner"></view>
-      <view class="ai-waiting-text">自动优化中</view>
+      <view class="ai-waiting-text">{{imageOptimizeStatus === 'queued' ? '等待优化' : '自动优化中'}}</view>
     </view>
     <view wx:if="{{imageOptimizeSummary && !imageOptimizeLoading}}" class="ai-summary image-optimize-summary">{{imageOptimizeSummary}}</view>
     <view class="form-line">
