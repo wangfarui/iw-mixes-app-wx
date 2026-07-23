@@ -707,6 +707,12 @@ Page({
       })
       return
     }
+    if (form.id) {
+      this.getOpenerEventChannel().emit('itemSaved', {
+        ...payload,
+        itemImage: form.optimizedImage || form.itemImage || payload.itemImage
+      })
+    }
     setTimeout(() => wx.navigateBack(), 400)
   }
 })

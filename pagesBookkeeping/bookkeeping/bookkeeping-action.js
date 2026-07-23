@@ -340,6 +340,11 @@ Page({
       })
 
       if (this.data.isUpdateForm) {
+        this.getOpenerEventChannel().emit('recordSaved', {
+          ...submitData,
+          recordTime: submitData.recordDate || formData.recordTime || '',
+          recordTimeStr: submitData.recordDate || formData.recordTimeStr || ''
+        })
         setTimeout(() => wx.navigateBack(), 500)
       } else {
         this.setData({

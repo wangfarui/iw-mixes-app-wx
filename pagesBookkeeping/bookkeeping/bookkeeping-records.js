@@ -348,7 +348,34 @@ Page({
 
   handleRecordClick(event) {
     wx.navigateTo({
-      url: `/pagesBookkeeping/bookkeeping/bookkeeping-detail?id=${event.currentTarget.dataset.id}`
+      url: `/pagesBookkeeping/bookkeeping/bookkeeping-detail?id=${event.currentTarget.dataset.id}`,
+      success: (res) => {
+        res.eventChannel.on('recordSaved', (record) => this.updateRecordInPlace(record))
+        res.eventChannel.on('recordDeleted', (id) => this.removeRecordInPlace(id))
+      }
     })
+  },
+
+  updateRecordInPlace(record) {
+    if (!record || record.id === undefined || record.id === null) return
+    const index = this.data.list.findIndex((current) => String(current.id) === String(record.id))
+    if (index < 0) return
+
+    const current = this.data.list[index]
+    const recordTime = record.recordDate || record.recordTime || current.recordTime
+    const list = this.data.list.slice()
+    list[index] = bookkeepingUtils.formatListRecord({
+      ...current,
+      ...record,
+      recordTime,
+      recordTimeStr: recordTime || current.recordTimeStr
+    }, scopeStore.getScopeState())
+    this.setData({ list })
+  },
+
+  removeRecordInPlace(id) {
+    const list = this.data.list.filter((record) => String(record.id) !== String(id))
+    if (list.length === this.data.list.length) return
+    this.setData({ list })
   }
 })

@@ -66,11 +66,17 @@ Page({
     loadMoreText: '加载更多',
     isRefreshing: false,
     currentPage: 1,
-    pageSize: 10
+    pageSize: 10,
+    initialized: false
   },
 
   onShow() {
-    this.initPage()
+    if (!this.data.initialized) {
+      this.setData({ initialized: true })
+      this.initPage()
+      return
+    }
+    this.getStatistics()
   },
 
   onPullDownRefresh() {
@@ -176,8 +182,35 @@ Page({
 
   handleRecordClick(event) {
     wx.navigateTo({
-      url: `/pagesBookkeeping/bookkeeping/bookkeeping-detail?id=${event.currentTarget.dataset.id}`
+      url: `/pagesBookkeeping/bookkeeping/bookkeeping-detail?id=${event.currentTarget.dataset.id}`,
+      success: (res) => {
+        res.eventChannel.on('recordSaved', (record) => this.updateBillInPlace(record))
+        res.eventChannel.on('recordDeleted', (id) => this.removeBillInPlace(id))
+      }
     })
+  },
+
+  updateBillInPlace(record) {
+    if (!record || record.id === undefined || record.id === null) return
+    const index = this.data.billList.findIndex((current) => String(current.id) === String(record.id))
+    if (index < 0) return
+
+    const current = this.data.billList[index]
+    const recordTime = record.recordDate || record.recordTime || current.recordTime
+    const billList = this.data.billList.slice()
+    billList[index] = this.formatRecord({
+      ...current,
+      ...record,
+      recordTime,
+      recordTimeStr: recordTime || current.recordTimeStr
+    })
+    this.setData({ billList })
+  },
+
+  removeBillInPlace(id) {
+    const billList = this.data.billList.filter((record) => String(record.id) !== String(id))
+    if (billList.length === this.data.billList.length) return
+    this.setData({ billList })
   },
 
   handleScrollToLower() {

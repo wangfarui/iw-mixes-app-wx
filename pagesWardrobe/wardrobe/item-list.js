@@ -19,12 +19,16 @@ Page({
     pageSize: 12,
     hasMore: true,
     loading: false,
-    loadMoreText: '加载更多'
+    loadMoreText: '加载更多',
+    initialized: false
   },
 
   onShow() {
     this.refreshDictOptions()
-    this.initPage()
+    if (!this.data.initialized) {
+      this.setData({ initialized: true })
+      this.initPage()
+    }
   },
 
   refreshDictOptions() {
@@ -139,7 +143,7 @@ Page({
   },
 
   goAdd() {
-    wx.navigateTo({ url: '/pagesWardrobe/wardrobe/item-form' })
+    this.openItemForm('/pagesWardrobe/wardrobe/item-form')
   },
 
   goBatchAdd() {
@@ -147,7 +151,29 @@ Page({
   },
 
   goEdit(event) {
-    wx.navigateTo({ url: `/pagesWardrobe/wardrobe/item-form?id=${event.currentTarget.dataset.id}` })
+    this.openItemForm(`/pagesWardrobe/wardrobe/item-form?id=${event.currentTarget.dataset.id}`)
+  },
+
+  openItemForm(url) {
+    wx.navigateTo({
+      url,
+      success: (res) => {
+        res.eventChannel.on('itemSaved', (item) => this.updateItemInPlace(item))
+      }
+    })
+  },
+
+  updateItemInPlace(item) {
+    if (!item || item.id === undefined || item.id === null) return
+    const index = this.data.list.findIndex((current) => String(current.id) === String(item.id))
+    if (index < 0) return
+
+    const list = this.data.list.slice()
+    list[index] = helper.formatItem({
+      ...list[index],
+      ...item
+    })
+    this.setData({ list })
   },
 
   markWorn(event) {

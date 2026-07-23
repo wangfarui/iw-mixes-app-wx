@@ -44,8 +44,22 @@ Page({
   clickUpdateButton() {
     if (!this.data.detail.canEdit) return
     wx.navigateTo({
-      url: `/pagesBookkeeping/bookkeeping/bookkeeping-action?id=${this.data.detail.id}`
+      url: `/pagesBookkeeping/bookkeeping/bookkeeping-action?id=${this.data.detail.id}`,
+      success: (res) => {
+        res.eventChannel.on('recordSaved', (record) => this.applySavedRecord(record))
+      }
     })
+  },
+
+  applySavedRecord(record) {
+    const current = this.data.detail
+    const detail = this.formatDetail({
+      ...current,
+      ...record,
+      recordTime: record.recordDate || record.recordTime || current.recordTime
+    })
+    this.setData({ detail })
+    this.getOpenerEventChannel().emit('recordSaved', detail)
   },
 
   confirmDelete() {
@@ -59,6 +73,7 @@ Page({
         if (!res.confirm) return
 
         await bookkeepingApi.deleteRecord(this.data.detail.id)
+        this.getOpenerEventChannel().emit('recordDeleted', this.data.detail.id)
         wx.showToast({
           title: '删除成功',
           icon: 'success'
