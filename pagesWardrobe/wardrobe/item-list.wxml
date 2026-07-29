@@ -11,18 +11,13 @@
       <picker class="picker-field compact-picker" mode="selector" range="{{itemStyleOptions}}" range-key="text" value="{{itemStyleIndex}}" bindchange="onItemStyleChange">
         <view>{{itemStyleOptions[itemStyleIndex].text}}</view>
       </picker>
-      <picker class="picker-field compact-picker" mode="selector" range="{{wearStateOptions}}" range-key="text" value="{{wearStateIndex}}" bindchange="onWearStateChange">
-        <view>{{wearStateOptions[wearStateIndex].text}}</view>
-      </picker>
       <picker class="picker-field compact-picker" mode="selector" range="{{sortOptions}}" range-key="text" value="{{sortIndex}}" bindchange="onSortChange">
         <view>{{sortOptions[sortIndex].text}}</view>
       </picker>
-      <view class="plain-btn filter-btn" hover-class="tap-active" bindtap="resetFilters">重置</view>
-    </view>
-    <view wx:if="{{showOwnerFilter}}" class="filter-row filter-row-secondary">
-      <picker class="picker-field compact-picker owner-picker" mode="selector" range="{{ownerOptions}}" range-key="text" value="{{ownerIndex}}" bindchange="onOwnerChange">
+      <picker wx:if="{{showOwnerFilter}}" class="picker-field compact-picker owner-picker" mode="selector" range="{{ownerOptions}}" range-key="text" value="{{ownerIndex}}" bindchange="onOwnerChange">
         <view>{{ownerOptions[ownerIndex].text}}</view>
       </picker>
+      <view class="plain-btn filter-btn" hover-class="tap-active" bindtap="resetFilters">重置</view>
     </view>
     <view class="button-row">
       <view class="plain-btn" hover-class="tap-active" bindtap="goBatchAdd">批量入柜</view>

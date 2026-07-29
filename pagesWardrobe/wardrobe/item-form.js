@@ -117,7 +117,7 @@ Page({
   onShow() {
     this.pageActive = true
     this.setData(this.formOptionData(this.data.formData))
-    if (this.data.formData.id) {
+    if (this.data.formData.id && this.data.canOptimize) {
       this.recoverImageOptimizeTask(this.data.formData.id)
     }
   },
@@ -133,6 +133,7 @@ Page({
   async loadDetail(id) {
     const res = await wardrobeApi.getItemDetail(id)
     const detail = res.data || {}
+    const canOptimize = detail.canOptimize !== false
     const formData = {
       ...defaultForm(),
       ...detail,
@@ -146,12 +147,12 @@ Page({
       formData,
       ownerIndex: this.ownerIndex(formData.ownerUserId),
       canManage: detail.canEdit !== false,
-      canOptimize: detail.canOptimize !== false,
+      canOptimize,
       originalOwnerUserId: formData.ownerUserId,
       ...this.formOptionData(formData),
       ...this.imageOptimizeIdleState('', Boolean(formData.optimizedImage))
     })
-    this.recoverImageOptimizeTask(formData.id)
+    if (canOptimize) this.recoverImageOptimizeTask(formData.id)
   },
 
   formOptionData(formData) {
@@ -401,6 +402,7 @@ Page({
   },
 
   async optimizeItemImage() {
+    if (!this.data.canOptimize) return
     if (this.data.aiDraftLoading || this.data.imageOptimizeButtonDisabled || this.data.optimizedImageDeleting) return
     if (!this.data.formData.id) {
       wx.showToast({ title: '请先保存衣物', icon: 'none' })
@@ -453,7 +455,7 @@ Page({
   },
 
   async recoverImageOptimizeTask(itemId) {
-    if (!itemId) return
+    if (!itemId || !this.data.canOptimize) return
     const queryToken = (this.latestOptimizeQueryToken || 0) + 1
     this.latestOptimizeQueryToken = queryToken
     try {
@@ -733,6 +735,7 @@ Page({
       }))
       if (!confirmed) return
     }
+    let savedItem = null
     try {
       if (form.id) {
         payload.id = form.id
@@ -743,6 +746,14 @@ Page({
     } catch (error) {
       wx.showToast({ title: (error && error.message) || '保存失败', icon: 'none' })
       return
+    }
+    if (form.id) {
+      try {
+        const detailRes = await wardrobeApi.getItemDetail(form.id)
+        savedItem = detailRes.data || null
+      } catch (error) {
+        savedItem = { id: form.id, reloadRequired: true }
+      }
     }
     wx.showToast({ title: '已保存', icon: 'success' })
     if (!form.id && this.data.continueAdd) {
@@ -770,10 +781,7 @@ Page({
       return
     }
     if (form.id) {
-      this.getOpenerEventChannel().emit('itemSaved', {
-        ...payload,
-        itemImage: form.optimizedImage || form.itemImage || payload.itemImage
-      })
+      this.getOpenerEventChannel().emit('itemSaved', savedItem || { id: form.id, reloadRequired: true })
     }
     setTimeout(() => wx.navigateBack(), 400)
   }

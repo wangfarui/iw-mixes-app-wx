@@ -11,15 +11,13 @@ Page({
     itemStyleIndex: 0,
     statusOptions: [{ value: '', text: '全部状态' }].concat(helper.STATUS_OPTIONS),
     statusIndex: 0,
-    wearStateOptions: helper.WEAR_STATE_OPTIONS,
-    wearStateIndex: 0,
     sortOptions: helper.SORT_OPTIONS,
     sortIndex: 0,
     keyword: '',
     ownerOptions: [{ value: '', text: '全部成员' }],
     ownerIndex: 0,
     showOwnerFilter: false,
-    showOwnerLabels: true,
+    showOwnerLabels: false,
     ownerScopeFallback: false,
     list: [],
     currentPage: 1,
@@ -48,7 +46,7 @@ Page({
       ownerOptions,
       ownerIndex: 0,
       showOwnerFilter: !queryOnlyMyself && state.canChooseOwner && !state.fallbackToMyself,
-      showOwnerLabels: !familyScope.isChildRole(),
+      showOwnerLabels: familyScope.hasGroup() && !familyScope.isChildRole(),
       ownerScopeFallback: state.fallbackToMyself
     })
     if (state.fallbackToMyself) {
@@ -101,19 +99,11 @@ Page({
         category: this.data.currentCategory || null,
         itemStyle: this.data.itemStyleOptions[this.data.itemStyleIndex].value || null,
         status: this.data.statusOptions[this.data.statusIndex].value || null,
-        wearState: this.data.wearStateOptions[this.data.wearStateIndex].value || null,
         sortType: this.data.sortOptions[this.data.sortIndex].value,
         queryOnlyMyself: this.data.ownerScopeFallback || familyScope.getQueryOnlyMyself() === 1,
         ownerUserId: this.data.ownerOptions[this.data.ownerIndex].value || null
       })
-      const rows = ((res.data && res.data.records) || []).map((item) => {
-        const owner = this.data.ownerOptions.find((option) => String(option.value) === String(item.ownerUserId))
-        return helper.formatItem({
-          ...item,
-          ownerText: owner ? owner.text : (item.ownerName || ''),
-          ownerAvatar: item.ownerAvatar || (owner && owner.avatar) || ''
-        })
-      })
+      const rows = ((res.data && res.data.records) || []).map((item) => this.formatListItem(item))
       const list = reset ? rows : this.data.list.concat(rows)
       const total = (res.data && res.data.total) || list.length
       this.setData({
@@ -153,11 +143,6 @@ Page({
     this.initPage()
   },
 
-  onWearStateChange(event) {
-    this.setData({ wearStateIndex: Number(event.detail.value) })
-    this.initPage()
-  },
-
   onSortChange(event) {
     this.setData({ sortIndex: Number(event.detail.value) })
     this.initPage()
@@ -174,7 +159,6 @@ Page({
       itemStyleOptions: this.itemStyleOptions(''),
       itemStyleIndex: 0,
       statusIndex: 0,
-      wearStateIndex: 0,
       sortIndex: 0,
       ownerIndex: 0,
       keyword: ''
@@ -198,9 +182,38 @@ Page({
     wx.navigateTo({
       url,
       success: (res) => {
-        res.eventChannel.on('itemSaved', (item) => this.updateItemInPlace(item))
+        res.eventChannel.on('itemSaved', (item) => this.handleItemSaved(item))
       }
     })
+  },
+
+  handleItemSaved(item) {
+    if (!item || item.id === undefined || item.id === null) return
+    if (item.reloadRequired) {
+      this.initPage()
+      return
+    }
+    this.updateItemInPlace(item)
+  },
+
+  formatListItem(item) {
+    const owner = this.data.ownerOptions.find((option) => String(option.value) === String(item.ownerUserId))
+    return helper.formatItem({
+      ...item,
+      ownerText: owner ? owner.text : (item.ownerName || ''),
+      ownerAvatar: item.ownerAvatar || (owner && owner.avatar) || ''
+    })
+  },
+
+  itemMatchesOwnerScope(item) {
+    const selectedOwner = this.data.ownerOptions[this.data.ownerIndex] || {}
+    if (selectedOwner.value !== undefined && selectedOwner.value !== null && selectedOwner.value !== '') {
+      return String(selectedOwner.value) === String(item.ownerUserId)
+    }
+    if (this.data.ownerScopeFallback || familyScope.getQueryOnlyMyself() === 1) {
+      return String(wardrobeFamily.currentUserId()) === String(item.ownerUserId)
+    }
+    return true
   },
 
   updateItemInPlace(item) {
@@ -208,8 +221,14 @@ Page({
     const index = this.data.list.findIndex((current) => String(current.id) === String(item.id))
     if (index < 0) return
 
+    if (!this.itemMatchesOwnerScope(item)) {
+      const list = this.data.list.filter((current) => String(current.id) !== String(item.id))
+      this.setData({ list })
+      return
+    }
+
     const list = this.data.list.slice()
-    list[index] = helper.formatItem({
+    list[index] = this.formatListItem({
       ...list[index],
       ...item
     })

@@ -130,13 +130,6 @@ const SORT_OPTIONS = [
   { value: 'idleDays', text: '闲置久' }
 ]
 
-const WEAR_STATE_OPTIONS = [
-  { value: '', text: '全部穿着' },
-  { value: 1, text: '未穿过' },
-  { value: 2, text: '最近穿过' },
-  { value: 3, text: '最少穿' }
-]
-
 const COLOR_HEX_MAP = COLOR_OPTIONS.reduce((map, option) => {
   map[option.value] = option.hex
   return map
@@ -343,7 +336,6 @@ module.exports = {
   ITEM_STYLE_OPTIONS,
   STATUS_OPTIONS,
   SORT_OPTIONS,
-  WEAR_STATE_OPTIONS,
   getCategoryOptions,
   getItemStyleOptions,
   getColorOptions,
