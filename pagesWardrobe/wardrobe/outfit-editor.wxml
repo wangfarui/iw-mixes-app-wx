@@ -74,6 +74,7 @@
           <view wx:else class="select-image image-placeholder">暂无图片</view>
           <view class="select-name">{{item.itemName}}</view>
           <view class="select-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.statusName}}</view>
+          <view wx:if="{{item.availabilityText}}" class="select-unavailable">{{item.availabilityText}}，可取消选择后替换</view>
           <view wx:if="{{item.customTagNames}}" class="select-tags">{{item.customTagNames}}</view>
           <view wx:if="{{selectedMap[item.id]}}" class="selected-dot">✓</view>
         </view>

@@ -59,7 +59,11 @@ function formatSelectableItem(item) {
     ...formatted,
     id,
     itemId: id,
-    image: formatted.image || (item && (item.itemImage || item.image)) || ''
+    image: formatted.image || (item && (item.itemImage || item.image)) || '',
+    availability: (item && item.availability) || 'available',
+    availabilityText: item && item.availability === 'deleted'
+      ? '已删除'
+      : item && item.availability === 'transferred' ? '已转交' : ''
   }
 }
 
@@ -151,7 +155,8 @@ Page({
         season: optionAt(this.data.itemSeasonFilterOptions, this.data.itemSeasonFilterIndex).value || '',
         scene: optionAt(this.data.itemSceneFilterOptions, this.data.itemSceneFilterIndex).value || '',
         style: optionAt(this.data.itemStyleFilterOptions, this.data.itemStyleFilterIndex).value || '',
-        sortType: optionAt(this.data.itemSortOptions, this.data.itemSortIndex).value || 'recentWear'
+        sortType: optionAt(this.data.itemSortOptions, this.data.itemSortIndex).value || 'recentWear',
+        queryOnlyMyself: true
       })
       const rawRows = (res.data && res.data.records) || []
       const rows = rawRows

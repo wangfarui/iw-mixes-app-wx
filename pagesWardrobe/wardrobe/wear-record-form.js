@@ -284,6 +284,7 @@ Page({
     this.setData({ itemLoading: true, itemLoadMoreText: '加载中...' })
     try {
       const res = await wardrobeApi.getItemPage({
+        queryOnlyMyself: true,
         currentPage: this.data.itemCurrentPage,
         pageSize: this.data.itemPageSize,
         keyword: this.data.itemKeyword,

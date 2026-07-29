@@ -96,18 +96,20 @@ Page({
         if (!res.confirm) return
         const payload = { wearDate: helper.today(), outfitId: id }
         try {
-          await wardrobeApi.markOutfitWorn(payload)
-          wx.showToast({ title: '已记录', icon: 'success' })
-          this.initPage()
-        } catch (error) {
-          const message = (error && error.message) || '记录失败'
-          if (!message.includes('已被删除或转交')) {
-            wx.showToast({ title: message, icon: 'none' })
+          const result = await wardrobeApi.markOutfitWorn(payload)
+          const data = result.data || {}
+          if (!data.confirmationRequired) {
+            wx.showToast({ title: '已记录', icon: 'success' })
+            this.initPage()
             return
           }
+          const unavailableText = (data.unavailableItems || []).map((item) => {
+            const reason = item.availability === 'deleted' ? '已删除' : '已转交'
+            return `${item.itemName || '未命名衣物'}（${reason}）`
+          }).join('、')
           wx.showModal({
             title: '衣物不可用',
-            content: message,
+            content: `${unavailableText}。是否仅记录仍可用的衣物？`,
             confirmText: '继续记录',
             success: async (confirm) => {
               if (!confirm.confirm) return
@@ -120,6 +122,8 @@ Page({
               }
             }
           })
+        } catch (error) {
+          wx.showToast({ title: (error && error.message) || '记录失败', icon: 'none' })
         }
       }
     })

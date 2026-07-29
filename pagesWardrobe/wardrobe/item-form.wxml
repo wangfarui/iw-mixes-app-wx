@@ -38,7 +38,8 @@
     <view class="form-line image-form-line">
       <view class="form-label">原图</view>
       <view class="image-field-row">
-        <view class="form-input tap-field image-upload-field {{(imageOptimizeSourceLocked || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="chooseFile">{{imageOptimizeSourceLocked ? '优化中，暂不能更换' : (formData.originalImage ? '已上传，点击更换' : '点击上传图片')}}</view>
+        <view wx:if="{{canManage}}" class="form-input tap-field image-upload-field {{(imageOptimizeSourceLocked || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="chooseFile">{{imageOptimizeSourceLocked ? '优化中，暂不能更换' : (formData.originalImage ? '已上传，点击更换' : '点击上传图片')}}</view>
+        <view wx:else class="form-input readonly-field">{{formData.originalImage ? '已上传' : '暂无原图'}}</view>
       </view>
     </view>
     <view class="image-preview-grid">
@@ -50,7 +51,7 @@
       <view class="image-preview-column">
         <view class="image-preview-head">
           <text>优化图</text>
-          <view wx:if="{{formData.optimizedImage}}" class="optimized-delete {{(imageOptimizeLoading || optimizedImageDeleting) ? 'is-disabled' : ''}}" catchtap="deleteOptimizedImage">{{optimizedImageDeleting ? '删除中' : '删除'}}</view>
+          <view wx:if="{{formData.optimizedImage && canOptimize}}" class="optimized-delete {{(imageOptimizeLoading || optimizedImageDeleting) ? 'is-disabled' : ''}}" catchtap="deleteOptimizedImage">{{optimizedImageDeleting ? '删除中' : '删除'}}</view>
         </view>
         <image wx:if="{{formData.optimizedImage}}" class="image-preview" src="{{formData.optimizedImage}}" mode="aspectFill" data-url="{{formData.optimizedImage}}" bindtap="previewImage" />
         <view wx:else class="image-preview image-preview-empty">暂无优化图</view>
@@ -58,9 +59,9 @@
     </view>
     <view wx:if="{{formData.id}}" class="form-line ai-prompt-line edit-ai-prompt-line">
       <view class="form-label">提示词</view>
-      <input class="form-input" value="{{aiDraftPrompt}}" placeholder="可补充颜色、场景、材质" disabled="{{aiDraftLoading || imageOptimizeLoading}}" bindinput="onAiPromptInput" />
+      <input class="form-input" value="{{aiDraftPrompt}}" placeholder="可补充颜色、场景、材质" disabled="{{!canManage || aiDraftLoading || imageOptimizeLoading}}" bindinput="onAiPromptInput" />
     </view>
-    <view wx:if="{{formData.id && canManage}}" class="image-ai-action-row">
+    <view wx:if="{{formData.id && canOptimize}}" class="image-ai-action-row">
       <view class="plain-btn image-ai-btn {{(!formData.originalImage || aiDraftLoading || imageOptimizeLoading || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="recognizeCurrentImage">识别当前图片</view>
       <view class="primary-btn image-ai-btn {{(!formData.originalImage || aiDraftLoading || imageOptimizeButtonDisabled || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="optimizeItemImage">{{imageOptimizeButtonText}}</view>
     </view>
@@ -71,76 +72,76 @@
     <view wx:if="{{imageOptimizeSummary && !imageOptimizeLoading}}" class="ai-summary image-optimize-summary">{{imageOptimizeSummary}}</view>
     <view class="form-line">
       <view class="form-label">品类</view>
-      <picker class="picker-field" mode="selector" range="{{categoryOptions}}" range-key="text" value="{{categoryIndex}}" bindchange="onCategoryChange">
+      <picker class="picker-field" mode="selector" range="{{categoryOptions}}" range-key="text" value="{{categoryIndex}}" disabled="{{!canManage}}" bindchange="onCategoryChange">
         <view>{{categoryOptions[categoryIndex].text}}</view>
       </picker>
     </view>
     <view class="form-line">
       <view class="form-label">款式</view>
-      <picker class="picker-field" mode="selector" range="{{itemStyleOptions}}" range-key="text" value="{{itemStyleIndex}}" bindchange="onItemStyleChange">
+      <picker class="picker-field" mode="selector" range="{{itemStyleOptions}}" range-key="text" value="{{itemStyleIndex}}" disabled="{{!canManage}}" bindchange="onItemStyleChange">
         <view>{{itemStyleOptions[itemStyleIndex].text}}</view>
       </picker>
     </view>
     <view class="form-line">
       <view class="form-label">颜色</view>
-      <picker class="picker-field" mode="selector" range="{{colorOptions}}" range-key="text" value="{{colorIndex}}" bindchange="onColorChange">
+      <picker class="picker-field" mode="selector" range="{{colorOptions}}" range-key="text" value="{{colorIndex}}" disabled="{{!canManage}}" bindchange="onColorChange">
         <view>{{formData.colorName || '请选择颜色'}}</view>
       </picker>
     </view>
     <view class="form-line">
       <view class="form-label">品牌</view>
-      <input class="form-input" value="{{formData.brand}}" placeholder="选填" data-field="brand" bindinput="handleInput" />
+      <input class="form-input" value="{{formData.brand}}" placeholder="选填" disabled="{{!canManage}}" data-field="brand" bindinput="handleInput" />
     </view>
     <view class="form-line">
       <view class="form-label">尺码</view>
-      <input class="form-input" value="{{formData.size}}" placeholder="选填" data-field="size" bindinput="handleInput" />
+      <input class="form-input" value="{{formData.size}}" placeholder="选填" disabled="{{!canManage}}" data-field="size" bindinput="handleInput" />
     </view>
     <view class="form-line">
       <view class="form-label">材质</view>
-      <input class="form-input" value="{{formData.material}}" placeholder="选填" data-field="material" bindinput="handleInput" />
+      <input class="form-input" value="{{formData.material}}" placeholder="选填" disabled="{{!canManage}}" data-field="material" bindinput="handleInput" />
     </view>
     <view class="form-line">
       <view class="form-label">渠道</view>
-      <input class="form-input" value="{{formData.purchaseChannel}}" placeholder="例如 线下店/淘宝" data-field="purchaseChannel" bindinput="handleInput" />
+      <input class="form-input" value="{{formData.purchaseChannel}}" placeholder="例如 线下店/淘宝" disabled="{{!canManage}}" data-field="purchaseChannel" bindinput="handleInput" />
     </view>
     <view class="form-line">
       <view class="form-label">位置</view>
-      <input class="form-input" value="{{formData.storageLocation}}" placeholder="例如 主卧衣柜上层" data-field="storageLocation" bindinput="handleInput" />
+      <input class="form-input" value="{{formData.storageLocation}}" placeholder="例如 主卧衣柜上层" disabled="{{!canManage}}" data-field="storageLocation" bindinput="handleInput" />
     </view>
     <view class="form-line">
       <view class="form-label">购买日期</view>
-      <picker class="picker-field" mode="date" value="{{formData.purchaseDate}}" bindchange="onPurchaseDateChange">
+      <picker class="picker-field" mode="date" value="{{formData.purchaseDate}}" disabled="{{!canManage}}" bindchange="onPurchaseDateChange">
         <view>{{formData.purchaseDate || '请选择日期'}}</view>
       </picker>
     </view>
     <view class="form-line">
       <view class="form-label">价格</view>
-      <input class="form-input" type="digit" value="{{formData.price}}" placeholder="0" data-field="price" bindinput="handleInput" />
+      <input class="form-input" type="digit" value="{{formData.price}}" placeholder="0" disabled="{{!canManage}}" data-field="price" bindinput="handleInput" />
     </view>
     <view class="form-line">
       <view class="form-label">状态</view>
-      <picker class="picker-field" mode="selector" range="{{statusOptions}}" range-key="text" value="{{statusIndex}}" bindchange="onStatusChange">
+      <picker class="picker-field" mode="selector" range="{{statusOptions}}" range-key="text" value="{{statusIndex}}" disabled="{{!canManage}}" bindchange="onStatusChange">
         <view>{{statusOptions[statusIndex].text}}</view>
       </picker>
     </view>
     <view class="form-line">
       <view class="form-label">标签</view>
-      <input class="form-input" value="{{formData.customTags}}" placeholder="逗号分隔，例如 基础款,通勤" data-field="customTags" bindinput="handleInput" />
+      <input class="form-input" value="{{formData.customTags}}" placeholder="逗号分隔，例如 基础款,通勤" disabled="{{!canManage}}" data-field="customTags" bindinput="handleInput" />
     </view>
   </view>
 
   <view class="form-panel">
     <view class="section-title">季节</view>
     <view class="tag-wrap">
-      <view wx:for="{{seasonOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="seasonTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+      <view wx:for="{{seasonOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}} {{!canManage ? 'is-disabled' : ''}}" data-group="seasonTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
     </view>
     <view class="section-title form-section-title">场景</view>
     <view class="tag-wrap">
-      <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="sceneTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+      <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}} {{!canManage ? 'is-disabled' : ''}}" data-group="sceneTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
     </view>
     <view class="section-title form-section-title">风格</view>
     <view class="tag-wrap">
-      <view wx:for="{{styleOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-group="styleTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
+      <view wx:for="{{styleOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}} {{!canManage ? 'is-disabled' : ''}}" data-group="styleTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
     </view>
   </view>
 
@@ -152,7 +153,7 @@
       </view>
       <view class="switch-dot {{continueAdd ? 'active' : ''}}"></view>
     </view>
-    <textarea class="form-textarea" value="{{formData.remark}}" placeholder="备注" data-field="remark" bindinput="handleInput" />
+    <textarea class="form-textarea" value="{{formData.remark}}" placeholder="备注" disabled="{{!canManage}}" data-field="remark" bindinput="handleInput" />
   </view>
 
   <view wx:if="{{canManage}}" class="bottom-action-bar">

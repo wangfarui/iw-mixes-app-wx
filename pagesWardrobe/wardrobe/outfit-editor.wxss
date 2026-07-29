@@ -139,6 +139,14 @@
   white-space: nowrap;
 }
 
+.select-unavailable {
+  margin-top: 4rpx;
+  color: #d94841;
+  font-size: 20rpx;
+  line-height: 1.35;
+  word-break: break-all;
+}
+
 .selected-dot {
   position: absolute;
   top: 14rpx;

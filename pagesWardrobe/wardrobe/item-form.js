@@ -2,6 +2,7 @@ const wardrobeApi = require('../../api/wardrobe')
 const fileStore = require('../../stores/file')
 const helper = require('./wardrobe-helper')
 const wardrobeFamily = require('./wardrobe-family')
+const familyScope = require('../../stores/family-shared-scope')
 
 function defaultForm() {
   return {
@@ -78,7 +79,9 @@ Page({
     ,ownerOptions: [],
     ownerIndex: 0,
     canChooseOwner: false,
-    canManage: true
+    canManage: true,
+    canOptimize: true,
+    originalOwnerUserId: ''
   },
 
   async onLoad(options = {}) {
@@ -94,13 +97,9 @@ Page({
   },
 
   async loadOwnerOptions() {
-    let ownerOptions = []
-    try {
-      ownerOptions = await wardrobeFamily.loadOwnerOptions()
-    } catch (error) {
-      ownerOptions = [{ value: wardrobeFamily.currentUserId(), text: '我' }]
-    }
-    this.setData({ ownerOptions, canChooseOwner: wardrobeFamily.canChooseOwner() })
+    const state = await wardrobeFamily.loadOwnerState()
+    this.setData({ ownerOptions: state.ownerOptions, canChooseOwner: state.canChooseOwner })
+    if (state.fallbackToMyself) wx.showToast({ title: '家庭成员加载失败，已使用自己', icon: 'none' })
   },
 
   ownerIndex(ownerUserId) {
@@ -146,7 +145,9 @@ Page({
     this.setData({
       formData,
       ownerIndex: this.ownerIndex(formData.ownerUserId),
-      canManage: detail.canManage !== false,
+      canManage: detail.canEdit !== false,
+      canOptimize: detail.canOptimize !== false,
+      originalOwnerUserId: formData.ownerUserId,
       ...this.formOptionData(formData),
       ...this.imageOptimizeIdleState('', Boolean(formData.optimizedImage))
     })
@@ -178,11 +179,13 @@ Page({
   },
 
   handleInput(event) {
+    if (!this.data.canManage) return
     const field = event.currentTarget.dataset.field
     this.setData({ [`formData.${field}`]: event.detail.value })
   },
 
   onCategoryChange(event) {
+    if (!this.data.canManage) return
     const categoryIndex = Number(event.detail.value)
     const option = this.data.categoryOptions[categoryIndex]
     const itemStyleOptions = this.itemStyleOptions(option.value)
@@ -198,6 +201,7 @@ Page({
   },
 
   onItemStyleChange(event) {
+    if (!this.data.canManage) return
     const itemStyleIndex = Number(event.detail.value)
     const option = this.data.itemStyleOptions[itemStyleIndex]
     this.setData({
@@ -207,6 +211,7 @@ Page({
   },
 
   onColorChange(event) {
+    if (!this.data.canManage) return
     const colorIndex = Number(event.detail.value)
     const option = this.data.colorOptions[colorIndex]
     this.setData({
@@ -217,6 +222,7 @@ Page({
   },
 
   onStatusChange(event) {
+    if (!this.data.canManage) return
     const statusIndex = Number(event.detail.value)
     const option = this.data.statusOptions[statusIndex]
     this.setData({
@@ -226,6 +232,7 @@ Page({
   },
 
   onPurchaseDateChange(event) {
+    if (!this.data.canManage) return
     this.setData({ 'formData.purchaseDate': event.detail.value })
   },
 
@@ -234,6 +241,7 @@ Page({
   },
 
   onAiPromptInput(event) {
+    if (!this.data.canManage) return
     this.setData({ aiDraftPrompt: event.detail.value })
   },
 
@@ -294,6 +302,7 @@ Page({
   },
 
   toggleTag(event) {
+    if (!this.data.canManage) return
     const group = event.currentTarget.dataset.group
     const value = event.currentTarget.dataset.value
     const next = helper.toggleTag(this.data.formData[group], value)
@@ -307,6 +316,7 @@ Page({
   },
 
   chooseFile() {
+    if (!this.data.canManage) return
     if (this.data.aiDraftLoading || this.data.imageOptimizeSourceLocked || this.data.optimizedImageDeleting) return
     wx.chooseMedia({
       count: 1,
@@ -587,6 +597,7 @@ Page({
   },
 
   deleteOptimizedImage() {
+    if (!this.data.canOptimize) return
     if (!this.data.formData.id || !this.data.formData.optimizedImage) return
     if (this.data.imageOptimizeLoading || this.data.optimizedImageDeleting) return
     wx.showModal({
@@ -709,6 +720,18 @@ Page({
       customTags: form.customTags || '',
       status: helper.normalizeStatus(form.status),
       remark: form.remark || ''
+    }
+    if (form.id
+      && familyScope.getCurrentUserRole() === 3
+      && String(this.data.originalOwnerUserId) !== String(payload.ownerUserId)) {
+      const confirmed = await new Promise((resolve) => wx.showModal({
+        title: '确认变更所属人',
+        content: '变更后你将不能再编辑或删除这件衣物，是否继续？',
+        confirmText: '继续变更',
+        success: (res) => resolve(Boolean(res.confirm)),
+        fail: () => resolve(false)
+      }))
+      if (!confirmed) return
     }
     try {
       if (form.id) {

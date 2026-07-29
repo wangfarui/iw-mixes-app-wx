@@ -19,6 +19,8 @@ Page({
     ownerOptions: [{ value: '', text: '全部成员' }],
     ownerIndex: 0,
     showOwnerFilter: false,
+    showOwnerLabels: true,
+    ownerScopeFallback: false,
     list: [],
     currentPage: 1,
     pageSize: 12,
@@ -38,12 +40,20 @@ Page({
 
   async loadOwnerOptions() {
     const queryOnlyMyself = familyScope.getQueryOnlyMyself()
-    const showOwnerFilter = !queryOnlyMyself && wardrobeFamily.canChooseOwner()
-    let ownerOptions = [{ value: '', text: '全部成员' }]
-    try {
-      ownerOptions = ownerOptions.concat(await wardrobeFamily.loadOwnerOptions())
-    } catch (error) {}
-    this.setData({ ownerOptions, showOwnerFilter })
+    const state = await wardrobeFamily.loadOwnerState()
+    const ownerOptions = state.fallbackToMyself
+      ? state.ownerOptions
+      : [{ value: '', text: '全部成员' }].concat(state.ownerOptions)
+    this.setData({
+      ownerOptions,
+      ownerIndex: 0,
+      showOwnerFilter: !queryOnlyMyself && state.canChooseOwner && !state.fallbackToMyself,
+      showOwnerLabels: !familyScope.isChildRole(),
+      ownerScopeFallback: state.fallbackToMyself
+    })
+    if (state.fallbackToMyself) {
+      wx.showToast({ title: '家庭成员加载失败，已仅显示自己', icon: 'none' })
+    }
   },
 
   refreshDictOptions() {
@@ -93,12 +103,16 @@ Page({
         status: this.data.statusOptions[this.data.statusIndex].value || null,
         wearState: this.data.wearStateOptions[this.data.wearStateIndex].value || null,
         sortType: this.data.sortOptions[this.data.sortIndex].value,
-        queryOnlyMyself: familyScope.getQueryOnlyMyself() === 1,
+        queryOnlyMyself: this.data.ownerScopeFallback || familyScope.getQueryOnlyMyself() === 1,
         ownerUserId: this.data.ownerOptions[this.data.ownerIndex].value || null
       })
       const rows = ((res.data && res.data.records) || []).map((item) => {
         const owner = this.data.ownerOptions.find((option) => String(option.value) === String(item.ownerUserId))
-        return helper.formatItem({ ...item, ownerText: owner ? owner.text : '' })
+        return helper.formatItem({
+          ...item,
+          ownerText: owner ? owner.text : (item.ownerName || ''),
+          ownerAvatar: item.ownerAvatar || (owner && owner.avatar) || ''
+        })
       })
       const list = reset ? rows : this.data.list.concat(rows)
       const total = (res.data && res.data.total) || list.length
@@ -203,7 +217,7 @@ Page({
   },
 
   markWorn(event) {
-    if (!event.currentTarget.dataset.canManage) return
+    if (!event.currentTarget.dataset.canMarkWorn) return
     const id = event.currentTarget.dataset.id
     wx.showModal({
       content: '标记这件衣物今天已穿？',
@@ -220,7 +234,7 @@ Page({
   },
 
   deleteItem(event) {
-    if (!event.currentTarget.dataset.canManage) return
+    if (!event.currentTarget.dataset.canDelete) return
     const id = event.currentTarget.dataset.id
     wx.showModal({
       content: '确定删除这件衣物吗？',

@@ -48,12 +48,15 @@
         <view class="item-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.colorName || '未设颜色'}}</view>
         <view class="item-meta">{{item.statusName}} · {{item.seasonNames}} · {{item.wearCountText}}</view>
         <view class="item-meta">{{item.brand || '未设品牌'}} · ¥{{item.priceText}} · {{item.storageText}}</view>
-        <view wx:if="{{item.ownerText}}" class="item-owner">所属：{{item.ownerText}}</view>
+        <view wx:if="{{showOwnerLabels && item.ownerText}}" class="item-owner">
+          <image wx:if="{{item.ownerAvatar}}" class="item-owner-avatar" src="{{item.ownerAvatar}}" mode="aspectFill" />
+          <text>所属：{{item.ownerText}}</text>
+        </view>
         <view wx:if="{{item.customTagNames}}" class="item-tags">{{item.customTagNames}}</view>
       </view>
-      <view wx:if="{{item.canManage}}" class="card-actions">
-        <view class="plain-btn mini-btn" hover-class="tap-active" catchtap="markWorn" data-id="{{item.id}}" data-can-manage="{{item.canManage}}">已穿</view>
-        <view class="danger-btn mini-btn" hover-class="tap-active" catchtap="deleteItem" data-id="{{item.id}}" data-can-manage="{{item.canManage}}">删除</view>
+      <view wx:if="{{item.canMarkWorn || item.canDelete}}" class="card-actions">
+        <view wx:if="{{item.canMarkWorn}}" class="plain-btn mini-btn" hover-class="tap-active" catchtap="markWorn" data-id="{{item.id}}" data-can-mark-worn="{{item.canMarkWorn}}">已穿</view>
+        <view wx:if="{{item.canDelete}}" class="danger-btn mini-btn" hover-class="tap-active" catchtap="deleteItem" data-id="{{item.id}}" data-can-delete="{{item.canDelete}}">删除</view>
       </view>
     </view>
   </view>

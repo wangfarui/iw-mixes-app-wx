@@ -59,7 +59,20 @@
 }
 
 .item-owner {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   margin-top: 8rpx;
   color: #60656f;
   font-size: 22rpx;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.item-owner-avatar {
+  flex: none;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  background: #edf0f3;
 }

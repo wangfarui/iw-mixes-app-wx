@@ -52,17 +52,13 @@ Page({
   },
 
   async loadOwnerOptions() {
-    let ownerOptions = []
-    try {
-      ownerOptions = await wardrobeFamily.loadOwnerOptions()
-    } catch (error) {
-      ownerOptions = [{ value: wardrobeFamily.currentUserId(), text: '我' }]
-    }
+    const state = await wardrobeFamily.loadOwnerState()
     this.setData({
-      ownerOptions,
+      ownerOptions: state.ownerOptions,
       ownerIndex: 0,
-      canChooseOwner: wardrobeFamily.canChooseOwner()
+      canChooseOwner: state.canChooseOwner
     })
+    if (state.fallbackToMyself) wx.showToast({ title: '家庭成员加载失败，已使用自己', icon: 'none' })
   },
 
   onOwnerChange(event) {

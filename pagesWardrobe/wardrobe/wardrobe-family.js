@@ -20,6 +20,23 @@ async function loadOwnerOptions() {
   }))
 }
 
+async function loadOwnerState() {
+  const fallback = [{ value: currentUserId(), text: '我', avatar: '' }]
+  try {
+    return {
+      ownerOptions: await loadOwnerOptions(),
+      canChooseOwner: canChooseOwner(),
+      fallbackToMyself: false
+    }
+  } catch (error) {
+    return {
+      ownerOptions: fallback,
+      canChooseOwner: false,
+      fallbackToMyself: true
+    }
+  }
+}
+
 function canChooseOwner() {
   return familyScope.hasGroup() && !familyScope.isChildRole()
 }
@@ -27,5 +44,6 @@ function canChooseOwner() {
 module.exports = {
   currentUserId,
   loadOwnerOptions,
+  loadOwnerState,
   canChooseOwner
 }
