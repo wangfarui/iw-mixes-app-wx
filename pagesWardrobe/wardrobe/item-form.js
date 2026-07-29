@@ -1,10 +1,12 @@
 const wardrobeApi = require('../../api/wardrobe')
 const fileStore = require('../../stores/file')
 const helper = require('./wardrobe-helper')
+const wardrobeFamily = require('./wardrobe-family')
 
 function defaultForm() {
   return {
     id: '',
+    ownerUserId: '',
     itemName: '',
     itemImage: '',
     originalImage: '',
@@ -73,13 +75,44 @@ Page({
     imageOptimizeButtonDisabled: false,
     imageOptimizeSourceLocked: false,
     optimizedImageDeleting: false
+    ,ownerOptions: [],
+    ownerIndex: 0,
+    canChooseOwner: false,
+    canManage: true
   },
 
-  onLoad(options = {}) {
+  async onLoad(options = {}) {
     this.pageActive = true
     this.optimizePollToken = 0
     this.latestOptimizeQueryToken = 0
-    if (options.id) this.loadDetail(options.id)
+    await this.loadOwnerOptions()
+    if (options.id) await this.loadDetail(options.id)
+    else {
+      const formData = { ...this.data.formData, ownerUserId: wardrobeFamily.currentUserId() }
+      this.setData({ formData, ownerIndex: this.ownerIndex(formData.ownerUserId) })
+    }
+  },
+
+  async loadOwnerOptions() {
+    let ownerOptions = []
+    try {
+      ownerOptions = await wardrobeFamily.loadOwnerOptions()
+    } catch (error) {
+      ownerOptions = [{ value: wardrobeFamily.currentUserId(), text: '我' }]
+    }
+    this.setData({ ownerOptions, canChooseOwner: wardrobeFamily.canChooseOwner() })
+  },
+
+  ownerIndex(ownerUserId) {
+    const index = this.data.ownerOptions.findIndex((option) => String(option.value) === String(ownerUserId))
+    return index >= 0 ? index : 0
+  },
+
+  onOwnerChange(event) {
+    if (!this.data.canChooseOwner || !this.data.canManage) return
+    const ownerIndex = Number(event.detail.value)
+    const owner = this.data.ownerOptions[ownerIndex]
+    this.setData({ ownerIndex, 'formData.ownerUserId': owner ? owner.value : '' })
   },
 
   onShow() {
@@ -112,6 +145,8 @@ Page({
     }
     this.setData({
       formData,
+      ownerIndex: this.ownerIndex(formData.ownerUserId),
+      canManage: detail.canManage !== false,
       ...this.formOptionData(formData),
       ...this.imageOptimizeIdleState('', Boolean(formData.optimizedImage))
     })
@@ -647,12 +682,14 @@ Page({
   },
 
   async submitForm() {
+    if (!this.data.canManage) return
     const form = this.data.formData
     if (!String(form.itemName || '').trim()) {
       wx.showToast({ title: '请输入衣物名称', icon: 'none' })
       return
     }
     const payload = {
+      ownerUserId: Number(form.ownerUserId || wardrobeFamily.currentUserId()),
       itemName: String(form.itemName || '').trim(),
       itemImage: form.originalImage || '',
       category: Number(form.category || 0),
@@ -688,6 +725,7 @@ Page({
     if (!form.id && this.data.continueAdd) {
       const nextFormData = {
         ...defaultForm(),
+        ownerUserId: form.ownerUserId,
         category: form.category,
         itemStyle: form.itemStyle,
         colorName: form.colorName,
@@ -701,6 +739,7 @@ Page({
       }
       this.setData({
         formData: nextFormData,
+        ownerIndex: this.ownerIndex(nextFormData.ownerUserId),
         ...this.formOptionData(nextFormData),
         aiDraftSummary: '',
         ...this.imageOptimizeIdleState('', false)

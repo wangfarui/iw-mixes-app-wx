@@ -94,12 +94,33 @@ Page({
       content: '标记这套搭配今天已穿？',
       success: async (res) => {
         if (!res.confirm) return
-        await wardrobeApi.markOutfitWorn({
-          wearDate: helper.today(),
-          outfitId: id
-        })
-        wx.showToast({ title: '已记录', icon: 'success' })
-        this.initPage()
+        const payload = { wearDate: helper.today(), outfitId: id }
+        try {
+          await wardrobeApi.markOutfitWorn(payload)
+          wx.showToast({ title: '已记录', icon: 'success' })
+          this.initPage()
+        } catch (error) {
+          const message = (error && error.message) || '记录失败'
+          if (!message.includes('已被删除或转交')) {
+            wx.showToast({ title: message, icon: 'none' })
+            return
+          }
+          wx.showModal({
+            title: '衣物不可用',
+            content: message,
+            confirmText: '继续记录',
+            success: async (confirm) => {
+              if (!confirm.confirm) return
+              try {
+                await wardrobeApi.markOutfitWorn({ ...payload, allowPartial: true })
+                wx.showToast({ title: '已记录可用衣物', icon: 'success' })
+                this.initPage()
+              } catch (retryError) {
+                wx.showToast({ title: (retryError && retryError.message) || '记录失败', icon: 'none' })
+              }
+            }
+          })
+        }
       }
     })
   },

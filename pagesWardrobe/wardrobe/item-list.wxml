@@ -19,6 +19,11 @@
       </picker>
       <view class="plain-btn filter-btn" hover-class="tap-active" bindtap="resetFilters">重置</view>
     </view>
+    <view wx:if="{{showOwnerFilter}}" class="filter-row filter-row-secondary">
+      <picker class="picker-field compact-picker owner-picker" mode="selector" range="{{ownerOptions}}" range-key="text" value="{{ownerIndex}}" bindchange="onOwnerChange">
+        <view>{{ownerOptions[ownerIndex].text}}</view>
+      </picker>
+    </view>
     <view class="button-row">
       <view class="plain-btn" hover-class="tap-active" bindtap="goBatchAdd">批量入柜</view>
       <view class="primary-btn" hover-class="tap-active" bindtap="goAdd">新增衣物</view>
@@ -43,11 +48,12 @@
         <view class="item-meta">{{item.categoryName}} · {{item.itemStyleName || '未设款式'}} · {{item.colorName || '未设颜色'}}</view>
         <view class="item-meta">{{item.statusName}} · {{item.seasonNames}} · {{item.wearCountText}}</view>
         <view class="item-meta">{{item.brand || '未设品牌'}} · ¥{{item.priceText}} · {{item.storageText}}</view>
+        <view wx:if="{{item.ownerText}}" class="item-owner">所属：{{item.ownerText}}</view>
         <view wx:if="{{item.customTagNames}}" class="item-tags">{{item.customTagNames}}</view>
       </view>
-      <view class="card-actions">
-        <view class="plain-btn mini-btn" hover-class="tap-active" catchtap="markWorn" data-id="{{item.id}}">已穿</view>
-        <view class="danger-btn mini-btn" hover-class="tap-active" catchtap="deleteItem" data-id="{{item.id}}">删除</view>
+      <view wx:if="{{item.canManage}}" class="card-actions">
+        <view class="plain-btn mini-btn" hover-class="tap-active" catchtap="markWorn" data-id="{{item.id}}" data-can-manage="{{item.canManage}}">已穿</view>
+        <view class="danger-btn mini-btn" hover-class="tap-active" catchtap="deleteItem" data-id="{{item.id}}" data-can-manage="{{item.canManage}}">删除</view>
       </view>
     </view>
   </view>

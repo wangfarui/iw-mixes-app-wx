@@ -1,5 +1,7 @@
 const wardrobeApi = require('../../api/wardrobe')
 const helper = require('./wardrobe-helper')
+const familyScope = require('../../stores/family-shared-scope')
+const wardrobeFamily = require('./wardrobe-family')
 
 Page({
   data: {
@@ -14,6 +16,9 @@ Page({
     sortOptions: helper.SORT_OPTIONS,
     sortIndex: 0,
     keyword: '',
+    ownerOptions: [{ value: '', text: '全部成员' }],
+    ownerIndex: 0,
+    showOwnerFilter: false,
     list: [],
     currentPage: 1,
     pageSize: 12,
@@ -27,8 +32,18 @@ Page({
     this.refreshDictOptions()
     if (!this.data.initialized) {
       this.setData({ initialized: true })
-      this.initPage()
+      this.loadOwnerOptions().then(() => this.initPage())
     }
+  },
+
+  async loadOwnerOptions() {
+    const queryOnlyMyself = familyScope.getQueryOnlyMyself()
+    const showOwnerFilter = !queryOnlyMyself && wardrobeFamily.canChooseOwner()
+    let ownerOptions = [{ value: '', text: '全部成员' }]
+    try {
+      ownerOptions = ownerOptions.concat(await wardrobeFamily.loadOwnerOptions())
+    } catch (error) {}
+    this.setData({ ownerOptions, showOwnerFilter })
   },
 
   refreshDictOptions() {
@@ -77,9 +92,14 @@ Page({
         itemStyle: this.data.itemStyleOptions[this.data.itemStyleIndex].value || null,
         status: this.data.statusOptions[this.data.statusIndex].value || null,
         wearState: this.data.wearStateOptions[this.data.wearStateIndex].value || null,
-        sortType: this.data.sortOptions[this.data.sortIndex].value
+        sortType: this.data.sortOptions[this.data.sortIndex].value,
+        queryOnlyMyself: familyScope.getQueryOnlyMyself() === 1,
+        ownerUserId: this.data.ownerOptions[this.data.ownerIndex].value || null
       })
-      const rows = ((res.data && res.data.records) || []).map(helper.formatItem)
+      const rows = ((res.data && res.data.records) || []).map((item) => {
+        const owner = this.data.ownerOptions.find((option) => String(option.value) === String(item.ownerUserId))
+        return helper.formatItem({ ...item, ownerText: owner ? owner.text : '' })
+      })
       const list = reset ? rows : this.data.list.concat(rows)
       const total = (res.data && res.data.total) || list.length
       this.setData({
@@ -129,6 +149,11 @@ Page({
     this.initPage()
   },
 
+  onOwnerChange(event) {
+    this.setData({ ownerIndex: Number(event.detail.value) })
+    this.initPage()
+  },
+
   resetFilters() {
     this.setData({
       currentCategory: '',
@@ -137,6 +162,7 @@ Page({
       statusIndex: 0,
       wearStateIndex: 0,
       sortIndex: 0,
+      ownerIndex: 0,
       keyword: ''
     })
     this.initPage()
@@ -177,6 +203,7 @@ Page({
   },
 
   markWorn(event) {
+    if (!event.currentTarget.dataset.canManage) return
     const id = event.currentTarget.dataset.id
     wx.showModal({
       content: '标记这件衣物今天已穿？',
@@ -193,6 +220,7 @@ Page({
   },
 
   deleteItem(event) {
+    if (!event.currentTarget.dataset.canManage) return
     const id = event.currentTarget.dataset.id
     wx.showModal({
       content: '确定删除这件衣物吗？',

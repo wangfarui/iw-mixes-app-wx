@@ -8,6 +8,13 @@
   <view class="form-panel">
     <view class="section-title">公共信息</view>
     <view class="form-line form-top-line">
+      <view class="form-label">所属人</view>
+      <picker wx:if="{{canChooseOwner}}" class="picker-field" mode="selector" range="{{ownerOptions}}" range-key="text" value="{{ownerIndex}}" bindchange="onOwnerChange">
+        <view>{{ownerOptions[ownerIndex].text}}</view>
+      </picker>
+      <view wx:else class="form-input">我</view>
+    </view>
+    <view class="form-line form-top-line">
       <view class="form-label">品类</view>
       <picker class="picker-field" mode="selector" range="{{categoryOptions}}" range-key="text" value="{{categoryIndex}}" bindchange="onCategoryChange">
         <view>{{categoryOptions[categoryIndex].text}}</view>

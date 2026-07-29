@@ -210,6 +210,10 @@
   margin-top: 24rpx;
 }
 
+.readonly-field {
+  color: #60656f;
+}
+
 @keyframes ai-spin {
   from {
     transform: rotate(0deg);

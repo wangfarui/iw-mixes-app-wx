@@ -26,7 +26,14 @@
   <view class="form-panel">
     <view class="form-line">
       <view class="form-label">名称</view>
-      <input class="form-input" value="{{formData.itemName}}" placeholder="例如 黑色短袖" data-field="itemName" bindinput="handleInput" />
+      <input class="form-input" value="{{formData.itemName}}" placeholder="例如 黑色短袖" disabled="{{!canManage}}" data-field="itemName" bindinput="handleInput" />
+    </view>
+    <view class="form-line">
+      <view class="form-label">所属人</view>
+      <picker wx:if="{{canChooseOwner}}" class="picker-field" mode="selector" range="{{ownerOptions}}" range-key="text" value="{{ownerIndex}}" disabled="{{!canManage}}" bindchange="onOwnerChange">
+        <view>{{ownerOptions[ownerIndex].text}}</view>
+      </picker>
+      <view wx:else class="form-input readonly-field">我</view>
     </view>
     <view class="form-line image-form-line">
       <view class="form-label">原图</view>
@@ -53,7 +60,7 @@
       <view class="form-label">提示词</view>
       <input class="form-input" value="{{aiDraftPrompt}}" placeholder="可补充颜色、场景、材质" disabled="{{aiDraftLoading || imageOptimizeLoading}}" bindinput="onAiPromptInput" />
     </view>
-    <view wx:if="{{formData.id}}" class="image-ai-action-row">
+    <view wx:if="{{formData.id && canManage}}" class="image-ai-action-row">
       <view class="plain-btn image-ai-btn {{(!formData.originalImage || aiDraftLoading || imageOptimizeLoading || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="recognizeCurrentImage">识别当前图片</view>
       <view class="primary-btn image-ai-btn {{(!formData.originalImage || aiDraftLoading || imageOptimizeButtonDisabled || optimizedImageDeleting) ? 'is-disabled' : ''}}" hover-class="tap-active" bindtap="optimizeItemImage">{{imageOptimizeButtonText}}</view>
     </view>
@@ -148,7 +155,8 @@
     <textarea class="form-textarea" value="{{formData.remark}}" placeholder="备注" data-field="remark" bindinput="handleInput" />
   </view>
 
-  <view class="bottom-action-bar">
+  <view wx:if="{{canManage}}" class="bottom-action-bar">
     <view class="primary-btn bottom-submit" hover-class="tap-active" bindtap="submitForm">保存</view>
   </view>
+  <view wx:else class="safe-bottom"></view>
 </view>

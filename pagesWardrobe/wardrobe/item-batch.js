@@ -1,5 +1,6 @@
 const wardrobeApi = require('../../api/wardrobe')
 const helper = require('./wardrobe-helper')
+const wardrobeFamily = require('./wardrobe-family')
 
 Page({
   data: {
@@ -27,10 +28,13 @@ Page({
       storageLocation: '',
       customTags: ''
     },
+    ownerOptions: [],
+    ownerIndex: 0,
+    canChooseOwner: false,
     submitting: false
   },
 
-  onShow() {
+  async onShow() {
     const categoryOptions = helper.getCategoryOptions()
     const itemStyleOptions = this.itemStyleOptions(this.data.common.category)
     const colorOptions = helper.getColorOptions()
@@ -44,6 +48,25 @@ Page({
       sceneOptions: helper.enhanceTagOptions(helper.getSceneOptions(), this.data.common.sceneTags),
       styleOptions: helper.enhanceTagOptions(helper.getStyleOptions(), this.data.common.styleTags)
     })
+    await this.loadOwnerOptions()
+  },
+
+  async loadOwnerOptions() {
+    let ownerOptions = []
+    try {
+      ownerOptions = await wardrobeFamily.loadOwnerOptions()
+    } catch (error) {
+      ownerOptions = [{ value: wardrobeFamily.currentUserId(), text: '我' }]
+    }
+    this.setData({
+      ownerOptions,
+      ownerIndex: 0,
+      canChooseOwner: wardrobeFamily.canChooseOwner()
+    })
+  },
+
+  onOwnerChange(event) {
+    this.setData({ ownerIndex: Number(event.detail.value) })
   },
 
   itemStyleOptions(category) {
@@ -134,7 +157,11 @@ Page({
     }
     this.setData({ submitting: true })
     try {
-      await wardrobeApi.batchAddItems({ itemList })
+      const owner = this.data.ownerOptions[this.data.ownerIndex]
+      await wardrobeApi.batchAddItems({
+        itemList,
+        ownerUserId: Number((owner && owner.value) || wardrobeFamily.currentUserId())
+      })
       wx.showToast({ title: '已入柜', icon: 'success' })
       setTimeout(() => wx.navigateBack(), 400)
     } finally {

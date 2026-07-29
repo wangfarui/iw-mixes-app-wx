@@ -57,3 +57,9 @@
   word-break: break-all;
   overflow-wrap: anywhere;
 }
+
+.item-owner {
+  margin-top: 8rpx;
+  color: #60656f;
+  font-size: 22rpx;
+}
