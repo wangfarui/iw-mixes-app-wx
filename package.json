@@ -6,6 +6,8 @@
   "scripts": {
     "scaffold:pages": "node scripts/scaffold-placeholder-pages.js",
     "check:routes": "node scripts/check-routes.js",
+    "test:bill-refresh-navigation": "node scripts/test-bill-refresh-navigation.js",
+    "test:wallet-negative-delta": "node scripts/test-wallet-negative-delta.js",
     "test:wardrobe-list-sync": "node scripts/test-wardrobe-item-list-sync.js",
     "test:wardrobe-item-readonly": "node scripts/test-wardrobe-item-form-readonly.js"
   },

@@ -39,7 +39,7 @@
         <view class="mode-item {{updateMode === 'direct' ? 'active' : ''}}" data-mode="direct" bindtap="selectUpdateMode">直接修改金额</view>
         <view class="mode-item {{updateMode === 'delta' ? 'active' : ''}}" data-mode="delta" bindtap="selectUpdateMode">输入变动金额</view>
       </view>
-      <input class="amount-input" type="text" value="{{updateAmount}}" placeholder="请输入金额" bindinput="onUpdateAmountInput" />
+      <input class="amount-input" type="text" value="{{updateAmount}}" placeholder="{{updateMode === 'delta' ? '支持负数，如 -100' : '请输入金额'}}" bindinput="onUpdateAmountInput" />
       <view class="modal-actions">
         <button class="cancel-btn" bindtap="closeUpdatePopup">取消</button>
         <button class="confirm-btn" bindtap="submitUpdateAmount">确定</button>

@@ -145,10 +145,6 @@ Page({
       ? Number(this.data.wallet.walletBalance || 0)
       : Number(this.data.wallet.walletAssets || 0)
     const updateAmount = this.data.updateMode === 'direct' ? amount : currentAmount + amount
-    if (updateAmount < 0) {
-      wx.showToast({ title: '调整后金额不能小于0', icon: 'none' })
-      return
-    }
 
     await bookkeepingApi.updateWalletAmount({
       changeType: this.data.updateType,

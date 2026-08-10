@@ -22,14 +22,14 @@
                 <view class="task-name">{{item.taskName}}</view>
                 <view class="task-badges">
                   <view wx:if="{{item.isTop === 1}}" class="task-top-badge">置顶</view>
-                  <view wx:if="{{item.showDeadlineBadge}}" class="task-deadline-badge {{item.deadlineBadgeClass}}">
+                  <view wx:if="{{item.showDeadlineBadge && currentView !== 'done'}}" class="task-deadline-badge {{item.deadlineBadgeClass}}">
                     {{item.deadlineLabel}}
                   </view>
                 </view>
               </view>
               <view class="task-info">
                 <view wx:if="{{item.taskGroupName && currentView !== 'inbox'}}" class="task-group">{{item.taskGroupName}}</view>
-                <view wx:if="{{item.deadlineDate && currentView !== 'done'}}" class="task-deadline">
+                <view wx:if="{{item.deadlineDate}}" class="task-deadline">
                   截止日期：{{item.deadlineDate}}
                 </view>
               </view>

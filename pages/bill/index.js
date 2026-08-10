@@ -67,12 +67,18 @@ Page({
     isRefreshing: false,
     currentPage: 1,
     pageSize: 10,
-    initialized: false
+    initialized: false,
+    refreshAfterCreate: false
   },
 
   onShow() {
     if (!this.data.initialized) {
       this.setData({ initialized: true })
+      this.initPage()
+      return
+    }
+    if (this.data.refreshAfterCreate) {
+      this.setData({ refreshAfterCreate: false })
       this.initPage()
       return
     }
@@ -175,9 +181,21 @@ Page({
       incomeStatistics: '/pagesBookkeeping/bookkeeping/bookkeeping-income-statistics'
     }
     const url = routes[event.currentTarget.dataset.type]
-    if (url) {
-      wx.navigateTo({ url })
+    if (!url) return
+
+    if (event.currentTarget.dataset.type === 'quick') {
+      wx.navigateTo({
+        url,
+        success: (res) => {
+          res.eventChannel.on('recordCreated', () => {
+            this.setData({ refreshAfterCreate: true })
+          })
+        }
+      })
+      return
     }
+
+    wx.navigateTo({ url })
   },
 
   handleRecordClick(event) {

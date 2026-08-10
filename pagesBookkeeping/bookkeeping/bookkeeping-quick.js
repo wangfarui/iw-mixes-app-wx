@@ -102,6 +102,13 @@ Page({
     this.destroyRecorderListeners()
   },
 
+  notifyRecordCreated() {
+    const eventChannel = this.getOpenerEventChannel()
+    if (eventChannel && typeof eventChannel.emit === 'function') {
+      eventChannel.emit('recordCreated')
+    }
+  },
+
   async ensureFamilyGroupLoaded() {
     if (familyStore.getMyGroupState() || wx.getStorageSync('myGroup')) return
     await familyStore.fetchMyGroup()
@@ -295,6 +302,7 @@ Page({
         voiceLogId: null,
         isVoiceDraft: false
       })
+      this.notifyRecordCreated()
       setTimeout(() => {
         wx.navigateBack()
       }, 500)
@@ -667,6 +675,7 @@ Page({
         icon: 'success'
       })
       this.resetBookkeepingPanel()
+      this.notifyRecordCreated()
       setTimeout(() => {
         wx.navigateBack()
       }, 500)
