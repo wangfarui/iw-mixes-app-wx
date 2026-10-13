@@ -48,6 +48,10 @@ function deleteTaskPlan(id) {
   return http.delete('/points-service/points/task/plan/delete', { id })
 }
 
+function generateTaskPlanNow(data) {
+  return http.post('/points-service/points/task/plan/generateNow', data)
+}
+
 function getFixedTaskList() {
   return http.get('/points-service/points/task/fixed/list')
 }
@@ -99,6 +103,7 @@ module.exports = {
   updateTaskPlan,
   updateTaskPlanStatus,
   deleteTaskPlan,
+  generateTaskPlanNow,
   getFixedTaskList,
   addFixedTask,
   updateFixedTask,

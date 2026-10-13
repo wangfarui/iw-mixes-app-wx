@@ -32,4 +32,23 @@
   </view>
 
   <view class="fab task-plan-fab" bindtap="navigateToAdd">+</view>
+
+  <view wx:if="{{generationConfirmVisible}}" class="generation-mask" catchtap="cancelGenerationConfirm">
+    <view class="generation-dialog" catchtap="stopGenerationTap">
+      <view class="generation-title">{{generationPreview.retry ? '重试立即生成' : '立即生成待办'}}</view>
+      <scroll-view class="generation-body" scroll-y>
+        <view class="generation-name">{{generationPreview.taskName}}</view>
+        <view class="generation-row"><text class="generation-label">本次计划日期</text><text>{{generationPreview.retry ? '以生成结果为准' : generationPreview.planDate}}</text></view>
+        <view class="generation-row"><text class="generation-label">截止日期</text><text>{{generationPreview.retry ? '以生成结果为准' : generationPreview.deadlineDate}}</text></view>
+        <view class="generation-row"><text class="generation-label">奖励积分</text><text>{{generationPreview.rewardPoints}} 分</text></view>
+        <view class="generation-row"><text class="generation-label">处罚积分</text><text>{{generationPreview.punishPoints}} 分</text></view>
+        <view class="generation-bookkeeping"><view class="generation-label">完成时自动记账</view><view>{{generationPreview.bookkeepingText}}</view></view>
+        <view class="generation-hint">{{generationPreview.retry ? '以上为当前计划配置。上次结果未确认，若已生成将返回原任务并保留原参数，不会重复创建。' : '额外生成一条待办，原计划日期和下次生成日期不变。'}}</view>
+      </scroll-view>
+      <view class="generation-actions">
+        <view class="generation-action" catchtap="cancelGenerationConfirm">取消</view>
+        <view class="generation-action generation-confirm" catchtap="confirmGeneration">{{generationPreview.retry ? '重试' : '生成'}}</view>
+      </view>
+    </view>
+  </view>
 </view>
