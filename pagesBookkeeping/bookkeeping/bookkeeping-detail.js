@@ -41,6 +41,12 @@ Page({
     }
   },
 
+  viewSourceTask() {
+    const source = this.data.detail.taskSource
+    if (!source || source.availability !== 'AVAILABLE' || !source.taskId) return
+    wx.navigateTo({ url: `/pagesPoints/task/task-edit-detail?taskId=${source.taskId}` })
+  },
+
   clickUpdateButton() {
     if (!this.data.detail.canEdit) return
     wx.navigateTo({

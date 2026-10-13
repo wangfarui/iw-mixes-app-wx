@@ -260,3 +260,5 @@
   background: #1677ff;
   color: #ffffff;
 }
+
+.task-bookkeeping { margin-top: 10rpx; color: #007aff; font-size: 25rpx; word-break: break-all; }

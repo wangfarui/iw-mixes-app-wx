@@ -1,1 +1,7 @@
 @import "./points-common.wxss";
+
+.bookkeeping-switch { display: flex; align-items: center; justify-content: space-between; }
+.bookkeeping-switch .form-label { margin-bottom: 0; }
+.template-summary { color: #222; font-size: 28rpx; word-break: break-all; }
+.template-hint { margin-top: 12rpx; color: #888; font-size: 24rpx; line-height: 1.6; }
+.template-link { margin-top: 16rpx; color: #007aff; font-size: 27rpx; }

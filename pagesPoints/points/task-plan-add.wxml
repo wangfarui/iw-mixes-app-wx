@@ -36,6 +36,16 @@
       <view class="form-label">奖励积分</view>
       <input class="form-input" type="number" value="{{formData.rewardPoints}}" placeholder="请输入奖励积分" data-field="rewardPoints" bindinput="handleInput" />
     </view>
+    <view class="form-row bookkeeping-switch">
+      <view class="form-label">完成时自动记账</view>
+      <switch checked="{{formData.bookkeepingEnabled}}" bindchange="onBookkeepingChange" color="#07c160" />
+    </view>
+    <view wx:if="{{formData.bookkeepingEnabled}}" class="form-row">
+      <view wx:if="{{templateSummary}}" class="template-summary">{{templateSummary}}</view>
+      <view wx:if="{{formData.bookkeepingTemplate}}" class="template-hint">分类：{{templateTypeName}}　日期：完成当天</view>
+      <view class="template-link" bindtap="editBookkeepingTemplate">{{formData.bookkeepingTemplate ? '编辑记账模板' : '设置记账模板'}}</view>
+      <view class="template-hint">修改记账模板仅影响以后生成的任务，已生成任务保持原配置。</view>
+    </view>
     <view class="form-row">
       <view class="form-label">处罚积分</view>
       <input class="form-input" type="number" value="{{formData.punishPoints}}" placeholder="请输入处罚积分" data-field="punishPoints" bindinput="handleInput" />
@@ -43,7 +53,7 @@
   </view>
 
   <view class="button-row">
-    <button class="primary-btn" bindtap="handleSubmit">保存</button>
+    <button class="primary-btn" loading="{{saving}}" disabled="{{saving}}" bindtap="handleSubmit">保存</button>
     <button class="plain-btn" bindtap="handleCancel">取消</button>
   </view>
 </view>

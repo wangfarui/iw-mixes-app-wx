@@ -27,6 +27,7 @@
                   </view>
                 </view>
               </view>
+              <view wx:if="{{item.bookkeepingView.label}}" class="task-bookkeeping">{{item.bookkeepingView.label}}</view>
               <view class="task-info">
                 <view wx:if="{{item.taskGroupName && currentView !== 'inbox'}}" class="task-group">{{item.taskGroupName}}</view>
                 <view wx:if="{{item.deadlineDate}}" class="task-deadline">

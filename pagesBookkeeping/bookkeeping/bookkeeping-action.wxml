@@ -6,8 +6,10 @@
     <view class="segment-item {{formData.recordCategory === 2 ? 'active' : ''}}" data-category="2" bindtap="selectCategory">收入</view>
   </view>
 
+  <view wx:if="{{isTemplateMode}}" class="status-warning">完成任务时，按完成当天记账</view>
+
   <view class="form-card">
-    <view class="form-row">
+    <view wx:if="{{!isTemplateMode}}" class="form-row">
       <view class="label">记账日期</view>
       <picker mode="date" value="{{formData.recordDate}}" bindchange="onDateChange">
         <view class="picker-box">{{formData.recordDate}}</view>
@@ -73,7 +75,7 @@
       <input class="input" value="{{formData.remark}}" placeholder="请输入内容" data-field="remark" bindinput="handleInput" />
     </view>
 
-    <view class="form-block">
+    <view wx:if="{{!isTemplateMode}}" class="form-block">
       <view class="label block-label">附件</view>
       <view class="file-list">
         <view wx:for="{{formData.fileList}}" wx:key="fileUrl" class="file-item">
@@ -85,9 +87,9 @@
     </view>
   </view>
 
-  <button class="save-button" loading="{{isSubmitting}}" disabled="{{isSubmitting}}" bindtap="saveRecord">保存</button>
+  <button class="save-button" loading="{{isSubmitting}}" disabled="{{isSubmitting}}" bindtap="saveRecord">{{isTemplateMode && !templateTaskId ? '保存模板' : '保存'}}</button>
 
-  <view class="today-card">
+  <view wx:if="{{!isTemplateMode}}" class="today-card">
     <view class="today-header">
       <text class="today-title">今日记录</text>
       <text class="today-total">今日总消费：{{todayConsume}} 元</text>
@@ -126,7 +128,7 @@
     </view>
   </view>
 
-  <view wx:if="{{showUploadPopup}}" class="upload-mask" catchtap="closeUploadPopup" catchtouchmove="noop">
+  <view wx:if="{{!isTemplateMode && showUploadPopup}}" class="upload-mask" catchtap="closeUploadPopup" catchtouchmove="noop">
     <view class="upload-panel" catchtap="noop">
       <button bindtap="takePhoto">拍照</button>
       <button bindtap="chooseFromAlbum">从相册选择</button>

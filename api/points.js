@@ -76,7 +76,17 @@ function updateTaskParam(data) {
   return http.put('/points-service/points/task/basics/updateTaskParam', data)
 }
 
+function updateTaskBookkeepingTemplate(data) {
+  return http.put('/points-service/points/task/basics/updateBookkeepingTemplate', data)
+}
+
+function updateTaskStatus(data) {
+  return http.put('/points-service/points/task/basics/updateStatus', data)
+}
+
 module.exports = {
+  updateTaskBookkeepingTemplate,
+  updateTaskStatus,
   addPointsRecord,
   getPointsRecordDetail,
   deletePointsRecord,

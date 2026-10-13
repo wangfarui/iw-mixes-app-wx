@@ -1,4 +1,5 @@
 const http = require('../../api/request')
+const taskBookkeeping = require('../../utils/task-bookkeeping')
 
 const viewKeys = ['recent', 'inbox', 'done']
 
@@ -34,6 +35,7 @@ function normalizeTask(task) {
   const deadlineLabel = deadlineStatus === 'overdue' ? '已截止' : deadlineStatus === 'urgent' ? '即将截止' : ''
   return {
     ...task,
+    bookkeepingView: taskBookkeeping.taskState(task),
     deadlineStatus,
     deadlineLabel,
     deadlineBadgeClass: `deadline-${deadlineStatus}`,
@@ -48,6 +50,7 @@ Page({
     swiperCurrent: 0,
     taskList: [],
     loading: false,
+    updatingTask: false,
     newTaskName: '',
     newTaskDeadline: '',
     newTaskDeadlineText: '选择截止日期',
@@ -217,6 +220,16 @@ Page({
   },
 
   async cancelCompleteTask(task) {
+    if (taskBookkeeping.taskState(task).status === 'RECORDED') {
+      wx.showModal({
+        title: '取消完成',
+        content: '取消完成后，任务恢复为待办，关联账单保留；再次完成会复用账单。若删除关联账单，下次完成将重新记账。',
+        success: (res) => {
+          if (res.confirm) this.updateTaskStatus(task, 0, '已取消完成')
+        }
+      })
+      return
+    }
     await this.updateTaskStatus(task, 0, '已取消完成')
   },
 
@@ -225,15 +238,20 @@ Page({
   },
 
   async updateTaskStatus(task, taskStatus, successTitle) {
+    if (this.data.updatingTask) return
+    this.setData({ updatingTask: true })
     try {
-      await http.put('/points-service/points/task/basics/updateStatus', {
+      const res = await http.put('/points-service/points/task/basics/updateStatus', {
         id: task.id,
         taskStatus
       })
       this.fetchCurrentTasks()
-      wx.showToast({ title: successTitle, icon: 'success' })
+      const title = taskStatus === 1 ? taskBookkeeping.completionMessage(res.data, successTitle) : successTitle
+      wx.showToast({ title, icon: 'none', duration: 2500 })
     } catch (error) {
-      wx.showToast({ title: '操作失败', icon: 'none' })
+      wx.showToast({ title: error.message || '完成失败，本次任务状态和记账未保存，请重试', icon: 'none' })
+    } finally {
+      this.setData({ updatingTask: false })
     }
   },
 

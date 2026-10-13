@@ -1,5 +1,7 @@
 const bookkeepingApi = require('../../api/bookkeeping')
 const bookkeepingUtils = require('../../utils/bookkeeping')
+const taskBookkeeping = require('../../utils/task-bookkeeping')
+const pointsApi = require('../../api/points')
 const familyStore = require('../../stores/family')
 const sharedScopeStore = require('../../stores/family-shared-scope')
 const { uploadFile } = require('../../stores/file')
@@ -34,6 +36,8 @@ function chooseImage(sourceType, count, callback) {
 
 Page({
   data: {
+    isTemplateMode: false,
+    templateTaskId: '',
     isUpdateForm: false,
     updateFormId: '',
     formData: defaultFormData(1, 0),
@@ -54,13 +58,22 @@ Page({
     isSubmitting: false
   },
 
-  onLoad(options) {
+  onLoad(options = {}) {
     this.setData({
+      isTemplateMode: options.mode === 'template',
+      templateTaskId: options.taskId || '',
       isUpdateForm: Boolean(options.id),
       updateFormId: options.id || ''
     })
+    if (this.data.isTemplateMode) {
+      wx.setNavigationBarTitle({ title: '记账模板' })
+      this.getOpenerEventChannel().on('templateInit', (template) => {
+        this.initialTemplate = template
+        this.applyTemplate(template)
+      })
+    }
     this.initPage()
-    this.loadTodayConsume()
+    if (!this.data.isTemplateMode) this.loadTodayConsume()
   },
 
   async ensureFamilyGroupLoaded() {
@@ -75,7 +88,9 @@ Page({
       showSharedSwitch: Boolean(scopeState.canControlRecordShared)
     })
 
-    if (this.data.isUpdateForm) {
+    if (this.data.isTemplateMode) {
+      this.applyTemplate(this.initialTemplate)
+    } else if (this.data.isUpdateForm) {
       await this.loadDetail()
     } else {
       this.setData({
@@ -84,6 +99,19 @@ Page({
       this.refreshOptions()
       this.refreshSwitchState()
     }
+  },
+
+  applyTemplate(template) {
+    this.setData({
+      formData: {
+        ...defaultFormData(1, sharedScopeStore.getDefaultRecordShared()),
+        ...(template ? taskBookkeeping.templateFields(template) : {})
+      },
+      isExcitationRecord: Boolean(template && Number(template.isExcitationRecord) === 1),
+      isNotStatistics: Boolean(template && Number(template.isStatistics) === 0)
+    })
+    this.refreshOptions()
+    this.refreshSwitchState()
   },
 
   async loadDetail() {
@@ -308,7 +336,7 @@ Page({
       wx.showToast({ title: '记账金额不能为空', icon: 'none' })
       return
     }
-    if (Number(formData.amount) <= 0) {
+    if (!Number.isFinite(Number(formData.amount)) || Number(formData.amount) <= 0 || !/^\d+(\.\d{1,2})?$/.test(String(formData.amount))) {
       wx.showToast({ title: '请输入有效金额', icon: 'none' })
       return
     }
@@ -326,6 +354,16 @@ Page({
         isExcitationRecord: this.data.isExcitationRecord ? 1 : 0,
         isStatistics: this.data.isNotStatistics ? 0 : 1,
         shared: this.data.isShared ? 1 : 0
+      }
+
+      if (this.data.isTemplateMode) {
+        const template = taskBookkeeping.templateFields(submitData)
+        if (this.data.templateTaskId) {
+          await pointsApi.updateTaskBookkeepingTemplate({ id: this.data.templateTaskId, bookkeepingTemplate: template })
+        }
+        this.getOpenerEventChannel().emit('templateSaved', template)
+        wx.navigateBack()
+        return
       }
 
       if (this.data.isUpdateForm) {

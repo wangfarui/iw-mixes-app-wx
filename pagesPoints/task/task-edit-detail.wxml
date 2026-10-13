@@ -14,6 +14,20 @@
       />
       <view class="save-btn {{saving ? 'is-disabled' : ''}}" catchtap="saveTask">{{saving ? '保存中' : '保存'}}</view>
     </view>
+    <view wx:if="{{bookkeepingView.status !== 'NONE'}}" class="bookkeeping-section">
+      <view class="bookkeeping-title">任务记账</view>
+      <block wx:if="{{bookkeepingView.status === 'PENDING'}}">
+        <view class="bookkeeping-summary">{{bookkeepingView.templateSummary}}</view>
+        <view wx:if="{{bookkeepingView.availability === 'DELETED'}}" class="bookkeeping-tip">关联账单已删除，下次完成任务时将重新记账。</view>
+        <view class="bookkeeping-tip">日期：完成当天。本次修改仅影响当前任务。</view>
+        <view wx:if="{{bookkeepingView.canEdit}}" class="bookkeeping-link" bindtap="editBookkeepingTemplate">查看/编辑本次记账</view>
+      </block>
+      <block wx:else>
+        <view class="bookkeeping-summary">已关联账单</view>
+        <view wx:if="{{bookkeepingView.availability === 'INACCESSIBLE'}}" class="bookkeeping-tip">关联账单当前不可访问，再次完成不会重复记账。</view>
+        <view wx:elif="{{bookkeepingView.canView}}" class="bookkeeping-link" bindtap="viewBookkeepingRecord">查看关联账单</view>
+      </block>
+    </view>
     <textarea class="remark-editor" value="{{taskDetail.taskRemark}}" placeholder="添加备注..." bindinput="onRemarkInput" />
   </view>
 

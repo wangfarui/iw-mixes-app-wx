@@ -49,6 +49,16 @@
       </view>
     </view>
 
+    <view wx:if="{{detail.taskSource}}" class="item task-source-row">
+      <text class="label">账单来源</text>
+      <view class="value">
+        <view>任务自动记账</view>
+        <view wx:if="{{detail.taskSource.availability === 'AVAILABLE'}}" class="task-source-link" bindtap="viewSourceTask">{{detail.taskSource.taskName}} · 查看任务</view>
+        <view wx:elif="{{detail.taskSource.availability === 'DELETED'}}" class="task-source-tip">来源任务已删除</view>
+        <view wx:else class="task-source-tip">来源任务不可访问</view>
+      </view>
+    </view>
+
     <view class="item">
       <text class="label">订单编号</text>
       <text class="value">{{detail.orderNo || '-'}}</text>

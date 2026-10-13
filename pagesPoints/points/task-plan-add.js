@@ -1,5 +1,6 @@
 const pointsApi = require('../../api/points')
 const utils = require('../../utils/bookkeeping')
+const taskBookkeeping = require('../../utils/task-bookkeeping')
 
 const planCycleOptions = [
   { value: 1, text: '每日' },
@@ -19,12 +20,18 @@ function defaultForm() {
     remindDays: '',
     deadlineDays: '',
     rewardPoints: '',
-    punishPoints: ''
+    punishPoints: '',
+    bookkeepingEnabled: false,
+    bookkeepingTemplate: null
   }
 }
 
 Page({
   data: {
+    saving: false,
+    templateSummary: '',
+    templateTypeName: '',
+    hasBookkeepingConfig: false,
     isEdit: false,
     taskId: '',
     formData: defaultForm(),
@@ -46,9 +53,13 @@ Page({
     const planCycleIndex = this.data.planCycleOptions.findIndex((item) => Number(item.value) === Number(detail.planCycle))
     const option = this.data.planCycleOptions[planCycleIndex >= 0 ? planCycleIndex : 0]
     this.setData({
+      hasBookkeepingConfig: Object.prototype.hasOwnProperty.call(detail, 'bookkeepingEnabled'),
+      templateSummary: taskBookkeeping.templateSummary(detail.bookkeepingTemplate),
+      templateTypeName: taskBookkeeping.parseTemplate(detail.bookkeepingTemplate) ? utils.getRecordTypeName(taskBookkeeping.parseTemplate(detail.bookkeepingTemplate).recordType, '待确认') : '',
       formData: {
         ...defaultForm(),
         ...detail,
+        bookkeepingEnabled: Boolean(detail.bookkeepingEnabled),
         planDate: String(detail.planDate || utils.today()).split(' ')[0],
         cycleDays: detail.cycleDays == null ? '' : detail.cycleDays,
         remindDays: detail.remindDays == null ? '' : detail.remindDays,
@@ -81,9 +92,29 @@ Page({
     this.setData({ 'formData.planDate': event.detail.value })
   },
 
+  onBookkeepingChange(event) {
+    this.setData({ hasBookkeepingConfig: true, 'formData.bookkeepingEnabled': Boolean(event.detail.value) })
+  },
+
+  editBookkeepingTemplate() {
+    wx.navigateTo({
+      url: '/pagesBookkeeping/bookkeeping/bookkeeping-action?mode=template',
+      events: {
+        templateSaved: (template) => this.setData({
+          hasBookkeepingConfig: true,
+          'formData.bookkeepingTemplate': taskBookkeeping.parseTemplate(template),
+          templateSummary: taskBookkeeping.templateSummary(template),
+          templateTypeName: utils.getRecordTypeName(taskBookkeeping.parseTemplate(template).recordType, '待确认')
+        })
+      },
+      success: (res) => res.eventChannel.emit('templateInit', this.data.formData.bookkeepingTemplate)
+    })
+  },
+
   validateForm() {
     const form = this.data.formData
     if (!String(form.taskName || '').trim()) return '请输入任务名称'
+    if (form.bookkeepingEnabled && !form.bookkeepingTemplate) return '请设置记账模板'
     if (!form.planCycle) return '请选择计划周期'
     if (!form.planDate) return '请选择计划日期'
     if (Number(form.planCycle) === 5 && !form.cycleDays) return '请输入计划天数'
@@ -95,6 +126,7 @@ Page({
   },
 
   async handleSubmit() {
+    if (this.data.saving) return
     const message = this.validateForm()
     if (message) {
       wx.showToast({ title: message, icon: 'none' })
@@ -102,8 +134,9 @@ Page({
     }
 
     const form = this.data.formData
+    const { bookkeepingEnabled, bookkeepingTemplate, ...legacyForm } = form
     const submitData = {
-      ...form,
+      ...legacyForm,
       taskName: String(form.taskName).trim(),
       planCycle: Number(form.planCycle),
       planDate: String(form.planDate).split(' ')[0],
@@ -111,18 +144,26 @@ Page({
       remindDays: this.toNumberOrZero(form.remindDays),
       deadlineDays: this.toNumberOrZero(form.deadlineDays),
       rewardPoints: this.toNumberOrZero(form.rewardPoints),
-      punishPoints: this.toNumberOrZero(form.punishPoints)
+      punishPoints: this.toNumberOrZero(form.punishPoints),
+      ...(this.data.isEdit && !this.data.hasBookkeepingConfig ? {} : {
+        bookkeepingEnabled: Boolean(form.bookkeepingEnabled),
+        bookkeepingTemplate: form.bookkeepingEnabled ? taskBookkeeping.templateFields(form.bookkeepingTemplate) : null
+      })
     }
 
-    if (this.data.isEdit) {
-      submitData.id = this.data.taskId
-      await pointsApi.updateTaskPlan(submitData)
-    } else {
-      await pointsApi.addTaskPlan(submitData)
+    this.setData({ saving: true })
+    try {
+      if (this.data.isEdit) {
+        submitData.id = this.data.taskId
+        await pointsApi.updateTaskPlan(submitData)
+      } else {
+        await pointsApi.addTaskPlan(submitData)
+      }
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      setTimeout(() => wx.navigateBack(), 600)
+    } finally {
+      this.setData({ saving: false })
     }
-
-    wx.showToast({ title: '保存成功', icon: 'success' })
-    setTimeout(() => wx.navigateBack(), 600)
   },
 
   handleCancel() {

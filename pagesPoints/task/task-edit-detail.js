@@ -1,10 +1,12 @@
 const pointsApi = require('../../api/points')
+const taskBookkeeping = require('../../utils/task-bookkeeping')
 
 Page({
   data: {
     loading: true,
     saving: false,
     error: '',
+    bookkeepingView: {},
     taskId: '',
     taskDetail: {
       id: null,
@@ -16,6 +18,9 @@ Page({
   onLoad(options = {}) {
     const taskId = options.taskId || options.id || ''
     this.setData({ taskId })
+  },
+
+  onShow() {
     this.fetchTaskDetail()
   },
 
@@ -27,10 +32,29 @@ Page({
     this.setData({ loading: true, error: '' })
     try {
       const res = await pointsApi.getTaskBasicsDetail(this.data.taskId)
-      this.setData({ taskDetail: res.data || {}, loading: false })
+      const taskDetail = res.data || {}
+      this.setData({ taskDetail, bookkeepingView: taskBookkeeping.taskState(taskDetail), loading: false })
     } catch (error) {
       this.setData({ loading: false, error: '加载任务详情失败' })
     }
+  },
+
+  editBookkeepingTemplate() {
+    if (!this.data.bookkeepingView.canEdit) return
+    wx.navigateTo({
+      url: `/pagesBookkeeping/bookkeeping/bookkeeping-action?mode=template&taskId=${this.data.taskId}`,
+      events: {
+        templateSaved: () => {
+          wx.showToast({ title: '本次模板已保存', icon: 'success' })
+        }
+      },
+      success: (res) => res.eventChannel.emit('templateInit', this.data.bookkeepingView.template)
+    })
+  },
+
+  viewBookkeepingRecord() {
+    if (!this.data.bookkeepingView.canView) return
+    wx.navigateTo({ url: `/pagesBookkeeping/bookkeeping/bookkeeping-detail?id=${this.data.bookkeepingView.recordId}` })
   },
 
   onTaskNameInput(event) {
