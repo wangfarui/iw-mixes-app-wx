@@ -1,4 +1,5 @@
 const bookkeepingApi = require('../../api/bookkeeping')
+const payer = require('../../utils/bookkeeping-payer')
 const bookkeepingUtils = require('../../utils/bookkeeping')
 const familyStore = require('../../stores/family')
 const sharedScopeStore = require('../../stores/family-shared-scope')
@@ -7,6 +8,7 @@ const { getIconUrl } = require('../../utils/icon')
 
 function defaultFormData() {
   return {
+    expenseUserId: payer.currentUserId(),
     recordCategory: null,
     recordIcon: '',
     recordSource: '',
@@ -58,7 +60,9 @@ function getRecordTypeState(recordType) {
 }
 
 Page({
+  ...payer.methods,
   data: {
+    ...payer.data,
     selectedCategory: 1,
     actions: [],
     selectedActionId: null,
@@ -110,8 +114,7 @@ Page({
   },
 
   async ensureFamilyGroupLoaded() {
-    if (familyStore.getMyGroupState() || wx.getStorageSync('myGroup')) return
-    await familyStore.fetchMyGroup()
+    await familyStore.ensureMyGroupLoaded()
   },
 
   selectCategory(event) {
@@ -321,7 +324,10 @@ Page({
   },
 
   async applyVoiceDraft(draft, matchedActionId) {
-    await this.ensureFamilyGroupLoaded()
+    try { await this.ensureFamilyGroupLoaded() } catch (error) {
+      wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
+      return
+    }
     const recordDate = draft.recordDate || bookkeepingUtils.today()
     const recordTags = Array.isArray(draft.recordTags) ? draft.recordTags : []
     const formData = {
@@ -357,6 +363,10 @@ Page({
       isVoiceDraft: true,
       isSubmitting: false
     })
+    try { await this.initPayerSelector() } catch (error) {
+      this.resetBookkeepingPanel()
+      wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
+    }
   },
 
   async openBookkeepingPanel(event) {
@@ -369,7 +379,10 @@ Page({
     const action = this.data.actions[Number(event.currentTarget.dataset.index)]
     if (!action) return
 
-    await this.ensureFamilyGroupLoaded()
+    try { await this.ensureFamilyGroupLoaded() } catch (error) {
+      wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
+      return
+    }
     const shared = sharedScopeStore.getDefaultRecordShared()
     const formData = {
       ...defaultFormData(),
@@ -402,6 +415,10 @@ Page({
       isVoiceDraft: false,
       isSubmitting: false
     })
+    try { await this.initPayerSelector() } catch (error) {
+      this.resetBookkeepingPanel()
+      wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
+    }
   },
 
   closeBookkeepingPanel() {
@@ -558,6 +575,7 @@ Page({
   },
 
   switchShared(event) {
+    if (this.data.payerSharedLocked) return
     this.setData({
       'formData.shared': event.detail.value ? 1 : 0
     })

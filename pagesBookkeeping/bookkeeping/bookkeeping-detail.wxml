@@ -17,6 +17,14 @@
       <text class="label">记账人</text>
       <text class="value">{{detail.userName}}</text>
     </view>
+    <view wx:if="{{detail.showPayer}}" class="item">
+      <text class="label">支出人</text>
+      <text class="value">{{detail.expenseUserName || detail.userName || '-'}}</text>
+    </view>
+    <view wx:if="{{!detail.showPayer && detail.canChangeExpenseUser === false && detail.expenseUserId !== detail.userId && detail.recordCategory === 1}}" class="item">
+      <text class="label">历史代记</text>
+      <text class="value">实际付款人：{{detail.expenseUserName || '原家庭成员'}}</text>
+    </view>
     <view class="item">
       <text class="label">来源</text>
       <text class="value">{{detail.recordSourceText}}</text>

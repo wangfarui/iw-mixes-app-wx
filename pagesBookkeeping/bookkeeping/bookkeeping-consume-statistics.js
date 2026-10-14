@@ -1,5 +1,7 @@
+const familyStore = require('../../stores/family')
 const bookkeepingApi = require('../../api/bookkeeping')
 const scopeStore = require('../../stores/family-shared-scope')
+const payer = require('../../utils/bookkeeping-payer')
 const utils = require('../../utils/bookkeeping')
 
 const CHART_COLORS = [
@@ -33,11 +35,7 @@ function toMoney(value) {
 }
 
 function buildOwnerText(item, scopeState) {
-  return scopeState &&
-    scopeState.effectiveScope === 'shared' &&
-    item.userName
-    ? ` · 来自${item.userName}`
-    : ''
+  return payer.payerText({ ...item, recordCategory: 1 }, scopeState)
 }
 
 function normalizeBarValue(value) {
@@ -174,8 +172,13 @@ Page({
   },
 
   async fetchStatistics() {
-    if (this.data.loading) return
+    const requestId = (this._statisticsRequest || 0) + 1
+    this._statisticsRequest = requestId
     this.setData({ loading: true })
+    try { await familyStore.ensureMyGroupLoaded() } catch (error) {
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
+      return
+    }
     const params = this.buildParams()
     const scopeState = scopeStore.getScopeState()
 
@@ -191,6 +194,7 @@ Page({
         bookkeepingApi.getConsumeBarChartStatistics(params)
       ])
 
+      if (requestId !== this._statisticsRequest) return
       const total = totalRes.data || {}
       const categoryList = this.applyHiddenState(
         this.buildCategoryList(categoryRes.data || []),
@@ -223,6 +227,7 @@ Page({
         barChartSummary: this.buildBarChartSummary(barChartData)
       }, () => this.renderCharts())
     } catch (error) {
+      if (requestId !== this._statisticsRequest) return
       this.setData({
         totalAmount: '0.00',
         totalRecordNum: 0,
@@ -237,7 +242,7 @@ Page({
         barChartSummary: '暂无趋势数据'
       }, () => this.renderCharts())
     } finally {
-      this.setData({ loading: false })
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
     }
   },
 

@@ -1,5 +1,6 @@
 const utils = require('../../utils/bookkeeping')
 const scopeStore = require('../../stores/family-shared-scope')
+const payer = require('../../utils/bookkeeping-payer')
 
 const colors = ['#5470c6', '#07c160', '#ff6b35', '#1989fa', '#ff976a', '#9a60b4', '#00b578', '#ee6666']
 const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
@@ -316,7 +317,7 @@ function formatConsume(data, showAllCategory, showAllTags, tagViewType) {
       ...item,
       category: item.category || '支出',
       date: item.date || '',
-      ownerText: item.userName ? ` · ${item.userName}` : '',
+      ownerText: payer.payerText({ ...item, recordCategory: 1 }, scopeStore.getScopeState()),
       description: item.description || '无备注',
       amount: toMoney(item.amount)
     })),

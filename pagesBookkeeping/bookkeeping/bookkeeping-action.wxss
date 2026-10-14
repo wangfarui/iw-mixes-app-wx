@@ -405,3 +405,5 @@
 .upload-panel .cancel {
   color: #999;
 }
+
+.payer-tip { padding: 8rpx 24rpx; font-size: 24rpx; color: #888; }

@@ -1,5 +1,6 @@
 const http = require('../../api/request')
 const scopeStore = require('../../stores/family-shared-scope')
+const payer = require('../../utils/bookkeeping-payer')
 const familyStore = require('../../stores/family')
 
 function pad2(value) {
@@ -152,10 +153,7 @@ Page({
   formatBillRecordDesc(item) {
     const desc = item.recordSource || (item.recordCategory === 2 ? '收入' : '消费')
     const scope = scopeStore.getScopeState()
-    if (scope.effectiveScope === 'shared' && item.userName && !item.canEdit) {
-      return `${item.userName} · ${desc}`
-    }
-    return desc
+    return `${desc}${payer.payerText(item, scope)}`
   },
 
   async fetchTaskRecords() {

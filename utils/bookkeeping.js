@@ -139,13 +139,9 @@ function getRecordIcon(item) {
 }
 
 function formatListRecord(item, scopeState) {
+  const payer = require('./bookkeeping-payer')
   const recordTypeName = getRecordTypeName(item.recordType, '未知')
-  const ownerText = scopeState &&
-    scopeState.effectiveScope === 'shared' &&
-    item.userName &&
-    !item.canEdit
-    ? ` · 来自${item.userName}`
-    : ''
+  const ownerText = payer.payerText(item, scopeState)
 
   return {
     ...item,

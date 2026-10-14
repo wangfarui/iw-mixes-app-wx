@@ -13,6 +13,7 @@
       </view>
     </view>
 
+    <view class="scope-filter"><text>忽略不计入统计的账单</text><switch checked="{{ignoreNotStatistics}}" color="#2f7cff" bindchange="switchIgnoreStatistics" /></view>
     <view class="total-row">
       <view>
         <view class="label">总收入</view>

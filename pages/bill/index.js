@@ -1,6 +1,8 @@
 const http = require('../../api/request')
 const dictStore = require('../../stores/dict')
 const scopeStore = require('../../stores/family-shared-scope')
+const payer = require('../../utils/bookkeeping-payer')
+const familyStore = require('../../stores/family')
 
 const functionButtons = [
   { type: 'records', text: '明细', icon: '/static/bookkeeping/zhangdanmingxi.png' },
@@ -77,7 +79,7 @@ Page({
       this.initPage()
       return
     }
-    if (this.data.refreshAfterCreate) {
+    if (this.data.refreshAfterCreate || (this._billScope !== undefined && this._billScope !== scopeStore.getQueryOnlyMyself())) {
       this.setData({ refreshAfterCreate: false })
       this.initPage()
       return
@@ -90,11 +92,18 @@ Page({
   },
 
   async initPage() {
+    try { await familyStore.ensureMyGroupLoaded() } catch (error) {
+      this.setData({ initialized: false, isRefreshing: false })
+      return
+    }
+    this._billScope = scopeStore.getQueryOnlyMyself()
+    this._billRequest = (this._billRequest || 0) + 1
     this.setData({ currentPage: 1 })
     await Promise.all([this.getStatistics(), this.getBillList(true)])
   },
 
   async getStatistics() {
+    const requestId = this._billRequest
     const dateRange = getMonthRange(this.data.currentDate)
     try {
       const res = await http.post('/bookkeeping-service/bookkeeping/records/statistics', {
@@ -102,6 +111,7 @@ Page({
         recordEndDate: dateRange.end,
         queryOnlyMyself: scopeStore.getQueryOnlyMyself()
       })
+      if (requestId !== this._billRequest) return
       const data = res.data || {}
       this.setData({
         statistics: {
@@ -110,11 +120,13 @@ Page({
         }
       })
     } catch (error) {
+      if (requestId !== this._billRequest) return
       this.setData({ statistics: { income: '0.00', consume: '0.00' } })
     }
   },
 
   async getBillList(reset = false) {
+    const requestId = this._billRequest
     const dateRange = getMonthRange(this.data.currentDate)
     this.setData({ loadMoreStatus: 'loading', loadMoreText: '加载中...' })
     try {
@@ -126,6 +138,7 @@ Page({
         queryOnlyMyself: scopeStore.getQueryOnlyMyself()
       })
 
+      if (requestId !== this._billRequest) return
       const records = ((res.data && res.data.records) || []).map((item) => this.formatRecord(item))
       const billList = reset ? records : this.data.billList.concat(records)
       this.setData({
@@ -134,9 +147,10 @@ Page({
         loadMoreText: records.length >= this.data.pageSize ? '加载更多' : '没有更多了'
       })
     } catch (error) {
+      if (requestId !== this._billRequest) return
       this.setData({ loadMoreStatus: 'more', loadMoreText: '加载更多' })
     } finally {
-      this.setData({ isRefreshing: false })
+      if (requestId === this._billRequest) this.setData({ isRefreshing: false })
     }
   },
 
@@ -148,9 +162,7 @@ Page({
       '未知'
     )
     const displaySource = item.recordSource || (item.recordCategory === 2 ? '收入' : '消费')
-    const ownerText = scope.effectiveScope === 'shared' && item.userName && !item.canEdit
-      ? ` · 来自${item.userName}`
-      : ''
+    const ownerText = payer.payerText(item, scope)
 
     return {
       ...item,
@@ -214,6 +226,10 @@ Page({
     if (index < 0) return
 
     const current = this.data.billList[index]
+    if (record.expenseUserId != null && Number(record.expenseUserId) !== Number(current.expenseUserId == null ? current.userId : current.expenseUserId)) {
+      this.setData({ refreshAfterCreate: true })
+      return
+    }
     const recordTime = record.recordDate || record.recordTime || current.recordTime
     const billList = this.data.billList.slice()
     billList[index] = this.formatRecord({

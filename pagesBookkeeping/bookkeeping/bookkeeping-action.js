@@ -1,4 +1,5 @@
 const bookkeepingApi = require('../../api/bookkeeping')
+const payer = require('../../utils/bookkeeping-payer')
 const bookkeepingUtils = require('../../utils/bookkeeping')
 const taskBookkeeping = require('../../utils/task-bookkeeping')
 const pointsApi = require('../../api/points')
@@ -11,6 +12,7 @@ function defaultFormData(category, shared) {
   return {
     fileList: [],
     recordDate: bookkeepingUtils.today(),
+    expenseUserId: payer.currentUserId(),
     recordCategory: category || 1,
     recordSource: '',
     amount: '',
@@ -35,7 +37,9 @@ function chooseImage(sourceType, count, callback) {
 }
 
 Page({
+  ...payer.methods,
   data: {
+    ...payer.data,
     isTemplateMode: false,
     templateTaskId: '',
     isUpdateForm: false,
@@ -72,17 +76,18 @@ Page({
         this.applyTemplate(template)
       })
     }
-    this.initPage()
-    if (!this.data.isTemplateMode) this.loadTodayConsume()
+    this.initPage().then(() => {
+      if (!this.data.isTemplateMode) this.loadTodayConsume()
+    }).catch(() => wx.showToast({ title: '家庭信息加载失败，请重新进入', icon: 'none' }))
   },
 
   async ensureFamilyGroupLoaded() {
-    if (familyStore.getMyGroupState() || wx.getStorageSync('myGroup')) return
-    await familyStore.fetchMyGroup()
+    await familyStore.ensureMyGroupLoaded()
   },
 
   async initPage() {
     await this.ensureFamilyGroupLoaded()
+    await this.initPayerSelector()
     const scopeState = sharedScopeStore.getScopeState()
     this.setData({
       showSharedSwitch: Boolean(scopeState.canControlRecordShared)
@@ -158,6 +163,7 @@ Page({
   },
 
   refreshSwitchState() {
+    this.syncPayerState()
     this.setData({
       isShared: Number(this.data.formData.shared) === 1
     })
@@ -179,6 +185,7 @@ Page({
       'formData.isExcitationRecord': 0
     })
     this.refreshOptions()
+    this.refreshSwitchState()
   },
 
   onDateChange(event) {
@@ -213,6 +220,7 @@ Page({
   },
 
   switchShared(event) {
+    if (this.data.payerSharedLocked) return
     this.setData({
       isShared: Boolean(event.detail.value),
       'formData.shared': event.detail.value ? 1 : 0
@@ -390,6 +398,7 @@ Page({
           isExcitationRecord: false,
           isNotStatistics: false
         })
+        this._sharedBeforePayer = undefined
         this.refreshOptions()
         this.refreshSwitchState()
         this.loadTodayConsume()

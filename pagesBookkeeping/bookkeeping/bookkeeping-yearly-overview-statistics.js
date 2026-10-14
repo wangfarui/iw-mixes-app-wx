@@ -1,3 +1,4 @@
+const familyStore = require('../../stores/family')
 const bookkeepingApi = require('../../api/bookkeeping')
 const yearly = require('./yearly-statistics-helper')
 
@@ -50,16 +51,21 @@ Page({
   },
 
   async fetchData() {
+    const requestId = (this._statisticsRequest || 0) + 1
+    this._statisticsRequest = requestId
+    try { await familyStore.ensureMyGroupLoaded() } catch (error) { return }
     this.setData({ loading: true })
     try {
       const res = await bookkeepingApi.getYearOverviewStatistics(
         yearly.buildParams(this.data.selectedYear, this.data.ignoreNotStatistics)
       )
+      if (requestId !== this._statisticsRequest) return
       this.setData({ overview: yearly.formatOverview(res.data || {}) }, () => this.renderTrendChart())
     } catch (error) {
+      if (requestId !== this._statisticsRequest) return
       this.setData({ overview: emptyOverview() }, () => this.renderTrendChart())
     } finally {
-      this.setData({ loading: false })
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
     }
   },
 

@@ -72,7 +72,8 @@ Page({
 
   onShow() {
     this.refreshOptions()
-    if (!this.data.initialized) {
+    if (!this.data.initialized || this._refreshRecordsOnShow || (this._recordScope !== undefined && this._recordScope !== scopeStore.getQueryOnlyMyself())) {
+      this._refreshRecordsOnShow = false
       this.setData({ initialized: true })
       this.initPage()
     }
@@ -91,8 +92,7 @@ Page({
   },
 
   async ensureFamilyGroupLoaded() {
-    if (familyStore.getMyGroupState() || wx.getStorageSync('myGroup')) return
-    await familyStore.fetchMyGroup()
+    await familyStore.ensureMyGroupLoaded()
   },
 
   applyRouteOptions(options) {
@@ -149,7 +149,11 @@ Page({
   },
 
   async initPage() {
-    await this.ensureFamilyGroupLoaded()
+    try { await this.ensureFamilyGroupLoaded() } catch (error) {
+      this.setData({ initialized: false })
+      return
+    }
+    this._recordScope = scopeStore.getQueryOnlyMyself()
     this.initFormPageDto()
     return this.searchData(true)
   },
@@ -167,23 +171,26 @@ Page({
 
   async searchData(reset) {
     this.syncSearchDto()
-    await Promise.all([this.searchStatistics(), this.searchPage(reset)])
+    this._recordsRequest = (this._recordsRequest || 0) + 1
+    await Promise.all([this.searchStatistics(this._recordsRequest), this.searchPage(reset, this._recordsRequest)])
   },
 
-  async searchStatistics() {
+  async searchStatistics(requestId = this._recordsRequest) {
     try {
       const res = await bookkeepingApi.getRecordStatistics(this.data.dto)
+      if (requestId !== this._recordsRequest) return
       this.setData({
         statistics: res.data || { consume: 0, income: 0 }
       })
     } catch (error) {
+      if (requestId !== this._recordsRequest) return
       this.setData({
         statistics: { consume: 0, income: 0 }
       })
     }
   },
 
-  async searchPage(reset) {
+  async searchPage(reset, requestId = this._recordsRequest) {
     this.setData({
       loadMoreStatus: 'loading',
       loadMoreText: '加载中...'
@@ -191,6 +198,7 @@ Page({
 
     try {
       const res = await bookkeepingApi.getRecordPage(this.data.dto)
+      if (requestId !== this._recordsRequest) return
       const records = ((res.data && res.data.records) || []).map((item) => (
         bookkeepingUtils.formatListRecord(item, scopeStore.getScopeState())
       ))
@@ -202,6 +210,7 @@ Page({
         loadMoreText: hasMore ? '加载更多' : (list.length ? '没有更多了' : '暂无记录')
       })
     } catch (error) {
+      if (requestId !== this._recordsRequest) return
       this.setData({
         loadMoreStatus: 'more',
         loadMoreText: '加载更多'
@@ -362,6 +371,10 @@ Page({
     if (index < 0) return
 
     const current = this.data.list[index]
+    if (record.expenseUserId != null && Number(record.expenseUserId) !== Number(current.expenseUserId == null ? current.userId : current.expenseUserId)) {
+      this._refreshRecordsOnShow = true
+      return
+    }
     const recordTime = record.recordDate || record.recordTime || current.recordTime
     const list = this.data.list.slice()
     list[index] = bookkeepingUtils.formatListRecord({

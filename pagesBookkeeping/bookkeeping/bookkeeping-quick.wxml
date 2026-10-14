@@ -131,9 +131,18 @@
       <text>不计入统计:</text>
       <switch checked="{{formData.isStatistics === 0}}" color="#07c160" bindchange="switchStatistics" />
     </view>
+    <view wx:if="{{showPayer}}" class="more-row payer-row">
+      <view class="payer-label">
+        <text>支出人:</text>
+        <view wx:if="{{payerSharedLocked}}" class="payer-tip">替家人记账，自动共享</view>
+      </view>
+      <picker mode="selector" range="{{payerOptions}}" range-key="name" value="{{payerIndex}}" disabled="{{payerDisabled || isSubmitting}}" bindchange="onPayerChange">
+        <view class="payer-value">{{payerName}} ▾</view>
+      </picker>
+    </view>
     <view wx:if="{{showSharedSwitch}}" class="more-row">
       <text>共享给家人:</text>
-      <switch checked="{{formData.shared === 1}}" color="#07c160" bindchange="switchShared" />
+      <switch checked="{{formData.shared === 1}}" disabled="{{payerSharedLocked || isSubmitting}}" color="#07c160" bindchange="switchShared" />
     </view>
     <view class="more-row">
       <text>货币:</text>

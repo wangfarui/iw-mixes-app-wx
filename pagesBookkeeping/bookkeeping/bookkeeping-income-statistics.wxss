@@ -165,3 +165,5 @@
   font-size: 26rpx;
   text-align: center;
 }
+
+.scope-filter { display: flex; align-items: center; justify-content: space-between; padding: 8rpx 0; font-size: 24rpx; color: #777; }

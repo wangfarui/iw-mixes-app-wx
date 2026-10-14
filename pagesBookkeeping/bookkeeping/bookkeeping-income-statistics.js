@@ -1,3 +1,4 @@
+const familyStore = require('../../stores/family')
 const bookkeepingApi = require('../../api/bookkeeping')
 const scopeStore = require('../../stores/family-shared-scope')
 const utils = require('../../utils/bookkeeping')
@@ -33,6 +34,7 @@ Page({
     selectedMonth: currentMonth(),
     selectedYear: currentYear(),
     selectedMonthText: '',
+    ignoreNotStatistics: false,
     totalAmount: '0.00',
     totalRecordNum: 0,
     barChartData: [],
@@ -59,6 +61,11 @@ Page({
     this.setData({ selectedMonthText: `${year}年${month}月` })
   },
 
+  switchIgnoreStatistics(event) {
+    this.setData({ ignoreNotStatistics: Boolean(event.detail.value) })
+    this.fetchStatistics()
+  },
+
   buildParams() {
     return {
       currentMonth: this.data.currentTab === 'month'
@@ -66,6 +73,7 @@ Page({
         : `${this.data.selectedYear}-01-01`,
       statisticsType: this.data.currentTab === 'month' ? 1 : 2,
       limit: 10,
+      isSearchAll: this.data.ignoreNotStatistics ? 0 : 1,
       queryOnlyMyself: scopeStore.getQueryOnlyMyself()
     }
   },
@@ -79,8 +87,13 @@ Page({
   },
 
   async fetchStatistics() {
-    if (this.data.loading) return
+    const requestId = (this._statisticsRequest || 0) + 1
+    this._statisticsRequest = requestId
     this.setData({ loading: true })
+    try { await familyStore.ensureMyGroupLoaded() } catch (error) {
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
+      return
+    }
     const params = this.buildParams()
     const scopeState = scopeStore.getScopeState()
 
@@ -91,6 +104,7 @@ Page({
         bookkeepingApi.getIncomeRankStatistics(params)
       ])
 
+      if (requestId !== this._statisticsRequest) return
       const total = totalRes.data || {}
       const barChartData = (chartRes.data || []).map(toNumber)
       const rankList = (rankRes.data || []).map((item) => ({
@@ -108,6 +122,7 @@ Page({
         rankList
       }, () => this.renderBarChart())
     } catch (error) {
+      if (requestId !== this._statisticsRequest) return
       this.setData({
         totalAmount: '0.00',
         totalRecordNum: 0,
@@ -116,7 +131,7 @@ Page({
         rankList: []
       }, () => this.renderBarChart())
     } finally {
-      this.setData({ loading: false })
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
     }
   },
 

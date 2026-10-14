@@ -3,7 +3,9 @@ const familyApi = require('../api/family')
 const MY_GROUP_KEY = 'myGroup'
 
 let myGroup = wx.getStorageSync(MY_GROUP_KEY) || null
-let isLoading = false
+let loadingPromise = null
+let loaded = false
+let lastFetchError = null
 
 function getMyGroupState() {
   return myGroup
@@ -28,32 +30,39 @@ function updateGroup(groupData) {
     clearGroup()
     return
   }
+  loaded = true
   myGroup = groupData
   wx.setStorageSync(MY_GROUP_KEY, myGroup)
 }
 
 function clearGroup() {
+  loaded = false
   myGroup = null
   wx.removeStorageSync(MY_GROUP_KEY)
 }
 
-async function fetchMyGroup() {
-  if (isLoading) return myGroup
-  isLoading = true
-
-  try {
-    const res = await familyApi.getMyGroup()
-    if (res.data) {
-      updateGroup(res.data)
-    } else {
-      clearGroup()
+function fetchMyGroup() {
+  if (loadingPromise) return loadingPromise
+  loadingPromise = (async () => {
+    try {
+      const res = await familyApi.getMyGroup()
+      if (res.data) updateGroup(res.data)
+      else clearGroup()
+      loaded = true
+      lastFetchError = null
+    } catch (error) {
+      lastFetchError = error
+      myGroup = wx.getStorageSync(MY_GROUP_KEY) || null
     }
-  } catch (error) {
-    myGroup = wx.getStorageSync(MY_GROUP_KEY) || null
-  } finally {
-    isLoading = false
-  }
+    return myGroup
+  })().finally(() => { loadingPromise = null })
+  return loadingPromise
+}
 
+async function ensureMyGroupLoaded() {
+  if (loadingPromise) await loadingPromise
+  else if (!loaded || lastFetchError) await fetchMyGroup()
+  if (lastFetchError) throw lastFetchError
   return myGroup
 }
 
@@ -64,5 +73,6 @@ module.exports = {
   isOwner,
   updateGroup,
   clearGroup,
-  fetchMyGroup
+  fetchMyGroup,
+  ensureMyGroupLoaded
 }

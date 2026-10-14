@@ -1,4 +1,6 @@
 const bookkeepingApi = require('../../api/bookkeeping')
+const scopeStore = require('../../stores/family-shared-scope')
+const familyStore = require('../../stores/family')
 const bookkeepingUtils = require('../../utils/bookkeeping')
 
 Page({
@@ -23,9 +25,12 @@ Page({
     this.setData({ isLoading: true })
 
     try {
+      await familyStore.ensureMyGroupLoaded()
       const res = await bookkeepingApi.getRecordDetail(this.data.detailId)
       const detail = this.formatDetail(res.data || {})
       this.setData({ detail })
+    } catch (error) {
+      wx.showToast({ title: '账单加载失败，请重试', icon: 'none' })
     } finally {
       this.setData({ isLoading: false })
     }
@@ -34,6 +39,7 @@ Page({
   formatDetail(detail) {
     return {
       ...detail,
+      showPayer: scopeStore.hasGroup() && Number(detail.recordCategory) === 1,
       recordCategoryText: bookkeepingUtils.getRecordCategoryText(detail.recordCategory),
       recordSourceText: bookkeepingUtils.formatRecordSource(detail),
       recordTypeName: bookkeepingUtils.getRecordTypeName(detail.recordType, '-'),

@@ -1,3 +1,4 @@
+const familyStore = require('../../stores/family')
 const bookkeepingApi = require('../../api/bookkeeping')
 const yearly = require('./yearly-statistics-helper')
 
@@ -109,21 +110,30 @@ Page({
   },
 
   async fetchOverview() {
+    const requestId = (this._statisticsRequest || 0) + 1
+    this._statisticsRequest = requestId
+    try { await familyStore.ensureMyGroupLoaded() } catch (error) { return }
     this.setData({ loading: true })
     try {
       const res = await bookkeepingApi.getYearOverviewStatistics(this.buildParams())
+      if (requestId !== this._statisticsRequest) return
       this.setData({ overview: yearly.formatOverview(res.data || {}) }, () => this.renderTrendChart())
     } catch (error) {
+      if (requestId !== this._statisticsRequest) return
       this.setData({ overview: emptyOverview() }, () => this.renderTrendChart())
     } finally {
-      this.setData({ loading: false })
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
     }
   },
 
   async fetchConsume() {
+    const requestId = (this._statisticsRequest || 0) + 1
+    this._statisticsRequest = requestId
+    try { await familyStore.ensureMyGroupLoaded() } catch (error) { return }
     this.setData({ loading: true })
     try {
       const res = await bookkeepingApi.getYearConsumeStatistics(this.buildParams())
+      if (requestId !== this._statisticsRequest) return
       this.setData({
         consume: yearly.formatConsume(
           res.data || {},
@@ -133,23 +143,29 @@ Page({
         )
       })
     } catch (error) {
+      if (requestId !== this._statisticsRequest) return
       this.setData({ consume: emptyConsume(this.data.tagViewType) })
     } finally {
-      this.setData({ loading: false })
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
     }
   },
 
   async fetchIncome() {
+    const requestId = (this._statisticsRequest || 0) + 1
+    this._statisticsRequest = requestId
+    try { await familyStore.ensureMyGroupLoaded() } catch (error) { return }
     this.setData({ loading: true })
     try {
       const res = await bookkeepingApi.getYearIncomeStatistics(this.buildParams())
+      if (requestId !== this._statisticsRequest) return
       this.setData({
         income: yearly.formatIncome(res.data || {}, this.data.showAllIncomeCategory)
       })
     } catch (error) {
+      if (requestId !== this._statisticsRequest) return
       this.setData({ income: emptyIncome() })
     } finally {
-      this.setData({ loading: false })
+      if (requestId === this._statisticsRequest) this.setData({ loading: false })
     }
   },
 
