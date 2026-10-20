@@ -1,3 +1,4 @@
+const optionsStore = require('../../stores/bookkeeping-options')
 const bookkeepingApi = require('../../api/bookkeeping')
 const payer = require('../../utils/bookkeeping-payer')
 const bookkeepingUtils = require('../../utils/bookkeeping')
@@ -16,7 +17,7 @@ function defaultFormData(category, shared) {
     recordCategory: category || 1,
     recordSource: '',
     amount: '',
-    recordType: '',
+    recordTypeId: null,
     remark: '',
     recordTags: [],
     isStatistics: 1,
@@ -76,9 +77,16 @@ Page({
         this.applyTemplate(template)
       })
     }
-    this.initPage().then(() => {
+    this._initializing = this.initPage().then(() => {
       if (!this.data.isTemplateMode) this.loadTodayConsume()
     }).catch(() => wx.showToast({ title: '家庭信息加载失败，请重新进入', icon: 'none' }))
+  },
+
+  async onShow() {
+    this.setData({ recordTypeOptions: [], tagOptions: [] })
+    if (this._initializing) await this._initializing
+    try { await optionsStore.refresh() } catch (error) {}
+    this.refreshOptions()
   },
 
   async ensureFamilyGroupLoaded() {
@@ -87,6 +95,7 @@ Page({
 
   async initPage() {
     await this.ensureFamilyGroupLoaded()
+    await optionsStore.refresh()
     await this.initPayerSelector()
     const scopeState = sharedScopeStore.getScopeState()
     this.setData({
@@ -110,7 +119,9 @@ Page({
     this.setData({
       formData: {
         ...defaultFormData(1, sharedScopeStore.getDefaultRecordShared()),
-        ...(template ? taskBookkeeping.templateFields(template) : {})
+        ...(template ? taskBookkeeping.templateFields(template) : {}),
+        recordTypeName: template && template.recordTypeName || '',
+        recordTagSnapshots: template && template.recordTagSnapshots || []
       },
       isExcitationRecord: Boolean(template && Number(template.isExcitationRecord) === 1),
       isNotStatistics: Boolean(template && Number(template.isStatistics) === 0)
@@ -136,12 +147,14 @@ Page({
           ...defaultFormData(Number(detail.recordCategory) || 1, 0),
           ...detail,
           shared: Number(detail.shared) === 1 ? 1 : 0,
-          recordTags: detail.recordTags || [],
+          recordTags: (detail.recordTagSnapshots || []).map((tag) => tag.id),
           fileList: detail.fileList || []
         },
         isExcitationRecord: Number(detail.isExcitationRecord) === 1,
         isNotStatistics: Number(detail.isStatistics) === 0
       })
+      this._categoryChanged = false
+      this._tagsChanged = false
       this.refreshOptions()
       this.refreshSwitchState()
     } catch (error) {}
@@ -149,14 +162,14 @@ Page({
 
   refreshOptions() {
     const formData = this.data.formData
-    const recordTypeOptions = bookkeepingUtils.getRecordTypeOptions(false)
-    const foundIndex = recordTypeOptions.findIndex((item) => item.dictCode === formData.recordType)
+    const recordTypeOptions = (this.data.isUpdateForm || this.data.isTemplateMode) ? bookkeepingUtils.getEditorTypeOptions(formData) : bookkeepingUtils.getRecordTypeOptions(false)
+    const foundIndex = recordTypeOptions.findIndex((item) => item.id === formData.recordTypeId)
     const recordTypeIndex = foundIndex >= 0 ? foundIndex : 0
     this.setData({
       recordTypeOptions,
       recordTypeIndex,
-      recordTypeName: formData.recordType ? bookkeepingUtils.getRecordTypeName(formData.recordType, '') : '',
-      tagOptions: bookkeepingUtils.getTagOptions(formData.recordCategory, formData.recordTags || []),
+      recordTypeName: (this.data.isUpdateForm || this.data.isTemplateMode) && !this._categoryChanged ? bookkeepingUtils.getRecordTypeName(formData) : formData.recordTypeName || bookkeepingUtils.getOptionName(formData.recordTypeId),
+      tagOptions: bookkeepingUtils.getEditorTagOptions(formData),
       selectedIconUrl: formData.recordIcon ? getIconUrl(formData.recordIcon) : '',
       iconList: getIconList(formData.recordIcon)
     })
@@ -178,6 +191,8 @@ Page({
 
   selectCategory(event) {
     const recordCategory = Number(event.currentTarget.dataset.category)
+    if (recordCategory === Number(this.data.formData.recordCategory)) return
+    this._tagsChanged = true
     this.setData({
       'formData.recordCategory': recordCategory,
       'formData.recordTags': [],
@@ -197,11 +212,13 @@ Page({
   onRecordTypeChange(event) {
     const index = Number(event.detail.value)
     const item = this.data.recordTypeOptions[index]
-    if (!item) return
+    if (!item || item.historical) return
+    this._categoryChanged = true
     this.setData({
       recordTypeIndex: index,
       recordTypeName: item.dictName,
-      'formData.recordType': item.dictCode
+      'formData.recordTypeId': item.id,
+      'formData.recordTypeName': item.dictName
     })
   },
 
@@ -228,6 +245,7 @@ Page({
   },
 
   toggleTag(event) {
+    this._tagsChanged = true
     const id = Number(event.currentTarget.dataset.id)
     const recordTags = (this.data.formData.recordTags || []).slice()
     const index = recordTags.indexOf(id)
@@ -238,7 +256,7 @@ Page({
     }
     this.setData({
       'formData.recordTags': recordTags,
-      tagOptions: bookkeepingUtils.getTagOptions(this.data.formData.recordCategory, recordTags)
+      tagOptions: bookkeepingUtils.getEditorTagOptions({ ...this.data.formData, recordTags })
     })
   },
 
@@ -348,10 +366,6 @@ Page({
       wx.showToast({ title: '请输入有效金额', icon: 'none' })
       return
     }
-    if (!formData.recordType) {
-      wx.showToast({ title: '请选择分类', icon: 'none' })
-      return
-    }
     if (this.data.isSubmitting) return
 
     this.setData({ isSubmitting: true })
@@ -374,7 +388,13 @@ Page({
         return
       }
 
+      delete submitData.recordType
       if (this.data.isUpdateForm) {
+        submitData.dictionaryChanges = {}
+        if (this._categoryChanged) submitData.dictionaryChanges.categoryId = submitData.recordTypeId || null
+        if (this._tagsChanged) submitData.dictionaryChanges.tagIds = submitData.recordTags || []
+        delete submitData.recordTypeId
+        delete submitData.recordTags
         await bookkeepingApi.updateRecord(submitData)
       } else {
         await bookkeepingApi.addRecord(submitData)
@@ -386,11 +406,8 @@ Page({
       })
 
       if (this.data.isUpdateForm) {
-        this.getOpenerEventChannel().emit('recordSaved', {
-          ...submitData,
-          recordTime: submitData.recordDate || formData.recordTime || '',
-          recordTimeStr: submitData.recordDate || formData.recordTimeStr || ''
-        })
+        const saved = await bookkeepingApi.getRecordDetail(this.data.updateFormId)
+        this.getOpenerEventChannel().emit('recordSaved', saved.data || {})
         setTimeout(() => wx.navigateBack(), 500)
       } else {
         this.setData({

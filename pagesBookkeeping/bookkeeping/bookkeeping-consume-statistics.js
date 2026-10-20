@@ -100,7 +100,7 @@ Page({
   buildCategoryList(source) {
     const rawList = source || []
     return rawList.map((item, index) => {
-      const key = `category-${item.recordType == null ? index : item.recordType}`
+      const key = JSON.stringify([item.dictionarySnapshotStatus, item.recordTypeName])
       const rawAmount = toNumber(item.amount)
       const ratio = utils.percent(item.ratio)
       const color = CHART_COLORS[index % CHART_COLORS.length]
@@ -108,7 +108,8 @@ Page({
       return {
         ...item,
         key,
-        name: utils.getRecordTypeName(item.recordType, '其他'),
+        name: utils.getRecordTypeName(item),
+        categoryState: Number(item.dictionarySnapshotStatus) === 0 ? 'PENDING' : item.recordTypeName == null ? 'UNCATEGORIZED' : '',
         rawAmount,
         chartValue: rawAmount,
         amount: toMoney(rawAmount),
@@ -123,7 +124,7 @@ Page({
 
   buildTagList(source, tagViewType) {
     const list = (source || []).map((item, index) => {
-      const id = item.dictId == null ? (item.tagId == null ? (item.name || index) : item.tagId) : item.dictId
+      const id = item.name || item.tagName || `unclassified-${index}`
       const count = Number(item.count || item.recordNum || 0)
       const rawAmount = toNumber(item.amount)
       const ratio = utils.percent(item.ratio)
@@ -133,7 +134,7 @@ Page({
       return {
         ...item,
         key: `tag-${id}`,
-        name: item.name || item.tagName || utils.getTagName(1, item.tagId || item.dictId) || '未命名',
+        name: item.name || item.tagName || '未命名',
         count,
         rawAmount,
         amount: toMoney(rawAmount),
@@ -208,7 +209,7 @@ Page({
       const rankList = (rankRes.data || []).map((item) => ({
         ...item,
         amount: toMoney(item.amount),
-        recordTypeName: utils.getRecordTypeName(item.recordType, '其他'),
+        recordTypeName: utils.getRecordTypeName(item),
         ownerText: buildOwnerText(item, scopeState)
       }))
       const barChartData = (barRes.data || []).map(normalizeBarValue)
@@ -333,8 +334,10 @@ Page({
   },
 
   goToRecords(event) {
-    const recordType = event.currentTarget.dataset.recordType
-    let url = `/pagesBookkeeping/bookkeeping/bookkeeping-records?recordType=${recordType}&ignoreNotStatistics=${this.data.ignoreNotStatistics}&recordCategory=1`
+    const categoryName = event.currentTarget.dataset.categoryName
+    const state = event.currentTarget.dataset.categoryState
+    const categoryQuery = state ? `categoryState=${state}` : `categoryName=${encodeURIComponent(categoryName || '')}`
+    let url = `/pagesBookkeeping/bookkeeping/bookkeeping-records?${categoryQuery}&ignoreNotStatistics=${this.data.ignoreNotStatistics}&recordCategory=1`
     if (this.data.currentTab === 'month') {
       url += `&recordDate=${this.data.selectedMonth}`
     } else {

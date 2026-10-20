@@ -25,7 +25,8 @@ function showToast(title, icon = 'none') {
   })
 }
 
-function handleUnauthorized(reject) {
+function handleUnauthorized(reject, requestToken) {
+  if (requestToken !== sessionStore.getToken()) { reject(new Error('会话已变化')); return }
   showToast('登录状态失效', 'error')
   sessionStore.clearLoginSession()
   redirectToLogin()
@@ -33,6 +34,7 @@ function handleUnauthorized(reject) {
 }
 
 function request(url, method, data = {}, options = {}) {
+  const requestToken = sessionStore.getToken()
   return new Promise((resolve, reject) => {
     wx.request({
       url: `${getBaseUrl()}${url}`,
@@ -52,7 +54,7 @@ function request(url, method, data = {}, options = {}) {
         }
 
         if (result.code === 401) {
-          handleUnauthorized(reject)
+          handleUnauthorized(reject, requestToken)
           return
         }
 

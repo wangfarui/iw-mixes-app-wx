@@ -21,7 +21,7 @@ function defaultForm() {
 }
 
 function buildDictTypeOptions() {
-  return dictStore.getDictTypeArray().map((item) => ({
+  return dictStore.getDictTypeArray().filter((item) => ![4001, 4002, 4011].includes(Number(item.code))).map((item) => ({
     value: item.code,
     text: item.name
   }))
@@ -68,7 +68,7 @@ Page({
     if (options.id) {
       this.setData({ isEdit: true })
       wx.setNavigationBarTitle({ title: '编辑字典' })
-      this.getDetail(options.id)
+      this.getDetail(options.id).catch(() => { this.setData({ blocked: true }); wx.showModal({ title: '无法在此维护', content: '记账分类与标签请从菜单 → 财务记账 → 记账设置进入。', showCancel: false, success: () => wx.navigateBack() }) })
     } else {
       wx.setNavigationBarTitle({ title: '新增字典' })
     }
@@ -98,6 +98,7 @@ Page({
   async getDetail(id) {
     const res = await baseApi.getDictDetail(id)
     const detail = res.data || {}
+    if ([4001, 4002, 4011].includes(Number(detail.dictType))) throw new Error('已迁入记账设置')
     const dictTypeIndex = this.data.dictTypeOptions.findIndex((item) => item.value === detail.dictType)
     const showParentCategory = isWardrobeItemSubcategory(detail.dictType)
     const parentCategoryIndex = this.data.parentCategoryOptions.findIndex((item) => Number(item.value) === Number(detail.parentId))
@@ -171,6 +172,7 @@ Page({
 
   validateForm() {
     const form = this.data.formData
+    if (this.data.blocked || [4001, 4002, 4011].includes(Number(form.dictType))) return '请使用记账设置'
     if (!form.dictType) return '请选择字典类型'
     if (this.data.showParentCategory && !form.parentId) return '请选择所属品类'
     if (!String(form.dictName || '').trim()) return '请输入字典名称'

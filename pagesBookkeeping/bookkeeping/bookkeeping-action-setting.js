@@ -1,3 +1,5 @@
+const bookkeepingUtils = require('../../utils/bookkeeping')
+const optionsStore = require('../../stores/bookkeeping-options')
 const bookkeepingApi = require('../../api/bookkeeping')
 const { getIconUrl } = require('../../utils/icon')
 
@@ -15,9 +17,9 @@ function buildActionUpdatePayload(action, sort) {
     id: action.id,
     recordCategory: action.recordCategory,
     recordSource: action.recordSource,
-    recordType: action.recordType,
+    recordTypeId: action.recordTypeId,
     recordIcon: action.recordIcon || '',
-    recordTags: action.recordTags || [],
+    recordTags: bookkeepingUtils.normalizeTagIds(action.recordTags),
     sort
   }
 }
@@ -53,8 +55,9 @@ Page({
     isMoving: false
   },
 
-  onShow() {
-    this.fetchActions()
+  async onShow() {
+    this.setData({ actions: [] })
+    try { await optionsStore.refresh(); await this.fetchActions() } catch (error) {}
   },
 
   selectCategory(event) {
@@ -65,14 +68,18 @@ Page({
   },
 
   async fetchActions() {
+    const requestId = this._actionsRequest = (this._actionsRequest || 0) + 1
+    const identity = optionsStore.identity()
     try {
       const res = await bookkeepingApi.getActionList(this.data.selectedCategory)
+      if (requestId !== this._actionsRequest || identity !== optionsStore.identity()) return
       const actions = (res.data || []).map((action) => ({
         ...action,
         iconUrl: getIconUrl(action.recordIcon)
       }))
       this.setData({ actions })
     } catch (error) {
+      if (requestId !== this._actionsRequest || identity !== optionsStore.identity()) return
       this.setData({ actions: [] })
     }
   },

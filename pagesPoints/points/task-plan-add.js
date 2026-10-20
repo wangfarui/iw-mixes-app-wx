@@ -55,7 +55,7 @@ Page({
     this.setData({
       hasBookkeepingConfig: Object.prototype.hasOwnProperty.call(detail, 'bookkeepingEnabled'),
       templateSummary: taskBookkeeping.templateSummary(detail.bookkeepingTemplate),
-      templateTypeName: taskBookkeeping.parseTemplate(detail.bookkeepingTemplate) ? utils.getRecordTypeName(taskBookkeeping.parseTemplate(detail.bookkeepingTemplate).recordType, '待确认') : '',
+      templateTypeName: taskBookkeeping.parseTemplate(detail.bookkeepingTemplate) ? taskBookkeeping.parseTemplate(detail.bookkeepingTemplate).recordTypeName || '待确认' : '',
       formData: {
         ...defaultForm(),
         ...detail,
@@ -104,7 +104,7 @@ Page({
           hasBookkeepingConfig: true,
           'formData.bookkeepingTemplate': taskBookkeeping.parseTemplate(template),
           templateSummary: taskBookkeeping.templateSummary(template),
-          templateTypeName: utils.getRecordTypeName(taskBookkeeping.parseTemplate(template).recordType, '待确认')
+          templateTypeName: taskBookkeeping.parseTemplate(template).recordTypeName || utils.getOptionName(taskBookkeeping.parseTemplate(template).recordTypeId, '未分类')
         })
       },
       success: (res) => res.eventChannel.emit('templateInit', this.data.formData.bookkeepingTemplate)

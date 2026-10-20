@@ -3,15 +3,24 @@ const { getBaseUrl } = require('../config/env')
 const sessionStore = require('../stores/session')
 const { redirectToLogin } = require('../utils/auth')
 
+function pick(data, keys) {
+  const result = {}
+  keys.forEach((key) => { if (Object.prototype.hasOwnProperty.call(data, key)) result[key] = data[key] })
+  return result
+}
+const recordFields = ['recordDate', 'recordCategory', 'recordSource', 'amount', 'remark', 'isExcitationRecord', 'isStatistics', 'recordIcon', 'fromCurrency', 'fileList', 'shared', 'expenseUserId']
+const actionFields = ['id', 'recordCategory', 'recordSource', 'recordTypeId', 'recordIcon', 'recordTags', 'sort']
+
 function getRecordDetail(id) {
   return http.get('/bookkeeping-service/bookkeeping/records/detail', { id })
 }
 
 function addRecord(data) {
-  return http.post('/bookkeeping-service/bookkeeping/records/add', data)
+  return http.post('/bookkeeping-service/bookkeeping/records/add', pick(data, recordFields.concat(['recordTypeId', 'recordTags'])))
 }
 
 function parseExpenseAudio(filePath, options = {}) {
+  const requestToken = sessionStore.getToken()
   const formData = {}
   if (options.durationMs !== undefined && options.durationMs !== null) {
     formData.durationMs = options.durationMs
@@ -45,6 +54,7 @@ function parseExpenseAudio(filePath, options = {}) {
           return
         }
 
+        if (requestToken !== sessionStore.getToken()) { reject(new Error('会话已变化，请重试')); return }
         if (result && result.code === 401) {
           wx.showToast({ title: '登录状态失效', icon: 'error' })
           sessionStore.clearLoginSession()
@@ -71,11 +81,11 @@ function parseExpenseAudio(filePath, options = {}) {
 }
 
 function confirmAssistantExpense(data) {
-  return http.post('/bookkeeping-service/bookkeeping/assistant/expense/confirm', data)
+  return http.post('/bookkeeping-service/bookkeeping/assistant/expense/confirm', pick(data, recordFields.concat(['recordTypeId', 'recordTags', 'logId'])))
 }
 
 function updateRecord(data) {
-  return http.put('/bookkeeping-service/bookkeeping/records/update', data)
+  return http.put('/bookkeeping-service/bookkeeping/records/update', pick(data, recordFields.concat(['id', 'dictionaryChanges'])))
 }
 
 function deleteRecord(id) {
@@ -103,11 +113,11 @@ function getActionDetail(id) {
 }
 
 function addAction(data) {
-  return http.post('/bookkeeping-service/bookkeeping/actions/add', data)
+  return http.post('/bookkeeping-service/bookkeeping/actions/add', pick(data, actionFields))
 }
 
 function updateAction(data) {
-  return http.put('/bookkeeping-service/bookkeeping/actions/update', data)
+  return http.put('/bookkeeping-service/bookkeeping/actions/update', pick(data, actionFields))
 }
 
 function deleteAction(id) {
@@ -214,7 +224,10 @@ function deleteMembership(id) {
   return http.delete('/bookkeeping-service/bookkeeping/membership/delete', { id })
 }
 
+function getRecordFilterOptions(params) { return http.get('/bookkeeping-service/bookkeeping/records/filter-options', params) }
+
 module.exports = {
+  getRecordFilterOptions,
   getRecordDetail,
   addRecord,
   parseExpenseAudio,

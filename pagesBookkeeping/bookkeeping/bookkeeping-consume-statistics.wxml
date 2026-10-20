@@ -63,7 +63,7 @@
       </view>
     </view>
 
-    <view wx:for="{{categoryList}}" wx:key="recordType" class="progress-item" data-record-type="{{item.recordType}}" bindtap="goToRecords">
+    <view wx:for="{{categoryList}}" wx:key="key" class="progress-item" data-category-name="{{item.recordTypeName}}" data-category-state="{{item.categoryState}}" bindtap="goToRecords">
       <view class="progress-head">
         <view class="progress-name">{{item.name}} <text class="muted">({{item.recordNum}}笔)</text></view>
         <view class="progress-amount">¥{{item.amount}}</view>

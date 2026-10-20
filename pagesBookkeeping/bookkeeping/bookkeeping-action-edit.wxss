@@ -192,3 +192,5 @@
   width: 40rpx;
   height: 40rpx;
 }
+
+.dictionary-warning { padding: 20rpx; background: #fff7e6; color: #a66100; word-break: break-all; }

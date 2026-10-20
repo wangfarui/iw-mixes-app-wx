@@ -1,0 +1,178 @@
+<template name="dictionaryManagement">
+<view class="dm-page">
+  <view class="dm-scope" wx:if="{{hasFamily && !sorting}}">
+    <view class="dm-scope-item {{scope === 'PERSONAL' ? 'is-active' : ''}}" data-scope="PERSONAL" bindtap="changeScope">我的</view>
+    <view class="dm-scope-item {{scope === 'FAMILY' ? 'is-active' : ''}}" data-scope="FAMILY" bindtap="changeScope">家庭共用</view>
+  </view>
+  <view class="dm-scope-desc" wx:if="{{loadedOnce && !loadError}}">{{scope === 'PERSONAL' ? '仅自己管理，可用于个人或共享账单' : (canManage ? '家庭成员均可使用，群主和家长可管理' : '家庭共用选项 · 当前仅可查看')}}</view>
+
+  <view class="dm-sort-header" wx:if="{{sorting}}">
+    <view class="dm-sort-hint">拖动手柄调整顺序</view>
+    <view class="dm-sort-actions">
+      <view class="dm-sort-action {{busy ? 'is-disabled' : ''}}" bindtap="cancelSort">取消</view>
+      <view class="dm-sort-action is-strong {{busy ? 'is-disabled' : ''}}" bindtap="finishSort">{{busy && busyAction === 'order' ? '提交中…' : '完成'}}</view>
+    </view>
+  </view>
+  <view class="dm-sort-error" wx:if="{{sorting && sortError}}">{{sortError}}</view>
+
+  <view class="dm-state" wx:if="{{!loadedOnce && loading}}">加载中…</view>
+  <view class="dm-state" wx:elif="{{!loadedOnce && loadError}}">
+    <view class="dm-state-text">{{loadError}}</view>
+    <view class="dm-state-retry" bindtap="retryLoad">重试</view>
+  </view>
+  <block wx:elif="{{loadedOnce}}">
+    <view class="dm-refresh-failed" wx:if="{{refreshFailed}}">
+      <view class="dm-refresh-failed-text">已保存，列表刷新失败</view>
+      <view class="dm-refresh-failed-retry" bindtap="retryRefresh">重试</view>
+    </view>
+
+    <block wx:if="{{!sorting}}">
+      <view class="dm-section-head">
+        <view class="dm-section-title">已启用 · {{enabledItems.length}} 项</view>
+        <view class="dm-sort-entry" wx:if="{{canManage && items.length > 1}}" bindtap="startSort">排序</view>
+      </view>
+      <view class="dm-group" wx:if="{{enabledItems.length}}">
+        <view class="dm-row" wx:for="{{enabledItems}}" wx:key="id">
+          <view class="dm-row-name" data-id="{{item.id}}" bindtap="openNameEditor">{{item.name}}</view>
+          <view class="dm-row-more" data-id="{{item.id}}" catchtap="openMenu" wx:if="{{canManage}}">
+            <image class="dm-row-more-img" src="/static/bookkeeping/settings/more.svg" mode="aspectFit"/>
+          </view>
+        </view>
+      </view>
+      <view class="dm-fold" wx:if="{{disabledCount > 0}}" bindtap="toggleDisabled">
+        <view class="dm-fold-text">已停用 · {{disabledCount}} 项</view>
+        <view class="dm-fold-arrow {{showDisabled ? 'is-open' : ''}}"></view>
+      </view>
+      <view class="dm-disabled-wrap" wx:if="{{disabledCount > 0 && showDisabled}}">
+        <view class="dm-disabled-label">已停用</view>
+        <view class="dm-group">
+          <view class="dm-row" wx:for="{{disabledItems}}" wx:key="id">
+            <view class="dm-row-name" data-id="{{item.id}}" bindtap="openNameEditor">{{item.name}}</view>
+            <view class="dm-row-badge">已停用</view>
+            <view class="dm-row-more" data-id="{{item.id}}" catchtap="openMenu" wx:if="{{canManage}}">
+              <image class="dm-row-more-img" src="/static/bookkeeping/settings/more.svg" mode="aspectFit"/>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="dm-state" wx:if="{{!items.length && !refreshFailed}}">暂无选项</view>
+    </block>
+
+    <view class="dm-sort-list" wx:if="{{sorting}}">
+      <view class="dm-sort-row dm-sort-row-{{index}} {{dragIndex === index ? 'is-source' : ''}}" wx:for="{{sortItems}}" wx:key="id">
+        <view class="dm-handle" data-id="{{item.id}}" bindtouchstart="onHandleTouchStart" catchtouchmove="onHandleTouchMove" bindtouchend="onHandleTouchEnd" bindtouchcancel="onDragEnd" bindlongpress="onHandleLongPress">
+          <image class="dm-handle-img" src="/static/bookkeeping/settings/handle.svg" mode="aspectFit"/>
+        </view>
+        <view class="dm-row-name">{{item.name}}<text class="dm-row-badge" wx:if="{{!item.enabled}}">已停用</text></view>
+        <view class="dm-move">
+          <view class="dm-move-btn {{index === 0 || busy ? 'is-disabled' : ''}}" data-id="{{item.id}}" data-direction="-1" catchtap="moveSort">上移</view>
+          <view class="dm-move-btn {{index === sortItems.length - 1 || busy ? 'is-disabled' : ''}}" data-id="{{item.id}}" data-direction="1" catchtap="moveSort">下移</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="dm-footer-spacer {{canManage && scope === 'FAMILY' ? 'is-family' : ''}}" wx:if="{{canManage && !sorting && loadedOnce}}"></view>
+</view>
+
+<view class="dm-drag-shadow" wx:if="{{dragItem}}" style="top: {{dragTop}}px;">
+  <image class="dm-handle-img" src="/static/bookkeeping/settings/handle.svg" mode="aspectFit"/>
+  <view class="dm-row-name">{{dragItem.name}}<text class="dm-row-badge" wx:if="{{!dragItem.enabled}}">已停用</text></view>
+</view>
+
+<view class="dm-footer" style="bottom: {{safeBottom}}px;" wx:if="{{canManage && !sorting && loadedOnce}}">
+  <view class="dm-copy-entry" wx:if="{{scope === 'FAMILY'}}" bindtap="openCopy">从我的选项添加</view>
+  <view class="dm-primary {{busy ? 'is-disabled' : ''}}" bindtap="openAdd">＋ 新增{{typeText}}</view>
+</view>
+
+<view class="dm-mask" wx:if="{{activeSheet === 'editor'}}" catchtap="onMaskTap">
+  <view class="dm-sheet" catchtap="noop" style="bottom: {{keyboardHeight}}px;">
+    <view class="dm-sheet-head">
+      <view class="dm-sheet-title">{{editing ? '修改名称' : '新增' + typeText}}</view>
+      <view class="dm-sheet-close" bindtap="closeEditor"><text class="dm-close-x">×</text></view>
+    </view>
+    <view class="dm-field-label">{{typeText}}名称</view>
+    <view class="dm-input-box">
+      <input class="dm-input" value="{{draftName}}" maxlength="-1" placeholder="{{placeholder}}" placeholder-class="dm-input-ph"
+             focus="{{activeSheet === 'editor'}}" adjust-position="{{false}}"
+             bindinput="inputName" bindfocus="onEditorFocus" bindblur="onEditorBlur" bindkeyboardheightchange="onEditorKeyboardHeightChange"/>
+    </view>
+    <view class="dm-input-meta">
+      <view class="dm-input-hint {{nameError ? 'is-error' : ''}}">{{nameError || (nameUnchanged ? '名称未修改' : '1–32 个字符')}}</view>
+      <view class="dm-input-count {{nameError ? 'is-error' : ''}}">{{nameCount}}/32</view>
+    </view>
+    <view class="dm-rename-note" wx:if="{{editing}}">修改后，已有账单仍保留原来的名称。</view>
+    <view class="dm-write-error" wx:if="{{writeError}}">{{writeError}}</view>
+    <view class="dm-sheet-actions">
+      <view class="dm-btn dm-btn-cancel {{busy ? 'is-disabled' : ''}}" bindtap="closeEditor">取消</view>
+      <view class="dm-btn dm-btn-primary {{busy || !canSaveName ? 'is-disabled' : ''}}" bindtap="saveName">{{busy && (busyAction === 'add' || busyAction === 'rename') ? '保存中…' : '保存'}}</view>
+    </view>
+    <view class="dm-sheet-safe" style="height: {{safeBottom}}px;" wx:if="{{!keyboardHeight}}"></view>
+  </view>
+</view>
+
+<view class="dm-mask" wx:if="{{activeSheet === 'menu'}}" catchtap="onMaskTap">
+  <view class="dm-sheet" catchtap="noop">
+    <view class="dm-sheet-head">
+      <view class="dm-sheet-title dm-sheet-title-wrap">{{menuItem.name}}</view>
+      <view class="dm-sheet-close" bindtap="closeMenu"><text class="dm-close-x">×</text></view>
+    </view>
+    <view class="dm-menu-item" bindtap="menuEditName">
+      <image class="dm-menu-icon" src="/static/bookkeeping/settings/edit.svg" mode="aspectFit"/>
+      <view class="dm-menu-text">修改名称</view>
+    </view>
+    <view class="dm-menu-item" bindtap="menuToggleStatus">
+      <image class="dm-menu-icon" src="/static/bookkeeping/settings/pause.svg" mode="aspectFit"/>
+      <view class="dm-menu-text">{{menuItem.enabled ? '停用' : '启用'}}{{typeText}}</view>
+    </view>
+    <view class="dm-menu-item" bindtap="menuDelete">
+      <image class="dm-menu-icon" src="/static/bookkeeping/settings/trash.svg" mode="aspectFit"/>
+      <view class="dm-menu-text is-danger">删除{{typeText}}</view>
+    </view>
+    <view class="dm-write-error" wx:if="{{writeError}}">{{writeError}}</view>
+    <view class="dm-sheet-safe" style="height: {{safeBottom}}px;"></view>
+  </view>
+</view>
+
+<view class="dm-mask dm-mask-center" wx:if="{{activeSheet === 'delete'}}" catchtap="onMaskTap">
+  <view class="dm-dialog" catchtap="noop">
+    <view class="dm-dialog-title">删除“{{deleteItem.name}}”？</view>
+    <view class="dm-dialog-desc">已有账单保留原名称，之后记账将不再提供此选项。</view>
+    <view class="dm-sheet-actions">
+      <view class="dm-btn dm-btn-cancel {{busy ? 'is-disabled' : ''}}" bindtap="cancelDelete">取消</view>
+      <view class="dm-btn dm-btn-danger {{busy ? 'is-disabled' : ''}}" bindtap="confirmDelete">{{busy && busyAction === 'delete' ? '删除中…' : '删除' + typeText}}</view>
+    </view>
+  </view>
+</view>
+
+<view class="dm-mask" wx:if="{{activeSheet === 'copy'}}" catchtap="onMaskTap">
+  <view class="dm-sheet dm-sheet-tall" catchtap="noop">
+    <view class="dm-sheet-head">
+      <view class="dm-sheet-title">从我的选项添加</view>
+      <view class="dm-sheet-close" bindtap="closeCopy"><text class="dm-close-x">×</text></view>
+    </view>
+    <view class="dm-copy-note">添加为独立的家庭选项，个人选项保持不变。</view>
+    <view class="dm-copy-state" wx:if="{{copyLoading}}">加载中…</view>
+    <view class="dm-copy-state" wx:elif="{{copyError}}">
+      <view class="dm-state-text">{{copyError}}</view>
+      <view class="dm-state-retry" bindtap="openCopy">重试</view>
+    </view>
+    <scroll-view scroll-y class="dm-copy-list" wx:elif="{{copyItems.length}}">
+      <view class="dm-copy-item {{item.exists ? 'is-disabled' : ''}}" wx:for="{{copyItems}}" wx:key="id" data-id="{{item.id}}" bindtap="toggleCopyItem">
+        <view class="dm-checkbox {{item.selected ? 'is-checked' : ''}}">
+          <view class="dm-checkbox-tick" wx:if="{{item.selected}}"></view>
+        </view>
+        <view class="dm-copy-name">{{item.name}}</view>
+        <view class="dm-row-badge" wx:if="{{!item.enabled && !item.exists}}">已停用</view>
+        <view class="dm-copy-exists" wx:if="{{item.exists}}">已存在</view>
+      </view>
+    </scroll-view>
+    <view class="dm-copy-state" wx:else>暂无可添加的个人选项</view>
+    <view class="dm-sheet-actions">
+      <view class="dm-btn dm-btn-cancel {{busy ? 'is-disabled' : ''}}" bindtap="closeCopy">取消</view>
+      <view class="dm-btn dm-btn-primary {{busy || !copySelectedIds.length ? 'is-disabled' : ''}}" bindtap="confirmCopy">{{busy && busyAction === 'copy' ? '添加中…' : '添加所选（' + copySelectedIds.length + '）'}}</view>
+    </view>
+    <view class="dm-sheet-safe" style="height: {{safeBottom}}px;"></view>
+  </view>
+</view>
+</template>

@@ -57,7 +57,7 @@
     <view wx:if="{{isVoiceDraft}}" class="voice-draft-row">
       <text class="voice-draft-label">分类</text>
       <picker class="voice-draft-picker-wrap" mode="selector" range="{{recordTypeOptions}}" range-key="dictName" value="{{recordTypeIndex}}" disabled="{{isSubmitting}}" bindchange="onRecordTypeChange">
-        <view class="voice-draft-picker {{formData.recordType ? '' : 'placeholder'}}">{{recordTypeName || '请选择分类'}}</view>
+        <view class="voice-draft-picker {{formData.recordTypeId ? '' : 'placeholder'}}">{{recordTypeName || '请选择分类'}}</view>
       </picker>
     </view>
 

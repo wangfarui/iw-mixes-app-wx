@@ -8,7 +8,7 @@
     <view wx:for="{{actions}}" wx:key="id" class="action-item">
       <view class="action-main">
         <image src="{{item.iconUrl}}" class="action-icon" mode="aspectFit" />
-        <view class="action-name">{{item.recordSource}}</view>
+        <view class="action-name">{{item.recordSource}}<view wx:if="{{item.available === false}}" class="unavailable">{{item.unavailableReason || '请重新配置快捷选项'}}</view></view>
       </view>
       <view class="action-tools">
         <view class="sort-actions">
@@ -23,5 +23,5 @@
 
   <view wx:if="{{actions.length === 0}}" class="empty">暂无记账行为</view>
 
-  <button class="add-button" bindtap="addCategory">添加类别</button>
+  <button class="add-button" bindtap="addCategory">添加快捷项</button>
 </view>

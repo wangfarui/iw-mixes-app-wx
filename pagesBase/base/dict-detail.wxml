@@ -1,3 +1,4 @@
+<block wx:if="{{!blocked}}">
 <view class="base-page">
   <view class="form-card">
     <view class="section-title">基础信息</view>
@@ -46,3 +47,5 @@
     <button class="primary-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="handleSave">保存</button>
   </view>
 </view>
+
+</block>

@@ -1,3 +1,4 @@
+const optionsStore = require('../../stores/bookkeeping-options')
 const bookkeepingApi = require('../../api/bookkeeping')
 const bookkeepingUtils = require('../../utils/bookkeeping')
 const { getIconUrl, getIconList } = require('../../utils/icon')
@@ -11,7 +12,7 @@ function defaultFormData(recordCategory) {
   return {
     recordCategory: recordCategory || 1,
     recordSource: '',
-    recordType: null,
+    recordTypeId: null,
     recordIcon: '',
     recordTags: []
   }
@@ -47,16 +48,22 @@ Page({
     }
   },
 
+  async onShow() {
+    this.setData({ recordTypeOptions: [], tagOptions: [] })
+    try { await optionsStore.refresh() } catch (error) {}
+    this.refreshOptions()
+  },
+
   refreshOptions() {
     const formData = this.data.formData
-    const recordTypeOptions = bookkeepingUtils.getRecordTypeOptions(false)
-    const foundIndex = recordTypeOptions.findIndex((item) => item.dictCode === formData.recordType)
+    const recordTypeOptions = bookkeepingUtils.getEditorTypeOptions(formData)
+    const foundIndex = recordTypeOptions.findIndex((item) => item.id === formData.recordTypeId)
     const recordTypeIndex = foundIndex >= 0 ? foundIndex : 0
     this.setData({
       recordTypeOptions,
       recordTypeIndex,
-      recordTypeName: formData.recordType ? bookkeepingUtils.getRecordTypeName(formData.recordType, '') : '',
-      tagOptions: bookkeepingUtils.getTagOptions(formData.recordCategory, formData.recordTags || []),
+      recordTypeName: formData.recordTypeId ? formData.recordTypeName || bookkeepingUtils.getOptionName(formData.recordTypeId) : '',
+      tagOptions: bookkeepingUtils.getEditorTagOptions(formData),
       selectedIconUrl: formData.recordIcon ? getIconUrl(formData.recordIcon) : '',
       iconList: getIconList(formData.recordIcon)
     })
@@ -68,10 +75,11 @@ Page({
       const formData = {
         ...defaultFormData(1),
         ...(res.data || {}),
-        recordTags: (res.data && res.data.recordTags) || []
+        recordTags: bookkeepingUtils.normalizeTagIds(res.data && res.data.recordTags)
       }
       this.setData({
         formData,
+        dictionaryWarning: formData.available === false ? formData.unavailableReason || '选项已失效，请重新选择' : '',
         recordCategoryIndex: Number(formData.recordCategory) === 2 ? 1 : 0
       })
       this.refreshOptions()
@@ -99,17 +107,18 @@ Page({
   onRecordTypeChange(event) {
     const index = Number(event.detail.value)
     const item = this.data.recordTypeOptions[index]
-    if (!item) return
+    if (!item || item.historical) return
     this.setData({
       recordTypeIndex: index,
       recordTypeName: item.dictName,
-      'formData.recordType': item.dictCode
+      'formData.recordTypeId': item.id,
+      'formData.recordTypeName': item.dictName
     })
   },
 
   toggleTag(event) {
     const id = Number(event.currentTarget.dataset.id)
-    const recordTags = (this.data.formData.recordTags || []).slice()
+    const recordTags = bookkeepingUtils.normalizeTagIds(this.data.formData.recordTags)
     const index = recordTags.indexOf(id)
     if (index >= 0) {
       recordTags.splice(index, 1)
@@ -118,7 +127,7 @@ Page({
     }
     this.setData({
       'formData.recordTags': recordTags,
-      tagOptions: bookkeepingUtils.getTagOptions(this.data.formData.recordCategory, recordTags)
+      tagOptions: bookkeepingUtils.getEditorTagOptions({ ...this.data.formData, recordTags })
     })
   },
 
@@ -155,10 +164,6 @@ Page({
       wx.showToast({ title: '记录来源不能为空', icon: 'none' })
       return
     }
-    if (!formData.recordType) {
-      wx.showToast({ title: '记录分类不能为空', icon: 'none' })
-      return
-    }
     if (this.data.isSubmitting) return
 
     this.setData({ isSubmitting: true })
@@ -167,6 +172,7 @@ Page({
         ...formData,
         recordSource: String(formData.recordSource).trim()
       }
+      delete submitData.recordType
       if (this.data.detailId) {
         submitData.id = this.data.detailId
         await bookkeepingApi.updateAction(submitData)

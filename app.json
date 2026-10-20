@@ -24,7 +24,11 @@
         "bookkeeping/bookkeeping-yearly-statistics",
         "bookkeeping/bookkeeping-yearly-overview-statistics",
         "bookkeeping/bookkeeping-yearly-consume-statistics",
-        "bookkeeping/bookkeeping-yearly-income-statistics"
+        "bookkeeping/bookkeeping-yearly-income-statistics",
+        "bookkeeping/bookkeeping-settings",
+        "bookkeeping/bookkeeping-category-settings",
+        "bookkeeping/bookkeeping-consume-tag-settings",
+        "bookkeeping/bookkeeping-income-tag-settings"
       ]
     },
     {

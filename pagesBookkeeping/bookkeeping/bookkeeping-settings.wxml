@@ -1,0 +1,13 @@
+<view class="settings-home">
+  <view class="group">
+    <view class="entry" wx:for="{{items}}" wx:key="path" data-path="{{item.path}}" bindtap="open" hover-class="entry-hover">
+      <view class="entry-icon"><image class="entry-icon-img" src="{{item.icon}}" mode="aspectFit"/></view>
+      <view class="entry-text">
+        <view class="entry-name">{{item.name}}</view>
+        <view class="entry-desc">{{item.desc}}</view>
+      </view>
+      <image class="entry-arrow" src="/static/bookkeeping/settings/chevron-right.svg" mode="aspectFit"/>
+    </view>
+  </view>
+  <view class="note">改名、停用或删除选项后，已有账单仍保留原来的名称。</view>
+</view>

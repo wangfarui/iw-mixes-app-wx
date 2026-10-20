@@ -42,7 +42,7 @@ Page({
       showPayer: scopeStore.hasGroup() && Number(detail.recordCategory) === 1,
       recordCategoryText: bookkeepingUtils.getRecordCategoryText(detail.recordCategory),
       recordSourceText: bookkeepingUtils.formatRecordSource(detail),
-      recordTypeName: bookkeepingUtils.getRecordTypeName(detail.recordType, '-'),
+      recordTypeName: bookkeepingUtils.getRecordTypeName(detail, '未分类'),
       recordTagsText: bookkeepingUtils.formatRecordTags(detail)
     }
   },

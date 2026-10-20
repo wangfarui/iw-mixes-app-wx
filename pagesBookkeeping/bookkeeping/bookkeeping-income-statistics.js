@@ -110,7 +110,7 @@ Page({
       const rankList = (rankRes.data || []).map((item) => ({
         ...item,
         amount: toMoney(item.amount),
-        recordTypeName: utils.getRecordTypeName(item.recordType, '收入'),
+        recordTypeName: utils.getRecordTypeName(item),
         ownerText: buildOwnerText(item, scopeState)
       }))
 

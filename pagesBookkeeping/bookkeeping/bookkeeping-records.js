@@ -26,11 +26,12 @@ function createDto() {
     pageSize: 20,
     recordStartDate: '',
     recordEndDate: '',
-    recordType: '',
+    categoryNames: [],
+    categoryState: null,
     recordSource: '',
     mixAmount: '',
     maxAmount: '',
-    tagIdList: [],
+    tagNames: [],
     isSearchAll: '',
     recordCategory: '',
     sortType: 0,
@@ -41,7 +42,8 @@ function createDto() {
 
 Page({
   data: {
-    selectedButtonCode: -1,
+    selectedCategoryName: '',
+    selectedCategoryState: null,
     recordTypeButtons: [],
     startDate: '',
     endDate: '',
@@ -55,7 +57,7 @@ Page({
     loadMoreText: '加载更多',
     showFilter: false,
     ignoreNotStatistics: false,
-    tagIdList: [],
+    tagNames: [],
     filterTagOptions: [],
     recordCategoryOptions,
     recordCategoryIndex: 0,
@@ -111,8 +113,10 @@ Page({
       update.endDate = range.lastDay
     }
 
-    if (options.recordType) {
-      update.selectedButtonCode = Number(options.recordType)
+    if (['UNCATEGORIZED', 'PENDING'].includes(options.categoryState)) {
+      update.selectedCategoryState = options.categoryState
+    } else if (options.categoryName) {
+      update.selectedCategoryName = options.categoryName
     }
 
     if (options.ignoreNotStatistics !== undefined) {
@@ -129,11 +133,23 @@ Page({
     this.setData(update)
   },
 
-  refreshOptions() {
-    this.setData({
-      recordTypeButtons: bookkeepingUtils.getRecordTypeOptions(true),
-      filterTagOptions: bookkeepingUtils.getAllTagOptions(this.data.tagIdList)
-    })
+  async refreshOptions() {
+    const requestId = this._filterRequest = (this._filterRequest || 0) + 1
+    try {
+      await this.ensureFamilyGroupLoaded()
+      const identity = require('../../stores/bookkeeping-options').identity()
+      const res = await bookkeepingApi.getRecordFilterOptions({ queryOnlyMyself: scopeStore.getQueryOnlyMyself(), recordStartDate: this.data.startDate, recordEndDate: this.data.endDate, recordCategory: this.data.dto.recordCategory || undefined })
+      if (requestId !== this._filterRequest || identity !== require('../../stores/bookkeeping-options').identity()) return
+      const data = res.data || {}
+      const tags = Number(this.data.dto.recordCategory) === 1 ? data.expenseTags || [] : Number(this.data.dto.recordCategory) === 2 ? data.incomeTags || [] : (data.expenseTags || []).concat(data.incomeTags || [])
+      this._historicalTags = Array.from(new Set(tags.map((item) => item.name)))
+      this.setData({ recordTypeButtons: [{ name: '', dictName: '全部' }].concat((data.categories || []).map((item) => ({ ...item, dictName: item.name }))) })
+      this.renderFilterTags()
+    } catch (error) { if (requestId === this._filterRequest) { this._historicalTags = []; this.setData({ recordTypeButtons: [] }); this.renderFilterTags() } }
+  },
+
+  renderFilterTags() {
+    this.setData({ filterTagOptions: (this._historicalTags || []).map((name) => ({ name, dictName: name, selected: this.data.tagNames.includes(name) })) })
   },
 
   initFormPageDto() {
@@ -153,6 +169,7 @@ Page({
       this.setData({ initialized: false })
       return
     }
+    await this.refreshOptions()
     this._recordScope = scopeStore.getQueryOnlyMyself()
     this.initFormPageDto()
     return this.searchData(true)
@@ -162,8 +179,9 @@ Page({
     this.setData({
       'dto.recordStartDate': this.data.startDate,
       'dto.recordEndDate': this.data.endDate,
-      'dto.recordType': this.data.selectedButtonCode == -1 ? '' : this.data.selectedButtonCode,
-      'dto.tagIdList': this.data.tagIdList,
+      'dto.categoryNames': this.data.selectedCategoryState || this.data.selectedCategoryName === '' ? [] : [this.data.selectedCategoryName],
+      'dto.categoryState': this.data.selectedCategoryState,
+      'dto.tagNames': this.data.tagNames,
       'dto.isSearchAll': this.data.ignoreNotStatistics ? 0 : 1,
       'dto.queryOnlyMyself': scopeStore.getQueryOnlyMyself()
     })
@@ -220,7 +238,8 @@ Page({
 
   selectButton(event) {
     this.setData({
-      selectedButtonCode: Number(event.currentTarget.dataset.code)
+      selectedCategoryName: event.currentTarget.dataset.name || '',
+      selectedCategoryState: null
     })
     this.initPage()
   },
@@ -287,26 +306,28 @@ Page({
   },
 
   toggleTag(event) {
-    const id = Number(event.currentTarget.dataset.id)
-    const tagIdList = this.data.tagIdList.slice()
-    const index = tagIdList.indexOf(id)
+    const id = event.currentTarget.dataset.name
+    const tagNames = this.data.tagNames.slice()
+    const index = tagNames.indexOf(id)
     if (index >= 0) {
-      tagIdList.splice(index, 1)
+      tagNames.splice(index, 1)
     } else {
-      tagIdList.push(id)
+      tagNames.push(id)
     }
     this.setData({
-      tagIdList,
-      filterTagOptions: bookkeepingUtils.getAllTagOptions(tagIdList)
+      tagNames
     })
+    this.renderFilterTags()
   },
 
   onCategoryPickerChange(event) {
     const index = Number(event.detail.value)
     this.setData({
       recordCategoryIndex: index,
-      'dto.recordCategory': recordCategoryOptions[index].value
+      'dto.recordCategory': recordCategoryOptions[index].value,
+      tagNames: []
     })
+    this.refreshOptions()
   },
 
   onSortTypeChange(event) {
@@ -331,7 +352,7 @@ Page({
       recordSource: '',
       mixAmount: '',
       maxAmount: '',
-      tagIdList: [],
+      tagNames: [],
       isSearchAll: 1,
       recordCategory: '',
       sortType: 0,
@@ -339,8 +360,10 @@ Page({
     }
     this.setData({
       dto: nextDto,
-      tagIdList: [],
-      filterTagOptions: bookkeepingUtils.getAllTagOptions([]),
+      selectedCategoryName: '',
+      selectedCategoryState: null,
+      tagNames: [],
+
       ignoreNotStatistics: false,
       recordCategoryIndex: 0,
       sortTypeIndex: 0,

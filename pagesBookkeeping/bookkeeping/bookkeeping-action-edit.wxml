@@ -1,4 +1,5 @@
 <view class="action-edit-page">
+  <view wx:if="{{dictionaryWarning}}" class="dictionary-warning">{{dictionaryWarning}}</view>
   <view class="form-card">
     <view class="form-item">
       <view class="form-label">记录类型 <text class="required">*</text></view>
@@ -13,7 +14,7 @@
     </view>
 
     <view class="form-item">
-      <view class="form-label">记录分类 <text class="required">*</text></view>
+      <view class="form-label">记录分类</view>
       <picker mode="selector" range="{{recordTypeOptions}}" range-key="dictName" value="{{recordTypeIndex}}" bindchange="onRecordTypeChange">
         <view class="picker-box">{{recordTypeName || '请选择记录分类'}}</view>
       </picker>

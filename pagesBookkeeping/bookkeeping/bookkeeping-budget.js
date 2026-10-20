@@ -1,5 +1,5 @@
 const bookkeepingApi = require('../../api/bookkeeping')
-const dictStore = require('../../stores/dict')
+const optionsStore = require('../../stores/bookkeeping-options')
 const utils = require('../../utils/bookkeeping')
 
 function emptyForm() {
@@ -7,7 +7,7 @@ function emptyForm() {
     budgetAmount: '',
     rewardPoints: '',
     punishPoints: '',
-    recordType: ''
+    recordTypeId: ''
   }
 }
 
@@ -28,7 +28,7 @@ function formatBudget(item) {
     budgetAmountText: utils.formatMoney(budgetAmount),
     usedAmountText: utils.formatMoney(usedAmount),
     remainingAmountText: utils.formatMoney(remainingAmount),
-    recordTypeName: utils.getRecordTypeName(item && item.recordType, '总预算')
+    recordTypeName: item && item.recordTypeName || (item && [11, 21].includes(Number(item.budgetType)) ? '分类待核对' : '总预算')
   }
 }
 
@@ -48,14 +48,13 @@ Page({
     recordTypeName: ''
   },
 
-  onShow() {
-    this.refreshOptions()
-    this.fetchBudgetData()
+  async onShow() {
+    try { await optionsStore.refresh(); this.refreshOptions(); await this.fetchBudgetData() } catch (error) {}
   },
 
   refreshOptions() {
     this.setData({
-      recordTypeOptions: dictStore.getDictDataArray(dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TYPE)
+      recordTypeOptions: optionsStore.get('CATEGORY')
     })
   },
 
@@ -89,6 +88,7 @@ Page({
   },
 
   openForm(event) {
+    this._categoryChanged = false
     const isCategoryForm = Number(event.currentTarget.dataset.category) === 1
     this.setData({
       showForm: true,
@@ -112,12 +112,13 @@ Page({
   },
 
   onRecordTypeChange(event) {
+    this._categoryChanged = true
     const recordTypeIndex = Number(event.detail.value)
     const option = this.data.recordTypeOptions[recordTypeIndex]
     this.setData({
       recordTypeIndex,
       recordTypeName: option ? option.dictName : '',
-      'formData.recordType': option ? option.dictCode : ''
+      'formData.recordTypeId': option ? option.id : ''
     })
   },
 
@@ -145,6 +146,7 @@ Page({
   },
 
   async editBudget() {
+    this._categoryChanged = false
     const currentBudget = this.data.currentBudget
     this.setData({ showActions: false })
     if (!currentBudget || !currentBudget.id) return
@@ -152,7 +154,7 @@ Page({
     try {
       const res = await bookkeepingApi.getBudgetDetail(currentBudget.id)
       const detail = res.data || currentBudget
-      const recordTypeIndex = this.data.recordTypeOptions.findIndex((item) => item.dictCode === detail.recordType)
+      const recordTypeIndex = this.data.recordTypeOptions.findIndex((item) => item.id === detail.recordTypeId)
       this.setData({
         showForm: true,
         isEditing: true,
@@ -161,10 +163,10 @@ Page({
           budgetAmount: detail.budgetAmount || '',
           rewardPoints: detail.rewardPoints || '',
           punishPoints: detail.punishPoints || '',
-          recordType: detail.recordType || ''
+          recordTypeId: detail.recordTypeId || ''
         },
         recordTypeIndex: recordTypeIndex >= 0 ? recordTypeIndex : 0,
-        recordTypeName: detail.recordType ? utils.getRecordTypeName(detail.recordType, '') : ''
+        recordTypeName: detail.recordTypeName || ''
       })
     } catch (error) {
       wx.showToast({ title: '获取预算失败', icon: 'none' })
@@ -177,7 +179,7 @@ Page({
       wx.showToast({ title: '请输入大于0的金额', icon: 'none' })
       return
     }
-    if (this.data.isCategoryForm && !this.data.formData.recordType) {
+    if (this.data.isCategoryForm && (!this.data.isEditing || this._categoryChanged) && !this.data.formData.recordTypeId) {
       wx.showToast({ title: '请选择记录分类', icon: 'none' })
       return
     }
@@ -187,7 +189,7 @@ Page({
       budgetAmount: amount
     }
 
-    if (this.data.isCategoryForm) payload.recordType = this.data.formData.recordType
+    if (this.data.isCategoryForm && (!this.data.isEditing || this._categoryChanged)) payload.recordTypeId = this.data.formData.recordTypeId
     if (this.data.budgetType === 1) {
       if (this.data.formData.rewardPoints !== '') payload.rewardPoints = Number(this.data.formData.rewardPoints)
       if (this.data.formData.punishPoints !== '') payload.punishPoints = Number(this.data.formData.punishPoints)
@@ -225,7 +227,7 @@ Page({
     const budget = this.data.categoryBudgets[index]
     if (!budget) return
     wx.navigateTo({
-      url: `/pagesBookkeeping/bookkeeping/bookkeeping-records?recordType=${budget.recordType}`
+      url: `/pagesBookkeeping/bookkeeping/bookkeeping-records?categoryName=${encodeURIComponent(budget.recordTypeName || '')}`
     })
   },
 

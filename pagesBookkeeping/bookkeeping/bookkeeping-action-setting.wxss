@@ -167,3 +167,5 @@
   font-size: 28rpx;
   text-align: center;
 }
+
+.unavailable { color: #c46a16; font-size: 22rpx; word-break: break-all; overflow-wrap: anywhere; }

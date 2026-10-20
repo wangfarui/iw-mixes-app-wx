@@ -3,12 +3,13 @@
     <scroll-view scroll-x class="type-scroll" enable-flex>
       <view
         wx:for="{{recordTypeButtons}}"
-        wx:key="dictCode"
-        class="type-chip {{selectedButtonCode == item.dictCode ? 'active' : ''}}"
-        data-code="{{item.dictCode}}"
+        wx:key="name"
+        class="type-chip {{!selectedCategoryState && selectedCategoryName == item.name ? 'active' : ''}}"
+        data-name="{{item.name}}"
         bindtap="selectButton"
       >{{item.dictName}}</view>
     </scroll-view>
+    <view wx:if="{{selectedCategoryState}}" class="type-chip active">{{selectedCategoryState === 'PENDING' ? '分类待核对' : '未分类'}}</view>
     <view class="filter-button" bindtap="openFilter">筛选</view>
   </view>
 
@@ -96,9 +97,9 @@
           <view class="tag-group">
             <view
               wx:for="{{filterTagOptions}}"
-              wx:key="id"
+              wx:key="name"
               class="tag-chip {{item.selected ? 'selected' : ''}}"
-              data-id="{{item.id}}"
+              data-name="{{item.name}}"
               bindtap="toggleTag"
             >{{item.dictName}}</view>
           </view>

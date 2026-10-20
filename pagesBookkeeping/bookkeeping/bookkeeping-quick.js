@@ -1,3 +1,4 @@
+const optionsStore = require('../../stores/bookkeeping-options')
 const bookkeepingApi = require('../../api/bookkeeping')
 const payer = require('../../utils/bookkeeping-payer')
 const bookkeepingUtils = require('../../utils/bookkeeping')
@@ -13,7 +14,7 @@ function defaultFormData() {
     recordIcon: '',
     recordSource: '',
     recordTags: [],
-    recordType: null,
+    recordTypeId: null,
     isExcitationRecord: 0,
     isStatistics: 1,
     fromCurrency: '',
@@ -49,13 +50,13 @@ function resolveFileFormat(filePath) {
   return filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase()
 }
 
-function getRecordTypeState(recordType) {
-  const recordTypeOptions = bookkeepingUtils.getRecordTypeOptions(false)
-  const foundIndex = recordTypeOptions.findIndex((item) => String(item.dictCode) === String(recordType))
+function getRecordTypeState(recordTypeId, recordTypeName) {
+  const recordTypeOptions = bookkeepingUtils.getEditorTypeOptions({ recordTypeId, recordTypeName })
+  const foundIndex = recordTypeOptions.findIndex((item) => String(item.id) === String(recordTypeId))
   return {
     recordTypeOptions,
     recordTypeIndex: foundIndex >= 0 ? foundIndex : 0,
-    recordTypeName: recordType ? bookkeepingUtils.getRecordTypeName(recordType, '') : ''
+    recordTypeName: recordTypeName || bookkeepingUtils.getOptionName(recordTypeId)
   }
 }
 
@@ -97,8 +98,9 @@ Page({
     this.initRecorder()
   },
 
-  onShow() {
-    this.fetchActions()
+  async onShow() {
+    this.setData({ actions: [], recordTypeOptions: [], tagOptions: [] })
+    try { await optionsStore.refresh(); await this.fetchActions() } catch (error) { this.setData({ actions: [] }) }
   },
 
   onUnload() {
@@ -130,14 +132,18 @@ Page({
   },
 
   async fetchActions() {
+    const requestId = this._actionsRequest = (this._actionsRequest || 0) + 1
+    const identity = optionsStore.identity()
     try {
       const res = await bookkeepingApi.getActionList(this.data.selectedCategory)
+      if (requestId !== this._actionsRequest || identity !== optionsStore.identity()) return
       const actions = (res.data || []).map((action) => ({
         ...action,
         iconUrl: getIconUrl(action.recordIcon)
       }))
       this.setData({ actions })
     } catch (error) {
+      if (requestId !== this._actionsRequest || identity !== optionsStore.identity()) return
       this.setData({ actions: [] })
     }
   },
@@ -324,19 +330,19 @@ Page({
   },
 
   async applyVoiceDraft(draft, matchedActionId) {
-    try { await this.ensureFamilyGroupLoaded() } catch (error) {
+    try { await this.ensureFamilyGroupLoaded(); await optionsStore.refresh() } catch (error) {
       wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
       return
     }
     const recordDate = draft.recordDate || bookkeepingUtils.today()
-    const recordTags = Array.isArray(draft.recordTags) ? draft.recordTags : []
+    const recordTags = bookkeepingUtils.normalizeTagIds(draft.recordTags)
     const formData = {
       ...defaultFormData(),
       recordCategory: 1,
       recordIcon: draft.recordIcon || '',
       recordSource: draft.recordSource || '',
       recordTags,
-      recordType: draft.recordType == null ? null : draft.recordType,
+      recordTypeId: draft.recordTypeId == null ? null : draft.recordTypeId,
       isExcitationRecord: 0,
       isStatistics: draft.isStatistics == null ? 1 : draft.isStatistics,
       shared: draft.shared == null ? sharedScopeStore.getDefaultRecordShared() : draft.shared
@@ -353,7 +359,7 @@ Page({
       remark: draft.recordSource || '',
       formData,
       tagOptions: bookkeepingUtils.getTagOptions(1, recordTags),
-      ...getRecordTypeState(formData.recordType),
+      ...getRecordTypeState(formData.recordTypeId, formData.recordTypeName),
       showSharedSwitch: sharedScopeStore.canControlRecordShared(),
       currencyIndex: 0,
       currencyName: '请选择',
@@ -376,21 +382,30 @@ Page({
     }
     this.cancelVoiceRecording()
 
-    const action = this.data.actions[Number(event.currentTarget.dataset.index)]
+    let action = this.data.actions[Number(event.currentTarget.dataset.index)]
     if (!action) return
 
-    try { await this.ensureFamilyGroupLoaded() } catch (error) {
+    try { await this.ensureFamilyGroupLoaded(); await optionsStore.refresh() } catch (error) {
       wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
       return
     }
+    const identity = optionsStore.identity()
+    try {
+      const current = await bookkeepingApi.getActionDetail(action.id)
+      if (identity !== optionsStore.identity()) return
+      action = current.data || {}
+    } catch (error) { return }
+    if (action.available === false) { wx.showToast({ title: action.unavailableReason || '请重新配置快捷选项', icon: 'none' }); return }
     const shared = sharedScopeStore.getDefaultRecordShared()
     const formData = {
       ...defaultFormData(),
       recordCategory: this.data.selectedCategory,
       recordIcon: action.recordIcon,
       recordSource: action.recordSource,
-      recordTags: action.recordTags || [],
-      recordType: action.recordType,
+      recordTags: bookkeepingUtils.normalizeTagIds(action.recordTags),
+      recordTypeId: action.recordTypeId,
+      recordTypeName: action.recordTypeName,
+      recordTagSnapshots: action.recordTagSnapshots || [],
       shared
     }
 
@@ -403,8 +418,8 @@ Page({
       isToday: true,
       remark: '',
       formData,
-      tagOptions: bookkeepingUtils.getTagOptions(this.data.selectedCategory, formData.recordTags),
-      ...getRecordTypeState(formData.recordType),
+      tagOptions: bookkeepingUtils.getEditorTagOptions(formData),
+      ...getRecordTypeState(formData.recordTypeId, formData.recordTypeName),
       showSharedSwitch: sharedScopeStore.canControlRecordShared(),
       currencyIndex: 0,
       currencyName: '请选择',
@@ -467,11 +482,11 @@ Page({
     if (this.data.isSubmitting) return
     const index = Number(event.detail.value)
     const option = this.data.recordTypeOptions[index]
-    if (!option) return
+    if (!option || option.historical) return
     this.setData({
       recordTypeIndex: index,
       recordTypeName: option.dictName,
-      'formData.recordType': option.dictCode
+      'formData.recordTypeId': option.id
     })
   },
 
@@ -510,7 +525,7 @@ Page({
 
   toggleTag(event) {
     const id = Number(event.currentTarget.dataset.id)
-    const recordTags = (this.data.formData.recordTags || []).slice()
+    const recordTags = bookkeepingUtils.normalizeTagIds(this.data.formData.recordTags)
     const index = recordTags.indexOf(id)
     if (index >= 0) {
       recordTags.splice(index, 1)
@@ -519,7 +534,7 @@ Page({
     }
     this.setData({
       'formData.recordTags': recordTags,
-      tagOptions: bookkeepingUtils.getTagOptions(this.data.selectedCategory, recordTags)
+      tagOptions: bookkeepingUtils.getEditorTagOptions({ ...this.data.formData, recordTags })
     })
   },
 
@@ -665,10 +680,6 @@ Page({
     }
     if (Number(this.data.amount) <= 0) {
       wx.showToast({ title: '请输入有效金额', icon: 'none' })
-      return
-    }
-    if (!this.data.formData.recordType) {
-      wx.showToast({ title: '请选择记账分类', icon: 'none' })
       return
     }
 

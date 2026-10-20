@@ -156,11 +156,7 @@ Page({
 
   formatRecord(item) {
     const scope = scopeStore.getScopeState()
-    const recordTypeName = dictStore.getDictNameByCode(
-      dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TYPE,
-      item.recordType,
-      '未知'
-    )
+    const recordTypeName = require('../../utils/bookkeeping').getRecordTypeName(item)
     const displaySource = item.recordSource || (item.recordCategory === 2 ? '收入' : '消费')
     const ownerText = payer.payerText(item, scope)
 

@@ -11,7 +11,8 @@
     "test:wallet-negative-delta": "node scripts/test-wallet-negative-delta.js",
     "test:wardrobe-list-sync": "node scripts/test-wardrobe-item-list-sync.js",
     "test:wardrobe-item-readonly": "node scripts/test-wardrobe-item-form-readonly.js",
-    "test:bookkeeping-payer": "node scripts/test-bookkeeping-payer.js"
+    "test:bookkeeping-payer": "node scripts/test-bookkeeping-payer.js",
+    "test:bookkeeping-settings": "node scripts/test-bookkeeping-settings.js"
   },
   "dependencies": {
     "weui-miniprogram": "1.5.6"

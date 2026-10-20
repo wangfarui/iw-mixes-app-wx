@@ -1,3 +1,4 @@
+const optionsStore = require('../stores/bookkeeping-options')
 const dictStore = require('../stores/dict')
 
 function pad2(value) {
@@ -68,19 +69,32 @@ function getRecordCategoryText(recordCategory) {
   return Number(recordCategory) === 2 ? '收入' : '支出'
 }
 
-function getRecordTypeName(recordType, defaultName = '未知') {
-  return dictStore.getDictNameByCode(
-    dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TYPE,
-    recordType,
-    defaultName
-  )
+function getRecordTypeName(record, defaultName = '未分类') {
+  if (!record || typeof record !== 'object') return defaultName
+  if (Number(record.dictionarySnapshotStatus) === 0) return '分类待核对'
+  return record.recordTypeName || defaultName
+}
+function getOptionName(id, defaultName = '') {
+  const item = optionsStore.get('CATEGORY').find((item) => Number(item.id) === Number(id))
+  return item ? item.name : defaultName
 }
 
 function getTagName(recordCategory, id) {
   const dictType = Number(recordCategory) === 2
     ? dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TAG_INCOME
     : dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TAG_CONSUME
-  return dictStore.getDictNameById(dictType, id)
+  const item = optionsStore.get(dictType).find((item) => Number(item.id) === Number(id))
+  return item ? item.name : ''
+}
+
+// Action VOs serialize CSV storage as JSON arrays; tolerate either wire shape
+// at the client boundary and keep all form selections as numeric ID arrays.
+function normalizeTagIds(value) {
+  const values = Array.isArray(value) ? value : typeof value === 'string' ? value.split(',') : []
+  return Array.from(new Set(values
+    .filter((id) => id !== null && id !== undefined && String(id).trim() !== '')
+    .map(Number)
+    .filter((id) => Number.isSafeInteger(id) && id > 0)))
 }
 
 function getTagOptions(recordCategory, selectedIds = []) {
@@ -88,20 +102,20 @@ function getTagOptions(recordCategory, selectedIds = []) {
     ? dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TAG_INCOME
     : dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TAG_CONSUME
   const selectedMap = {}
-  selectedIds.forEach((id) => {
+  normalizeTagIds(selectedIds).forEach((id) => {
     selectedMap[String(id)] = true
   })
-  return dictStore.getDictDataArray(dictType).map((item) => ({
+  return optionsStore.get(dictType).map((item) => ({
     ...item,
     selected: Boolean(selectedMap[String(item.id)])
   }))
 }
 
 function getAllTagOptions(selectedIds = []) {
-  const consumeTags = dictStore.getDictDataArray(dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TAG_CONSUME)
-  const incomeTags = dictStore.getDictDataArray(dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TAG_INCOME)
+  const consumeTags = optionsStore.get('EXPENSE_TAG')
+  const incomeTags = optionsStore.get('INCOME_TAG')
   const selectedMap = {}
-  selectedIds.forEach((id) => {
+  normalizeTagIds(selectedIds).forEach((id) => {
     selectedMap[String(id)] = true
   })
   return consumeTags.concat(incomeTags).map((item) => ({
@@ -111,9 +125,9 @@ function getAllTagOptions(selectedIds = []) {
 }
 
 function getRecordTypeOptions(includeAll = false) {
-  const types = dictStore.getDictDataArray(dictStore.dictTypeEnum.BOOKKEEPING_RECORD_TYPE)
-  if (!includeAll) return types
-  return [{ id: '-1', dictCode: -1, dictName: '全部' }].concat(types)
+  const types = optionsStore.get('CATEGORY')
+  if (!includeAll) return [{ id: null, name: '未分类', dictName: '未分类' }].concat(types)
+  return [{ id: '-1', dictName: '全部' }].concat(types)
 }
 
 function formatRecordSource(item) {
@@ -122,11 +136,28 @@ function formatRecordSource(item) {
 }
 
 function formatRecordTags(detail) {
-  const tags = detail && Array.isArray(detail.recordTags) ? detail.recordTags : []
-  return tags
-    .map((id) => getTagName(detail.recordCategory, id))
-    .filter(Boolean)
-    .join('、')
+  return ((detail && detail.recordTagSnapshots) || []).map((tag) => tag.name).filter(Boolean).join('、')
+}
+
+// Old selections are private to this editor and never enter the new-record store.
+function getEditorTypeOptions(form) {
+  const options = getRecordTypeOptions(false)
+  if (form.recordTypeId && !options.some((item) => Number(item.id) === Number(form.recordTypeId))) {
+    options.unshift({ id: form.recordTypeId, dictName: `当前：${getRecordTypeName(form)}`, historical: true })
+  }
+  return options
+}
+
+function getEditorTagOptions(form) {
+  const selectedIds = normalizeTagIds(form.recordTags)
+  const options = getTagOptions(form.recordCategory, selectedIds)
+  const type = Number(form.recordCategory) === 2 ? 4011 : 4001
+  ;(form.recordTagSnapshots || []).filter((tag) => Number(tag.type) === type).forEach((tag) => {
+    if (!options.some((item) => Number(item.id) === Number(tag.id))) {
+      options.push({ id: tag.id, name: tag.name, dictName: `当前：${tag.name}`, selected: selectedIds.includes(Number(tag.id)), historical: true })
+    }
+  })
+  return options
 }
 
 function getRecordIcon(item) {
@@ -140,7 +171,7 @@ function getRecordIcon(item) {
 
 function formatListRecord(item, scopeState) {
   const payer = require('./bookkeeping-payer')
-  const recordTypeName = getRecordTypeName(item.recordType, '未知')
+  const recordTypeName = getRecordTypeName(item)
   const ownerText = payer.payerText(item, scopeState)
 
   return {
@@ -168,7 +199,11 @@ module.exports = {
   enumName,
   getRecordCategoryText,
   getRecordTypeName,
+  getOptionName,
+  getEditorTagOptions,
+  getEditorTypeOptions,
   getTagName,
+  normalizeTagIds,
   getTagOptions,
   getAllTagOptions,
   getRecordTypeOptions,

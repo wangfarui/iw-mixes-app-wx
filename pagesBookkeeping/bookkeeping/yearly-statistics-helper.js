@@ -284,7 +284,7 @@ function formatConsume(data, showAllCategory, showAllTags, tagViewType) {
   const yearStatistics = data.yearStatistics || {}
   const categories = (data.consumeCategories || []).map((item, index) => ({
     ...item,
-    name: item.name || '其他',
+    name: item.name || (Number(item.dictionarySnapshotStatus) === 0 ? '分类待核对' : '未分类'),
     amount: toMoney(item.amount),
     ratio: formatRatio(item.ratio),
     color: colors[index % colors.length]
@@ -315,7 +315,7 @@ function formatConsume(data, showAllCategory, showAllTags, tagViewType) {
     hasMoreTags: sortedTags.length > 5,
     topConsumeList: (data.topConsumeList || []).map((item) => ({
       ...item,
-      category: item.category || '支出',
+      category: item.category || item.recordTypeName || (Number(item.dictionarySnapshotStatus) === 0 ? '分类待核对' : '未分类'),
       date: item.date || '',
       ownerText: payer.payerText({ ...item, recordCategory: 1 }, scopeStore.getScopeState()),
       description: item.description || '无备注',
@@ -346,7 +346,7 @@ function formatIncome(data, showAllCategory) {
   const yearStatistics = data.yearStatistics || {}
   const categories = (data.incomeCategories || []).map((item, index) => ({
     ...item,
-    name: item.name || '其他',
+    name: item.name || (Number(item.dictionarySnapshotStatus) === 0 ? '分类待核对' : '未分类'),
     amount: toMoney(item.amount),
     ratio: formatRatio(item.ratio),
     color: colors[index % colors.length]
@@ -362,7 +362,7 @@ function formatIncome(data, showAllCategory) {
     hasMoreIncomeCategory: categories.length > 5,
     topIncomeList: (data.topIncomeList || []).map((item) => ({
       ...item,
-      category: item.category || '收入',
+      category: item.category || item.recordTypeName || (Number(item.dictionarySnapshotStatus) === 0 ? '分类待核对' : '未分类'),
       date: item.date || '',
       ownerText: item.userName ? ` · ${item.userName}` : '',
       description: item.description || '无备注',
