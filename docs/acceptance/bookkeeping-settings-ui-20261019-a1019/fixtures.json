@@ -1,0 +1,15 @@
+{
+  "runId": "a1019",
+  "prefix": "UI-a1019-",
+  "account": { "userId": 42, "hasFamily": true, "role": "家庭可管理（服务端 canManage=true）" },
+  "created": [
+    { "name": "UI-a1019-探针", "type": "CATEGORY", "scope": "PERSONAL", "via": "开发者工具模拟器真实新增（探针验证）", "cleaned": "cleanup 模式经页面菜单删除确认" },
+    { "name": "UI-a1019-甲→UI-a1019-乙", "type": "CATEGORY", "scope": "PERSONAL", "via": "新增+改名（含停用/启用/删除取消/确认全链路）", "cleaned": "确认删除" },
+    { "name": "UI-a1019-序", "type": "CATEGORY", "scope": "PERSONAL", "via": "排序提交夹具（末位→首位提交→恢复末位提交）", "cleaned": "cleanup 模式删除；既有项相对顺序已恢复" },
+    { "name": "UI-a1019-丙", "type": "CATEGORY", "scope": "PERSONAL", "via": "输入校验探针", "cleaned": "cleanup 模式删除" },
+    { "name": "UI-a1019-观", "type": "CATEGORY", "scope": "PERSONAL", "via": "截图夹具（新增+停用+展开截图）", "cleaned": "cleanup 模式删除（删除时已先恢复启用）" },
+    { "name": "UI-a1019-探针（家庭副本）", "type": "CATEGORY", "scope": "FAMILY", "via": "从我的选项添加（copy-personal，created=1）", "cleaned": "family 流程内经菜单删除确认" }
+  ],
+  "finalState": "三类字典 × 个人/家庭 范围均已复核，UI-a1019- 前缀残留 0；未创建/修改任何账单、预算、任务、钱包、角色或家庭关系",
+  "orderingNote": "排序测试仅移动 UI-a1019-序 夹具；提交前后既有项相对顺序逐项比对一致（R02c PASS）；接口归一化 sort 值，未宣称原始 sort 数字逐列不变"
+}

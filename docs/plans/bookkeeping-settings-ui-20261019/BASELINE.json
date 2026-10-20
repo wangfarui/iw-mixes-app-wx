@@ -1,0 +1,247 @@
+{
+  "createdAt": "2026-10-19T11:07:16.400869+08:00",
+  "status": "APPROVED_DESIGN_IMPLEMENTATION_NOT_STARTED",
+  "repository": "/Users/wangfarui/workspaces/wfr/iw-mixes_ai/iw-mixes-app-wx",
+  "branch": "main",
+  "head": "cd997144a41b129ff4e886802c64c6a5ce4034b9",
+  "meaning": "Fingerprints identify the current uncommitted baseline; do not reset or overwrite changes to match them.",
+  "sourceFiles": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "edc385cea5c3e7d00ca330aa330d12ea210029156a78bf712c6201e61a380a75",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "app.json",
+      "sha256": "0b6363c6fb1a48b4077e5a04f744e438bb32f0d36f168ca2dfaa77ff4c71f5c8",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "app.wxss",
+      "sha256": "abe3470038f1deaf6a27ec90fdf869333ca17454956e1c7e87936b51b334fb5a",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "a1fbcb6aca5d4254db87bff9eeaf6fc56f19b26ebd1e856cd55d50380f804b6e",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pages/menu.js",
+      "sha256": "53dfd8816dbc2af830318813e4d2e8dceb55e1f07c449ee9ba19d3561678babb",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "api/bookkeeping-dictionaries.js",
+      "sha256": "b672269abe521aa41bca1574fd83526715c8bdf46a95663d300825f2c9bd4afa",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "api/request.js",
+      "sha256": "2598891bc10fc717481320eebf05ef876fc7fc7e50ad0d60bb91dc03170ff092",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "stores/bookkeeping-options.js",
+      "sha256": "1480b2c99434462c203d96b9fbe3b31fdf8d13b44e9b404aa36b97aceccf68a7",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "stores/family.js",
+      "sha256": "b9bd8cd5da653b240d28031b5654557ad2f37f53706fbf1733d8c599954b140b",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "stores/session.js",
+      "sha256": "2edbcdb346573ad4b07cca1690891cba48f8b03b9ba67f5c6cf365957593793a",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "docs/bookkeeping-migration-experience.md",
+      "sha256": "fef719a4796e8ba5628f5b6bd4401236ec65214f16fe29e311c50dca5bc3d2bb",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-settings.js",
+      "sha256": "d6f0160683c4be55457460e6932546d4207f47fa1a0aa9cc726b247de66c7aab",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-settings.json",
+      "sha256": "daf6076e0cb358be3fd2ffe06eeaa36ad42bd46b0f1bea54c9f07adeb8adae76",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-settings.wxml",
+      "sha256": "d2e0d63693e046722f3e8b7f9f9ca138dc6b5fb97ff38938fcdd1dd3a08b843f",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-settings.wxss",
+      "sha256": "bfcaa0edde0a18d7864cdb0f8ce2458124bc2ce8446bb5f2352674ebf093fc01",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-category-settings.js",
+      "sha256": "24ca939110b58037ce59c36274dedc7a1d9c8dd2a1787897393604cf2925e1a1",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-category-settings.json",
+      "sha256": "3c88dd145f6f237ed39bbb90613445da75ccca45c4834e3094221c2e0498c32a",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-category-settings.wxml",
+      "sha256": "ca91182971a0250d5f8ade229e93e8c309d40c78e0f12b0325963eca35830728",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-category-settings.wxss",
+      "sha256": "6e8c98838fa8794073e84b171e1c1545ce2df24c23ad77b0edef886af0da237e",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.js",
+      "sha256": "2caad4ace9824796361032a06065eb17020951a0a70324babf9573a63badadf5",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.json",
+      "sha256": "0ffed42318e849ff98aee57500bceff333db2f7b41b530a6d4b07af5730fafe6",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.wxml",
+      "sha256": "ca91182971a0250d5f8ade229e93e8c309d40c78e0f12b0325963eca35830728",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.wxss",
+      "sha256": "6e8c98838fa8794073e84b171e1c1545ce2df24c23ad77b0edef886af0da237e",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.js",
+      "sha256": "8214971cb5a61e1c2ca7b71305a786c5676992b5f7dc3cfe145e33efbcbfa668",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.json",
+      "sha256": "7105fe5954896df80931c1a7ceac28f23841dac05a074d43b77fcb63a8c9f6e2",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.wxml",
+      "sha256": "ca91182971a0250d5f8ade229e93e8c309d40c78e0f12b0325963eca35830728",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.wxss",
+      "sha256": "6e8c98838fa8794073e84b171e1c1545ce2df24c23ad77b0edef886af0da237e",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/dictionary-management.js",
+      "sha256": "0c916026a261567164a0f9bcad76a9f2b5770fd3f86fff9baea72b7dc812cf45",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/dictionary-management.wxml",
+      "sha256": "c06a555bb59dd8b67a25eab418b34241944ae0c173f1125c5feacf45533ac42e",
+      "existsAtPlanTime": true
+    },
+    {
+      "path": "pagesBookkeeping/bookkeeping/dictionary-management.wxss",
+      "sha256": "ad9fe04a50d9fb1c4401ff4bd72d178695fea6292945ab72530b4d0ae92719fb",
+      "existsAtPlanTime": true
+    }
+  ],
+  "designAndPlanFiles": [
+    {
+      "path": "docs/plans/bookkeeping-settings-ui-20261019/README.md",
+      "sha256": "6aa3faa52f8f54416ce9c947edb31a81df1dd8ac28543d65a298444a649e96c9"
+    },
+    {
+      "path": "docs/plans/bookkeeping-settings-ui-20261019/assets/approved-entry-and-forms.png",
+      "sha256": "c8ddeb73905ffd7a4d187bab5feb0376457e01ed3b9ba071e512b80c0ebdd7cb"
+    },
+    {
+      "path": "docs/plans/bookkeeping-settings-ui-20261019/assets/approved-management.png",
+      "sha256": "3818f1486b3f125cd82b408257dd4dcb07b6f070c7a5c868cb74cb956c89040a"
+    },
+    {
+      "path": "docs/plans/bookkeeping-settings-ui-20261019/assets/approved-prototype.fragment.html",
+      "sha256": "3ab03b8a38e16f420d068bda10403a6f945d31f7aefa00c8cca4d38f3c91f3b9"
+    }
+  ],
+  "readOnlyServerContracts": [
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/controller/BookkeepingDictionaryController.java",
+      "sha256": "d59f6dba48d9e5229bb6bf6871036943607f37a94c1b360c5370ff88d5d3aad1"
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/BookkeepingDictionaryService.java",
+      "sha256": "eb0a589f3da418cacb64ccfdd29892c49e085dd55b1433105aec05ff66ab4721"
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/bookkeeping/DictionaryNames.java",
+      "sha256": "08c1a105192f040a26f075a782acb333330285c959efa3d92a50f14e09d313fa"
+    }
+  ],
+  "dirtyPathsAtPlanTime": [
+    " M api/bookkeeping.js",
+    " M api/request.js",
+    " M app.json",
+    " M pages/bill/index.js",
+    " M pages/menu.js",
+    " M pagesBase/base/dict-detail.js",
+    " M pagesBase/base/dict-detail.wxml",
+    " M pagesBase/base/dict-manage.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action-edit.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action-edit.wxml",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action-edit.wxss",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action-setting.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action-setting.json",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action-setting.wxml",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action-setting.wxss",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-action.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-budget.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-consume-statistics.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-consume-statistics.wxml",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-detail.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-income-statistics.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-quick.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-quick.wxml",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-records.js",
+    " M pagesBookkeeping/bookkeeping/bookkeeping-records.wxml",
+    " M pagesBookkeeping/bookkeeping/yearly-statistics-helper.js",
+    " M pagesPoints/points/task-plan-add.js",
+    " M stores/family.js",
+    " M stores/session.js",
+    " M utils/bookkeeping.js",
+    " M utils/task-bookkeeping.js",
+    "?? api/bookkeeping-dictionaries.js",
+    "?? docs/plans/",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-category-settings.js",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-category-settings.json",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-category-settings.wxml",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-category-settings.wxss",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.js",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.json",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.wxml",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-consume-tag-settings.wxss",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.js",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.json",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.wxml",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-income-tag-settings.wxss",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-settings.js",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-settings.json",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-settings.wxml",
+    "?? pagesBookkeeping/bookkeeping/bookkeeping-settings.wxss",
+    "?? pagesBookkeeping/bookkeeping/dictionary-management.js",
+    "?? pagesBookkeeping/bookkeeping/dictionary-management.wxml",
+    "?? pagesBookkeeping/bookkeeping/dictionary-management.wxss",
+    "?? stores/bookkeeping-options.js"
+  ]
+}

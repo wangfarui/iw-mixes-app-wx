@@ -1,0 +1,220 @@
+<div id="bookkeeping-settings-flow" class="viz-dotted-background" aria-label="记账设置完整交互方案">
+  <div class="bkp-stage"><div class="bkp-phone" data-design="list" aria-label="记账设置推荐交互"></div></div>
+</div>
+<style>
+#bookkeeping-settings-flow .bkp-stage{min-height:822px;padding:18px 8px 22px;box-sizing:border-box;display:flex;justify-content:center;align-items:flex-start}
+#bookkeeping-settings-flow .bkp-phone{--bkp-bg:light-dark(#f5f6f8,#151719);--bkp-surface:light-dark(#ffffff,#222527);--bkp-ink:light-dark(#202628,#eff2f3);--bkp-muted:light-dark(#737c80,#acb4b8);--bkp-line:light-dark(#edf0f1,#353b3e);--bkp-green:light-dark(#078753,#58d49c);--bkp-soft:light-dark(#eaf6ef,#233b30);--bkp-button:light-dark(#08a866,#0b9960);--bkp-button-ink:#fff;--bkp-danger:light-dark(#c93636,#ff9191);--bkp-radius:16px;position:relative;width:min(100%,375px);min-height:780px;background:var(--bkp-bg);color:var(--bkp-ink);border:1px solid var(--bkp-line);border-radius:28px;overflow:hidden;font:400 15px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;box-sizing:border-box;isolation:isolate}
+#bookkeeping-settings-flow .bkp-phone *{box-sizing:border-box}
+#bookkeeping-settings-flow .bkp-phone button{font:inherit;color:inherit;border:0;background:none;margin:0;cursor:inherit}
+#bookkeeping-settings-flow .bkp-phone button:focus-visible{outline:2px solid var(--bkp-green);outline-offset:-3px}
+#bookkeeping-settings-flow .bkp-phone button:disabled{opacity:.4}
+#bookkeeping-settings-flow .bkp-phone svg{width:19px;height:19px;flex:0 0 auto}
+#bookkeeping-settings-flow .bkp-status{height:28px;padding:7px 22px 0;display:flex;justify-content:space-between;font-size:11px;font-weight:500;background:var(--bkp-surface)}
+#bookkeeping-settings-flow .bkp-nav{display:grid;grid-template-columns:52px 1fr 82px;align-items:center;height:53px;background:var(--bkp-surface);padding:0 7px;text-align:center}
+#bookkeeping-settings-flow .bkp-nav-title{font-size:17px;font-weight:500;padding-left:30px}
+#bookkeeping-settings-flow .bkp-icon-button{width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+#bookkeeping-settings-flow .bkp-capsule{justify-self:end;display:flex;align-items:center;justify-content:center;gap:12px;width:76px;height:29px;border:1px solid var(--bkp-line);border-radius:18px;font-size:18px;line-height:1}
+#bookkeeping-settings-flow .bkp-capsule span+span{padding-left:10px;border-left:1px solid var(--bkp-line)}
+#bookkeeping-settings-flow .bkp-main{padding:18px 16px 116px}
+#bookkeeping-settings-flow .bkp-scope{display:flex;border-radius:12px;padding:4px;background:var(--bkp-surface);gap:4px}
+#bookkeeping-settings-flow .bkp-scope button{flex:1;min-height:40px;border-radius:9px;color:var(--bkp-muted);font-size:14px}
+#bookkeeping-settings-flow .bkp-scope button[aria-pressed="true"]{background:var(--bkp-soft);color:var(--bkp-green);font-weight:500}
+#bookkeeping-settings-flow .bkp-caption{font-size:12px;color:var(--bkp-muted);margin:10px 4px 0;min-height:18px}
+#bookkeeping-settings-flow .bkp-list-heading{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding-left:3px;font-size:13px;color:var(--bkp-muted)}
+#bookkeeping-settings-flow .bkp-list-heading button{min-height:44px;padding:0 7px;color:var(--bkp-green);font-size:14px}
+#bookkeeping-settings-flow .bkp-group{border-radius:var(--bkp-radius);background:var(--bkp-surface);overflow:hidden}
+#bookkeeping-settings-flow .bkp-row{display:flex;align-items:center;min-height:60px;padding:0 8px 0 17px;position:relative;gap:4px}
+#bookkeeping-settings-flow .bkp-row+.bkp-row:before{content:"";position:absolute;top:0;left:17px;right:17px;height:1px;background:var(--bkp-line)}
+#bookkeeping-settings-flow .bkp-row-main{flex:1;min-width:0;min-height:60px;text-align:left;padding:14px 5px 14px 0!important;overflow-wrap:anywhere;display:flex;align-items:center;gap:8px;font-size:16px!important}
+#bookkeeping-settings-flow .bkp-row .bkp-icon-button{color:var(--bkp-muted)}
+#bookkeeping-settings-flow .bkp-off{font-size:12px;color:var(--bkp-muted);white-space:nowrap;font-weight:400}
+#bookkeeping-settings-flow .bkp-fold{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 5px!important;min-height:48px;font-size:13px!important;color:var(--bkp-muted)!important;margin-top:8px!important}
+#bookkeeping-settings-flow .bkp-footer{position:absolute;left:0;right:0;bottom:0;background:var(--bkp-surface);padding:14px 20px 30px;border-top:1px solid var(--bkp-line)}
+#bookkeeping-settings-flow .bkp-phone .bkp-primary{display:flex;align-items:center;justify-content:center;gap:7px;min-height:46px;border-radius:12px;background:var(--bkp-button);color:var(--bkp-button-ink);font-size:16px;font-weight:500;width:100%;padding:10px 16px}
+#bookkeeping-settings-flow .bkp-copy{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;color:var(--bkp-green)!important;min-height:44px;font-size:14px!important;margin-bottom:4px!important}
+#bookkeeping-settings-flow .bkp-homebar{position:absolute;bottom:9px;width:106px;height:4px;border-radius:4px;left:calc(50% - 53px);background:var(--bkp-ink);opacity:.8}
+#bookkeeping-settings-flow .bkp-overlay{position:absolute;inset:0;background:light-dark(rgba(12,22,19,.35),rgba(0,0,0,.55));z-index:3;display:flex;align-items:flex-end}
+#bookkeeping-settings-flow .bkp-sheet{position:relative;background:var(--bkp-surface);border-radius:22px 22px 0 0;width:100%;padding:10px 22px 32px;color:var(--bkp-ink)}
+#bookkeeping-settings-flow .bkp-handle{width:34px;height:4px;background:var(--bkp-line);border-radius:5px;margin:0 auto 14px}
+#bookkeeping-settings-flow .bkp-sheet-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:18px}
+#bookkeeping-settings-flow .bkp-sheet-title{font-size:19px;font-weight:500;overflow-wrap:anywhere;min-width:0}
+#bookkeeping-settings-flow .bkp-sheet-head button{color:var(--bkp-muted);margin-right:-12px}
+#bookkeeping-settings-flow .bkp-field-label{font-size:13px;display:block;margin-bottom:9px;color:var(--bkp-muted)}
+#bookkeeping-settings-flow .bkp-field{display:block;width:100%;height:54px;min-height:54px;padding:14px 12px;border:1px solid var(--bkp-line);border-radius:11px;background:var(--bkp-bg);color:var(--bkp-ink);font:400 16px/24px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;box-sizing:border-box}
+#bookkeeping-settings-flow .bkp-field:focus{outline:2px solid var(--bkp-green);outline-offset:1px}
+#bookkeeping-settings-flow .bkp-field::placeholder{color:var(--bkp-muted);opacity:1}
+#bookkeeping-settings-flow .bkp-meta{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--bkp-muted);padding-top:9px;min-height:29px}
+#bookkeeping-settings-flow .bkp-error{font-size:13px;color:var(--bkp-danger);min-height:22px;margin-top:5px}
+#bookkeeping-settings-flow .bkp-note{font-size:13px;color:var(--bkp-muted);margin:6px 0 18px}
+#bookkeeping-settings-flow .bkp-actions{display:flex;gap:12px;margin-top:18px}
+#bookkeeping-settings-flow .bkp-actions>button{flex:1;min-width:0;min-height:46px;border-radius:12px;background:var(--bkp-bg);padding:10px 12px}
+#bookkeeping-settings-flow .bkp-actions>.bkp-primary{background:var(--bkp-button)}
+#bookkeeping-settings-flow .bkp-menu-action{display:flex;align-items:center;gap:12px;min-height:53px;width:100%;text-align:left;padding:10px 2px!important;border-bottom:1px solid var(--bkp-line)!important}
+#bookkeeping-settings-flow .bkp-danger{color:var(--bkp-danger)!important}
+#bookkeeping-settings-flow .bkp-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px}
+#bookkeeping-settings-flow .bkp-tile{min-height:92px;background:var(--bkp-surface);border:1px solid var(--bkp-line);border-radius:var(--bkp-radius);padding:0 6px 0 15px;display:flex;align-items:center;min-width:0}
+#bookkeeping-settings-flow .bkp-tile>.bkp-row-main{font-size:15px!important;min-height:88px}
+#bookkeeping-settings-flow .bkp-tile>.bkp-icon-button{width:36px;color:var(--bkp-muted)}
+#bookkeeping-settings-flow .bkp-full-editor{align-self:stretch;min-height:600px;border-radius:0;padding-top:30px}
+#bookkeeping-settings-flow .bkp-full-editor .bkp-handle{display:none}
+#bookkeeping-settings-flow .bkp-full-editor .bkp-actions{position:absolute;bottom:34px;left:22px;right:22px}
+#bookkeeping-settings-flow .bkp-toast{position:absolute;bottom:115px;left:24px;right:24px;z-index:5;padding:12px 16px;text-align:center;background:var(--bkp-ink);color:var(--bkp-surface);border-radius:12px;font-size:13px;pointer-events:none}
+#bookkeeping-settings-flow .bkp-grip{touch-action:none;color:var(--bkp-muted)!important}
+#bookkeeping-settings-flow .bkp-sort-buttons{display:flex}
+#bookkeeping-settings-flow .bkp-sort-buttons button{width:36px}
+#bookkeeping-settings-flow .bkp-sort-buttons svg{width:17px;height:17px}
+#bookkeeping-settings-flow .bkp-entry{display:flex;width:100%;align-items:center;justify-content:space-between;text-align:left;min-height:67px;padding:12px 17px!important;border-bottom:1px solid var(--bkp-line)!important}
+#bookkeeping-settings-flow .bkp-entry:last-child{border-bottom:0!important}
+#bookkeeping-settings-flow .bkp-entry small{display:block;font-size:12px;color:var(--bkp-muted);margin-top:3px}
+#bookkeeping-settings-flow .bkp-empty{text-align:center;color:var(--bkp-muted);padding:34px 18px}
+#bookkeeping-settings-flow .bkp-phone [hidden]{display:none!important}
+#bookkeeping-settings-flow .bkp-home-heading{margin:8px 3px 12px;font-size:13px;color:var(--bkp-muted)}
+#bookkeeping-settings-flow .bkp-main-family{padding-bottom:164px}
+#bookkeeping-settings-flow .bkp-home-group .bkp-entry{min-height:87px;gap:14px;padding:14px 16px!important;position:relative;border-bottom:0!important}
+#bookkeeping-settings-flow .bkp-home-group .bkp-entry+.bkp-entry:before{content:"";position:absolute;top:0;left:73px;right:16px;height:1px;background:var(--bkp-line)}
+#bookkeeping-settings-flow .bkp-entry-symbol{width:42px;height:42px;background:var(--bkp-soft);color:var(--bkp-green);display:flex;align-items:center;justify-content:center;border-radius:12px;flex:0 0 auto}
+#bookkeeping-settings-flow .bkp-entry-symbol svg{width:21px;height:21px}
+#bookkeeping-settings-flow .bkp-entry-text{flex:1;min-width:0;font-size:16px}
+#bookkeeping-settings-flow .bkp-entry-text small{margin-top:5px;font-size:12px;color:var(--bkp-muted)}
+#bookkeeping-settings-flow .bkp-entry-tail{color:var(--bkp-muted);display:flex}
+#bookkeeping-settings-flow .bkp-home-help{display:flex;align-items:flex-start;gap:8px;margin:18px 5px;font-size:12px;line-height:1.8;color:var(--bkp-muted)}
+#bookkeeping-settings-flow .bkp-home-help svg{width:15px;height:15px;margin-top:3px}
+#bookkeeping-settings-flow .bkp-section{font-size:12px;color:var(--bkp-muted);padding:8px 4px}
+#bookkeeping-settings-flow .bkp-off-group{margin-bottom:8px}
+#bookkeeping-settings-flow .bkp-keyboard{position:absolute;bottom:0;left:0;right:0;height:244px;z-index:6;background:var(--bkp-bg);border-top:1px solid var(--bkp-line);display:flex;align-items:center;justify-content:center;color:var(--bkp-muted);font-size:13px}
+#bookkeeping-settings-flow .bkp-sheet.keyboard-shown{margin-bottom:244px;padding-bottom:20px;max-height:520px;overflow:auto}
+#bookkeeping-settings-flow .bkp-copy-list{max-height:340px;overflow:auto}
+#bookkeeping-settings-flow .bkp-copy-row{display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 0}
+#bookkeeping-settings-flow .bkp-copy-row input{width:20px;height:20px;accent-color:var(--bkp-green);flex:0 0 auto}
+#bookkeeping-settings-flow .bkp-copy-row span{overflow-wrap:anywhere;min-width:0}
+#bookkeeping-settings-flow .bkp-sort-buttons button{width:44px}
+@media(max-width:360px){#bookkeeping-settings-flow .bkp-main{padding-left:12px;padding-right:12px}#bookkeeping-settings-flow .bkp-sheet{padding-left:18px;padding-right:18px}#bookkeeping-settings-flow .bkp-stage{padding-left:0;padding-right:0}}
+</style>
+<script>
+(() => {
+  const root=document.getElementById('bookkeeping-settings-flow');
+  const phone=root.querySelector('.bkp-phone');
+  const icon=n=>'<i data-lucide="'+n+'" aria-hidden="true"></i>';
+  const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const kinds={分类:{title:'记账分类',description:'整理每笔账单的用途分类',icon:'layout-grid',names:['餐饮美食','日用百货','交通出行','充值缴费','生活服务','其他']},支出标签:{title:'支出标签',description:'标记外卖、聚餐等支出场景',icon:'tags',names:['买菜','外卖','朴朴','聚餐','固定支出','旅游']},收入标签:{title:'收入标签',description:'标记工资、返现等收入来源',icon:'badge-plus',names:['工资','返现','退款','奖金']}};
+  const s={screen:'home',kind:'分类',scope:'PERSONAL',modal:null,selected:null,draft:'',off:false,sorting:false,backup:[],drag:null,keyboard:false,hasFamily:true,readonly:false,notice:''};
+  const tuning={scene:'设置首页',identity:'群主或家长',keyboard:false};
+  let previousScene=tuning.scene, serial=0, toastTimer;
+  const store={};
+  const noun=()=>s.kind==='分类'?'分类':'标签';
+  const canManage=()=>s.scope==='PERSONAL'||!s.readonly;
+  function rows(scope=s.scope){
+    const key=s.kind+'-'+scope;
+    if(!store[key]){
+      const names=scope==='PERSONAL'?kinds[s.kind].names:s.kind==='分类'?['餐饮美食','日用百货','交通出行','其他']:[];
+      store[key]=names.map((name,i)=>({id:key+'-'+i,name,enabled:true}));
+      if(scope==='FAMILY'&&s.kind==='分类')store[key].push({id:'family-off',name:'旅行出游',enabled:false});
+    }
+    return store[key];
+  }
+  const button=(action,text,cls='',attr='')=>'<button type="button" class="cursor-interaction '+cls+'" data-action="'+action+'" '+attr+'>'+text+'</button>';
+  const closeButton=()=>button('close',icon('x'),'bkp-icon-button','aria-label="关闭"');
+  function home(){
+    return '<div class="bkp-home-heading">分类与标签</div><div class="bkp-group bkp-home-group">'+Object.entries(kinds).map(([key,v])=>button('kind','<span class="bkp-entry-symbol">'+icon(v.icon)+'</span><span class="bkp-entry-text">'+v.title+'<small>'+v.description+'</small></span><span class="bkp-entry-tail">'+icon('chevron-right')+'</span>','bkp-entry','data-kind="'+key+'"')).join('')+'</div><div class="bkp-home-help">'+icon('info')+'<span>改名、停用或删除选项后，<br>已有账单仍保留原来的名称。</span></div>';
+  }
+  function row(item,index,total){
+    const id='data-id="'+item.id+'"';
+    const name=esc(item.name)+(item.enabled?'':'<span class="bkp-off">已停用</span>');
+    const handle=s.sorting?'<button type="button" class="bkp-icon-button bkp-grip cursor-interaction" data-drag="'+item.id+'" aria-label="拖动排序 '+esc(item.name)+'">'+icon('grip-vertical')+'</button>':'';
+    const label=canManage()&&!s.sorting?button('edit',name,'bkp-row-main',id):'<div class="bkp-row-main">'+name+'</div>';
+    const operations=s.sorting?'<div class="bkp-sort-buttons">'+button('up',icon('arrow-up'),'bkp-icon-button',id+' aria-label="上移 '+esc(item.name)+'" '+(index===0?'disabled':''))+button('down',icon('arrow-down'),'bkp-icon-button',id+' aria-label="下移 '+esc(item.name)+'" '+(index===total-1?'disabled':''))+'</div>':canManage()?button('more',icon('ellipsis'),'bkp-icon-button',id+' aria-label="更多操作 '+esc(item.name)+'"'):'';
+    return '<div class="bkp-row" data-row="'+item.id+'">'+handle+label+operations+'</div>';
+  }
+  const group=items=>'<div class="bkp-group">'+items.map((item,i)=>row(item,i,items.length)).join('')+'</div>';
+  function list(){
+    const all=rows(),on=all.filter(x=>x.enabled),off=all.filter(x=>!x.enabled);
+    const scope=s.hasFamily?'<div class="bkp-scope" aria-label="选项范围">'+button('scope','我的','','data-scope="PERSONAL" aria-pressed="'+(s.scope==='PERSONAL')+'"'+(s.sorting?' disabled':''))+button('scope','家庭共用','','data-scope="FAMILY" aria-pressed="'+(s.scope==='FAMILY')+'"'+(s.sorting?' disabled':''))+'</div>':'';
+    const caption=s.scope==='PERSONAL'?'仅自己管理，可用于个人或共享账单':canManage()?'家庭成员均可使用，群主和家长可管理':'家庭共用选项 · 当前仅可查看';
+    const tools=canManage()?(s.sorting?button('cancel-sort','取消')+button('done-sort','完成'):button('sort','排序','',''+(!all.length?'disabled':''))):'';
+    return scope+'<div class="bkp-caption">'+caption+'</div><div class="bkp-list-heading"><span>'+(s.sorting?'拖动手柄调整顺序':'已启用 · '+on.length+' 项')+'</span><div>'+tools+'</div></div>'+(s.sorting?group(all):on.length?group(on):'<div class="bkp-group bkp-empty">暂无'+noun()+'</div>')+(!s.sorting&&off.length?button('off','<span>'+(s.off?'收起已停用':'已停用')+' · '+off.length+' 项</span>'+icon(s.off?'chevron-up':'chevron-down'),'bkp-fold')+(s.off?'<div class="bkp-off-group">'+group(off)+'</div>':''):'');
+  }
+  function editor(){
+    return '<div class="bkp-sheet-head"><div class="bkp-sheet-title">'+(s.selected?'修改名称':'新增'+noun())+'</div>'+closeButton()+'</div><label class="bkp-field-label" for="flow-name">'+noun()+'名称</label><input id="flow-name" class="bkp-field" autocomplete="off" placeholder="'+(s.kind==='分类'?'例如：餐饮美食':s.kind==='支出标签'?'例如：外卖':'例如：工资')+'" value="'+esc(s.draft)+'"><div class="bkp-meta"><span>1–32 个字符</span><span data-count>'+Array.from(s.draft).length+'/32</span></div><div class="bkp-error" role="alert"></div>'+(s.selected?'<div class="bkp-note">修改后，已有账单仍保留原来的名称。</div>':'')+'<div class="bkp-actions">'+button('close','取消')+button('save','保存','bkp-primary')+'</div>';
+  }
+  function menu(){
+    return '<div class="bkp-sheet-head"><div class="bkp-sheet-title">'+esc(s.selected.name)+'</div>'+closeButton()+'</div>'+button('rename',icon('pencil')+'修改名称','bkp-menu-action')+button('status',icon(s.selected.enabled?'pause':'play')+(s.selected.enabled?'停用':'启用')+noun(),'bkp-menu-action')+button('delete-prompt',icon('trash-2')+'删除'+noun(),'bkp-menu-action bkp-danger');
+  }
+  function copy(){
+    return '<div class="bkp-sheet-head"><div class="bkp-sheet-title">从我的选项添加</div>'+closeButton()+'</div><div class="bkp-note">添加为独立的家庭选项，个人选项保持不变。</div><div class="bkp-copy-list">'+rows('PERSONAL').map((item,i)=>{const duplicate=rows().some(x=>x.name===item.name);return '<label class="bkp-copy-row"><input type="checkbox" value="'+i+'" '+(duplicate?'disabled':'')+'><span>'+esc(item.name)+(duplicate?' <span class="bkp-off">已存在</span>':'')+'</span></label>'}).join('')+'</div><div class="bkp-actions">'+button('close','取消')+button('copy-save','添加所选','bkp-primary','disabled')+'</div>';
+  }
+  function validate(){
+    const field=phone.querySelector('.bkp-field');if(!field)return false;
+    const value=field.value.trim(), count=Array.from(field.value).length;
+    const error=count>32?'名称不能超过 32 个字符':value&&rows().some(x=>x.name===value&&x!==s.selected)?'这个名称已存在，请换一个名称':'';
+    phone.querySelector('[data-count]').textContent=count+'/32';phone.querySelector('.bkp-error').textContent=error;phone.querySelector('[data-action="save"]').disabled=!value||!!error;
+    return !!value&&!error;
+  }
+  function render(){
+    phone.innerHTML='<div class="bkp-status"><span>9:41</span><span>▂▄▆ · 78%</span></div><div class="bkp-nav">'+button('back',icon('chevron-left'),'bkp-icon-button','aria-label="'+(s.screen==='home'?'返回菜单':'返回记账设置')+'"')+'<div class="bkp-nav-title">'+(s.screen==='home'?'记账设置':kinds[s.kind].title)+'</div><div class="bkp-capsule" aria-hidden="true"><span>···</span><span>⊙</span></div></div><main class="bkp-main'+(s.screen==='list'&&s.scope==='FAMILY'&&canManage()&&!s.sorting?' bkp-main-family':'')+'">'+(s.screen==='home'?home():list())+'</main>'+(s.screen==='list'&&canManage()&&!s.sorting?'<footer class="bkp-footer">'+(s.scope==='FAMILY'?button('copy',icon('copy-plus')+'从我的选项添加','bkp-copy'):'')+button('add',icon('plus')+'新增'+noun(),'bkp-primary')+'</footer>':'')+'<div class="bkp-homebar"></div>';
+    if(s.modal){
+      const label=s.modal==='edit'?(s.selected?'修改名称':'新增'+noun()):s.modal==='copy'?'从我的选项添加':s.modal==='delete'?'确认删除':'选项操作';
+      const body=s.modal==='edit'?editor():s.modal==='menu'?menu():s.modal==='copy'?copy():'<div class="bkp-sheet-title">删除“'+esc(s.selected.name)+'”？</div><div class="bkp-note" style="margin-top:14px">已有账单保留原名称，之后记账将不再提供此选项。</div><div class="bkp-actions">'+button('close','取消')+button('delete','删除'+noun(),'bkp-danger')+'</div>';
+      const overlay=document.createElement('div');overlay.className='bkp-overlay';overlay.innerHTML='<section class="bkp-sheet'+(s.modal==='edit'&&s.keyboard?' keyboard-shown':'')+'" role="dialog" aria-modal="true" aria-label="'+label+'"><div class="bkp-handle"></div>'+body+'</section>';
+      overlay.addEventListener('click',event=>{if(event.target===overlay&&s.modal!=='edit'){s.modal=null;render()}});phone.append(overlay);
+      if(s.modal==='edit'){
+        const field=phone.querySelector('.bkp-field');field.addEventListener('input',()=>{s.draft=field.value;validate()});field.addEventListener('keydown',event=>{if(event.key==='Enter')save();if(event.key==='Escape'){s.modal=null;render()}});validate();
+        if(s.keyboard){const keyboard=document.createElement('div');keyboard.className='bkp-keyboard';keyboard.textContent='键盘区域 · 避让示意';keyboard.setAttribute('aria-label','键盘占位示意，非真实系统键盘');phone.append(keyboard)}
+      }
+      if(s.modal==='copy')phone.querySelectorAll('input[type="checkbox"]').forEach(input=>input.addEventListener('change',()=>{const count=phone.querySelectorAll('input:checked').length;const submit=phone.querySelector('[data-action="copy-save"]');submit.disabled=!count;submit.textContent=count?'添加所选（'+count+'）':'添加所选'}));
+    }
+    if(s.notice){const node=document.createElement('div');node.className='bkp-toast';node.textContent=s.notice;node.setAttribute('role','status');phone.append(node)}
+    if(globalThis.lucide)lucide.createIcons({root:phone,attrs:{width:19,height:19}});
+  }
+  function notify(message){clearTimeout(toastTimer);s.notice=message;render();toastTimer=setTimeout(()=>{s.notice='';phone.querySelector('.bkp-toast')?.remove()},1700)}
+  function save(){if(!validate())return;const name=phone.querySelector('.bkp-field').value.trim();if(s.selected)s.selected.name=name;else rows().push({id:'new-'+(++serial),name,enabled:true});s.modal=null;notify('已保存')}
+  function changeScope(scope){if(s.sorting)store[s.kind+'-'+s.scope]=s.backup.slice();s.scope=scope;s.off=false;s.sorting=false;s.modal=null}
+  phone.addEventListener('click',event=>{
+    const target=event.target.closest('[data-action]');if(!target||target.disabled)return;
+    const action=target.dataset.action,item=rows().find(x=>x.id===target.dataset.id);
+    if(action==='back'){if(s.screen==='home'){notify('此预览从“记账设置”开始');return}if(s.sorting)store[s.kind+'-'+s.scope]=s.backup.slice();s.screen='home';s.modal=null;s.sorting=false}
+    if(action==='kind'){s.kind=target.dataset.kind;s.screen='list';changeScope('PERSONAL')}
+    if(action==='scope')changeScope(target.dataset.scope);
+    if(action==='add'){s.selected=null;s.draft='';s.modal='edit'}
+    if(action==='edit'){s.selected=item;s.draft=item.name;s.modal='edit'}
+    if(action==='more'){s.selected=item;s.modal='menu'}
+    if(action==='rename'){s.draft=s.selected.name;s.modal='edit'}
+    if(action==='close'){s.modal=null}
+    if(action==='save'){save();return}
+    if(action==='status'){s.selected.enabled=!s.selected.enabled;s.modal=null;notify(s.selected.enabled?'已启用':'已停用，历史账单不受影响');return}
+    if(action==='delete-prompt')s.modal='delete';
+    if(action==='delete'){rows().splice(rows().indexOf(s.selected),1);s.modal=null;notify('已删除，历史账单保留原名称');return}
+    if(action==='off')s.off=!s.off;
+    if(action==='sort'){s.backup=rows().slice();s.sorting=true}
+    if(action==='cancel-sort'){store[s.kind+'-'+s.scope]=s.backup.slice();s.sorting=false}
+    if(action==='done-sort'){s.sorting=false;notify('排序已保存');return}
+    if(action==='up'||action==='down'){const at=rows().indexOf(item),to=at+(action==='up'?-1:1);if(to>=0&&to<rows().length)[rows()[at],rows()[to]]=[rows()[to],rows()[at]]}
+    if(action==='copy')s.modal='copy';
+    if(action==='copy-save'){phone.querySelectorAll('input:checked').forEach(input=>{const src=rows('PERSONAL')[Number(input.value)];rows().push({id:'copy-'+(++serial),name:src.name,enabled:true})});s.modal=null;notify('已添加到家庭共用');return}
+    render();
+  });
+  phone.addEventListener('pointerdown',event=>{const handle=event.target.closest('[data-drag]');if(handle&&s.sorting){s.drag=handle.dataset.drag;event.preventDefault()}});
+  phone.addEventListener('pointerup',event=>{if(!s.drag)return;const hit=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-row]');if(hit){const at=rows().findIndex(x=>x.id===s.drag),to=rows().findIndex(x=>x.id===hit.dataset.row);if(at>=0&&to>=0){const item=rows().splice(at,1)[0];rows().splice(to,0,item)}}s.drag=null;render()});
+  function preview(scene){
+    s.kind='分类';s.screen=scene==='设置首页'?'home':'list';s.sorting=false;s.modal=null;s.scope='PERSONAL';s.selected=null;s.draft='';s.off=false;s.notice='';
+    if(['家庭复制','家庭只读'].includes(scene)){s.scope='FAMILY';s.modal=scene==='家庭复制'?'copy':null;if(scene==='家庭只读')s.readonly=true}
+    if(['新增表单','键盘避让','输入校验'].includes(scene)){s.modal='edit';s.draft=scene==='输入校验'?'餐饮美食':''}
+    if(scene==='改名表单'){s.selected=rows()[0];s.draft=s.selected.name;s.modal='edit'}
+    if(scene==='更多操作'){s.selected=rows()[0];s.modal='menu'}
+    if(scene==='排序'){s.sorting=true;s.backup=rows().slice()}
+    if(scene==='键盘避让'){tuning.keyboard=true;s.keyboard=true}
+  }
+  render();
+  if(globalThis.Tweak){
+    const tweak=new Tweak({container:phone,onChange:()=>{
+      s.hasFamily=tuning.identity!=='无家庭';s.readonly=tuning.identity==='成员或儿童';s.keyboard=tuning.keyboard;
+      if(tuning.scene!==previousScene){previousScene=tuning.scene;preview(tuning.scene)}
+      if(!s.hasFamily){s.scope='PERSONAL';s.modal=s.modal==='copy'?null:s.modal}
+      if(!canManage()){s.modal=null;if(s.sorting){store[s.kind+'-'+s.scope]=s.backup.slice();s.sorting=false}}
+      render();
+    }});
+    tweak.addSelect(tuning,'scene',{label:'交互状态',options:['设置首页','分类列表','新增表单','改名表单','更多操作','排序','家庭复制','家庭只读','键盘避让','输入校验']});
+    tweak.addSelect(tuning,'identity',{label:'预览身份',options:['群主或家长','成员或儿童','无家庭']});
+    tweak.addToggle(tuning,'keyboard',{label:'键盘避让示意'});
+  }
+})();
+</script>

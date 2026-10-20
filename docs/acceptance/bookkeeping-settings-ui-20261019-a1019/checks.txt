@@ -1,0 +1,38 @@
+记账设置 UI 改造 自验命令摘要（runId=a1019，2026-10-19）
+======================================================================
+[静态检查]
+npm run check:routes                       -> Route check passed: 72 pages（exit 0）
+node --check dictionary-management.js      -> OK
+node --check bookkeeping-settings.js       -> OK
+node --check utils/bookkeeping-settings.js -> OK
+node --check scripts/test-bookkeeping-settings.js -> OK
+node --check scripts/acceptance/*.js       -> OK
+git diff --check                           -> OK（exit 0）
+
+[Node 行为回归（mock wx/API，验证共享逻辑与请求行为）]
+npm run test:bookkeeping-settings          -> all assertions passed（exit 0）
+  覆盖：Unicode 规范化/32-33 码点/emoji/大小写/停用同名/改名排除自己；
+  scope A 慢响应不覆盖 B；连点只写一次；失败保留草稿可重试；
+  写成功后刷新失败不重复 POST、只读重试恢复；改名冲突不重放；
+  排序草稿/取消无 API/全量唯一 ID/版本提交/失败保留草稿；
+  复制重名派生/个人停用源/身份切换清理/无家庭/只读/卸载隔离。
+npm run test:bookkeeping-payer             -> passed（既有回归）
+npm run test:bill-refresh-navigation       -> passed（既有回归）
+
+[真实服务交互 + 微信开发者工具模拟器（miniprogram-automator，非 mock）]
+驱动：scripts/acceptance/drive-settings-ui.js（BK_NOSHOT=1 行为断言 / 默认带截图）
+环境：本地后端 http://localhost:18000（iw-core dev，会话既有登录态 userId=42，有家庭，canManage=true）
+home   -> S01 PASS（首页+三页真实截图）
+crud   -> 13/13 PASS（校验/新增/改名/启停/删除取消+确认）
+sort   -> 8/8 PASS（全量提交/恢复/取消/拖动链）
+family -> 7/7 PASS（范围切换/复制候选/多选/提交 created=1/清理）
+cleanup-> CLEANUP PASS（三类型×两范围 UI-a1019- 残留 0）
+截图：scripts/acceptance/capture-shots.js -> 11 张证据截图（独立会话拍摄）
+
+[环境说明]
+- 微信 CLI 可用（/Applications/wechatwebdevtools.app/Contents/MacOS/cli），项目 libVersion=latest。
+- automator 已知工具限制：①element.touchmove 原始投递不到页面处理器（驱动中以同源 callMethod 驱动 move 阶段）；
+  ②element.longpress() 会附带合成 touchend（与真机松手语义不符，驱动改为真实 touchstart 后调用页面 onHandleLongPress）；
+  ③键盘/弹层激活态截图偶发导致模拟器页面重建（证据截图均改用独立会话拍摄并已人工查验）；
+  ④模拟器截图不含软键盘画面，真实键盘表现需真机复核。
+- 后端未重启、未编译（复用既有 18000 进程）；未提交/推送任何 Git 变更。
