@@ -102,7 +102,27 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 16rpx;
-  background: #eef6ff;
+  background: #f0f3f7;
+}
+
+.menu-section--kitchen .icon-wrapper {
+  background: #fff2e8;
+}
+
+.menu-section--finance .icon-wrapper {
+  background: #edf5ff;
+}
+
+.menu-section--wardrobe .icon-wrapper {
+  background: #f5effd;
+}
+
+.menu-section--points .icon-wrapper {
+  background: #eaf8f3;
+}
+
+.menu-section--base .icon-wrapper {
+  background: #f0f3f7;
 }
 
 .image {

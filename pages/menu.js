@@ -3,46 +3,51 @@ const { getBaseUrl, tokenHeader } = require('../api/env')
 const menuList = [
   {
     title: '厨房重地',
+    iconTheme: 'kitchen',
     components: [
-      { url: '/static/menus/eat-recipe.png', text: '食谱', path: '/pagesEat/eat/recipe/index' },
-      { url: '/static/menus/eat-dishes.png', text: '点餐', path: '/pagesEat/eat/dishes/index' },
-      { url: '/static/menus/eat-meal.png', text: '用餐记录', path: '/pagesEat/eat/meal/index' },
-      { url: '/static/menus/eat-fridge.png', text: '冰箱', path: '/pagesEat/eat/fridge/index' }
+      { url: '/static/menus/eat-recipe.svg', text: '食谱', path: '/pagesEat/eat/recipe/index' },
+      { url: '/static/menus/eat-dishes.svg', text: '点餐', path: '/pagesEat/eat/dishes/index' },
+      { url: '/static/menus/eat-meal.svg', text: '用餐记录', path: '/pagesEat/eat/meal/index' },
+      { url: '/static/menus/eat-fridge.svg', text: '冰箱', path: '/pagesEat/eat/fridge/index' }
     ]
   },
   {
     title: '财务记账',
+    iconTheme: 'finance',
     components: [
-      { url: '/static/menus/bookkeeping-action.png', text: '记账', path: '/pagesBookkeeping/bookkeeping/bookkeeping-action' },
-      { url: '/static/menus/bookkeeping-wallet.png', text: '钱包', path: '/pagesBookkeeping/bookkeeping/bookkeeping-wallet' },
-      { url: '/static/menus/bookkeeping-membership-subscription.png', text: '会员订阅', path: '/pagesBookkeeping/bookkeeping/bookkeeping-membership-subscription' },
-      { url: '/static/menus/bookkeeping-yearly-statistics.png', text: '年度统计', path: '/pagesBookkeeping/bookkeeping/bookkeeping-yearly-statistics' },
-      { url: '/static/menus/dict-manage.png', text: '记账设置', path: '/pagesBookkeeping/bookkeeping/bookkeeping-settings' }
+      { url: '/static/menus/bookkeeping-action.svg', text: '记账', path: '/pagesBookkeeping/bookkeeping/bookkeeping-action' },
+      { url: '/static/menus/bookkeeping-wallet.svg', text: '钱包', path: '/pagesBookkeeping/bookkeeping/bookkeeping-wallet' },
+      { url: '/static/menus/bookkeeping-membership-subscription.svg', text: '会员订阅', path: '/pagesBookkeeping/bookkeeping/bookkeeping-membership-subscription' },
+      { url: '/static/menus/bookkeeping-yearly-statistics.svg', text: '年度统计', path: '/pagesBookkeeping/bookkeeping/bookkeeping-yearly-statistics' },
+      { url: '/static/menus/bookkeeping-settings.svg', text: '记账设置', path: '/pagesBookkeeping/bookkeeping/bookkeeping-settings' }
     ]
   },
   {
     title: '衣柜穿搭',
+    iconTheme: 'wardrobe',
     components: [
-      { url: '/static/menus/wardrobe-item.png', text: '衣物', path: '/pagesWardrobe/wardrobe/item-list' },
-      { url: '/static/menus/wardrobe-outfit.png', text: '搭配', path: '/pagesWardrobe/wardrobe/outfit-list' },
-      { url: '/static/menus/wardrobe-record.png', text: '穿着记录', path: '/pagesWardrobe/wardrobe/index' },
-      { url: '/static/menus/wardrobe-statistics.png', text: '穿搭统计', path: '/pagesWardrobe/wardrobe/statistics' }
+      { url: '/static/menus/wardrobe-item.svg', text: '衣物', path: '/pagesWardrobe/wardrobe/item-list' },
+      { url: '/static/menus/wardrobe-outfit.svg', text: '搭配', path: '/pagesWardrobe/wardrobe/outfit-list' },
+      { url: '/static/menus/wardrobe-record.svg', text: '穿着记录', path: '/pagesWardrobe/wardrobe/index' },
+      { url: '/static/menus/wardrobe-statistics.svg', text: '穿搭统计', path: '/pagesWardrobe/wardrobe/statistics' }
     ]
   },
   {
     title: '积分任务',
+    iconTheme: 'points',
     components: [
-      { url: '/static/menus/points-action.png', text: '新增积分', path: '/pagesPoints/points/points-action' },
-      { url: '/static/menus/points-records.png', text: '积分记录', path: '/pagesPoints/points/points-records' },
-      { url: '/static/menus/points-task.png', text: '任务计划', path: '/pagesPoints/points/task-plan' },
-      { url: '/static/menus/task-list.png', text: '常用任务', path: '/pagesPoints/points/task-list' }
+      { url: '/static/menus/points-action.svg', text: '新增积分', path: '/pagesPoints/points/points-action' },
+      { url: '/static/menus/points-records.svg', text: '积分记录', path: '/pagesPoints/points/points-records' },
+      { url: '/static/menus/points-task.svg', text: '任务计划', path: '/pagesPoints/points/task-plan' },
+      { url: '/static/menus/task-list.svg', text: '常用任务', path: '/pagesPoints/points/task-list' }
     ]
   },
   {
     title: '基础功能',
+    iconTheme: 'base',
     components: [
-      { url: '/static/menus/dict-manage.png', text: '字典管理', path: '/pagesBase/base/dict-manage' },
-      { url: '/static/menus/account-manage.png', text: '账号管理', path: '/pagesBase/base/account-manage' }
+      { url: '/static/menus/dict-manage.svg', text: '字典管理', path: '/pagesBase/base/dict-manage' },
+      { url: '/static/menus/account-manage.svg', text: '账号管理', path: '/pagesBase/base/account-manage' }
     ]
   }
 ]

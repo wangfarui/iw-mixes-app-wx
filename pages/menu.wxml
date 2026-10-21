@@ -17,7 +17,7 @@
   </view>
 
   <scroll-view wx:if="{{!showDialog}}" scroll-y class="menu-scroll">
-    <view class="menu-section" wx:for="{{filteredMenuList}}" wx:key="title">
+    <view class="menu-section menu-section--{{item.iconTheme}}" wx:for="{{filteredMenuList}}" wx:key="title">
       <view class="section-title">{{item.title}}</view>
       <view class="menu-grid">
         <view
@@ -29,7 +29,7 @@
           data-path="{{menuItem.path}}"
         >
           <view class="icon-wrapper">
-            <image src="{{menuItem.url}}" class="image" mode="aspectFill" />
+            <image src="{{menuItem.url}}" class="image" mode="aspectFit" />
           </view>
           <text class="text">{{menuItem.text}}</text>
         </view>
