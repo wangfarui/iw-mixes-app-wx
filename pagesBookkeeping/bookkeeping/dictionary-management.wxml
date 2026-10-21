@@ -72,7 +72,7 @@
     </view>
   </block>
 
-  <view class="dm-footer-spacer {{canManage && scope === 'FAMILY' ? 'is-family' : ''}}" wx:if="{{canManage && !sorting && loadedOnce}}"></view>
+  <view class="dm-footer-spacer {{canManage && scope === 'FAMILY' ? 'is-family' : ''}}" style="padding-bottom: {{safeBottom}}px;" wx:if="{{canManage && !sorting && loadedOnce}}"></view>
 </view>
 
 <view class="dm-drag-shadow" wx:if="{{dragItem}}" style="top: {{dragTop}}px;">
@@ -80,7 +80,7 @@
   <view class="dm-row-name">{{dragItem.name}}<text class="dm-row-badge" wx:if="{{!dragItem.enabled}}">已停用</text></view>
 </view>
 
-<view class="dm-footer" style="bottom: {{safeBottom}}px;" wx:if="{{canManage && !sorting && loadedOnce}}">
+<view class="dm-footer" style="bottom: calc(32rpx + {{safeBottom}}px);" wx:if="{{canManage && !sorting && loadedOnce}}">
   <view class="dm-copy-entry" wx:if="{{scope === 'FAMILY'}}" bindtap="openCopy">从我的选项添加</view>
   <view class="dm-primary {{busy ? 'is-disabled' : ''}}" bindtap="openAdd">＋ 新增{{typeText}}</view>
 </view>

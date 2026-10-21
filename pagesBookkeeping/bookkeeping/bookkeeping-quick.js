@@ -1,4 +1,5 @@
 const optionsStore = require('../../stores/bookkeeping-options')
+const sessionStore = require('../../stores/session')
 const bookkeepingApi = require('../../api/bookkeeping')
 const payer = require('../../utils/bookkeeping-payer')
 const bookkeepingUtils = require('../../utils/bookkeeping')
@@ -45,6 +46,10 @@ const currencyTypes = [
 
 const recorderManager = typeof wx.getRecorderManager === 'function' ? wx.getRecorderManager() : null
 
+function sessionIdentity() {
+  return `${(sessionStore.getUserInfo() || {}).id || ''}:${sessionStore.getToken() || ''}`
+}
+
 function resolveFileFormat(filePath) {
   if (!filePath || !filePath.includes('.')) return 'mp3'
   return filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase()
@@ -66,6 +71,8 @@ Page({
     ...payer.data,
     selectedCategory: 1,
     actions: [],
+    actionsLoading: true,
+    actionsError: '',
     selectedActionId: null,
     showPanel: false,
     amount: '0',
@@ -99,11 +106,22 @@ Page({
   },
 
   async onShow() {
-    this.setData({ actions: [], recordTypeOptions: [], tagOptions: [] })
-    try { await optionsStore.refresh(); await this.fetchActions() } catch (error) { this.setData({ actions: [] }) }
+    this._unloaded = false
+    if (this._actionsIdentity !== optionsStore.identity()) {
+      this.resetBookkeepingPanel()
+      this.setData({ actions: [], recordTypeOptions: [], tagOptions: [] })
+    }
+    await this.fetchActions()
+  },
+
+  onHide() {
+    this._actionsRequest = (this._actionsRequest || 0) + 1
+    this._panelRequest = (this._panelRequest || 0) + 1
   },
 
   onUnload() {
+    this._unloaded = true
+    this.onHide()
     this.cancelVoiceRecording()
     this.destroyRecorderListeners()
   },
@@ -120,31 +138,45 @@ Page({
   },
 
   selectCategory(event) {
+    this._panelRequest = (this._panelRequest || 0) + 1
     const selectedCategory = Number(event.currentTarget.dataset.category)
     if (selectedCategory !== 1) {
       this.cancelVoiceRecording()
     }
     this.setData({
       selectedCategory,
-      selectedActionId: null
+      selectedActionId: null,
+      actions: []
     })
     this.fetchActions()
   },
 
   async fetchActions() {
     const requestId = this._actionsRequest = (this._actionsRequest || 0) + 1
-    const identity = optionsStore.identity()
+    const session = sessionIdentity()
+    const category = this.data.selectedCategory
+    const isCurrent = () => !this._unloaded && requestId === this._actionsRequest && session === sessionIdentity()
+    this.setData({ actionsLoading: true, actionsError: '' })
     try {
-      const res = await bookkeepingApi.getActionList(this.data.selectedCategory)
-      if (requestId !== this._actionsRequest || identity !== optionsStore.identity()) return
+      let identity = optionsStore.identity()
+      let res = await bookkeepingApi.getActionList(category)
+      if (!isCurrent()) return
+      // Startup family loading may change the partition while this request is running.
+      if (identity !== optionsStore.identity()) {
+        identity = optionsStore.identity()
+        res = await bookkeepingApi.getActionList(category)
+      }
+      if (!isCurrent() || identity !== optionsStore.identity()) return
       const actions = (res.data || []).map((action) => ({
         ...action,
         iconUrl: getIconUrl(action.recordIcon)
       }))
+      this._actionsIdentity = identity
       this.setData({ actions })
     } catch (error) {
-      if (requestId !== this._actionsRequest || identity !== optionsStore.identity()) return
-      this.setData({ actions: [] })
+      if (isCurrent()) this.setData({ actionsError: '快捷类别加载失败，点击重试' })
+    } finally {
+      if (isCurrent()) this.setData({ actionsLoading: false })
     }
   },
 
@@ -330,7 +362,10 @@ Page({
   },
 
   async applyVoiceDraft(draft, matchedActionId) {
-    try { await this.ensureFamilyGroupLoaded(); await optionsStore.refresh() } catch (error) {
+    const session = sessionIdentity()
+    try {
+      if (!await optionsStore.ensureLoaded() || session !== sessionIdentity() || this._unloaded) return
+    } catch (error) {
       wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
       return
     }
@@ -385,16 +420,29 @@ Page({
     let action = this.data.actions[Number(event.currentTarget.dataset.index)]
     if (!action) return
 
-    try { await this.ensureFamilyGroupLoaded(); await optionsStore.refresh() } catch (error) {
-      wx.showToast({ title: '家庭信息加载失败，请重试', icon: 'none' })
+    const requestId = this._panelRequest = (this._panelRequest || 0) + 1
+    const session = sessionIdentity()
+    try {
+      let ready = false
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        const identity = optionsStore.identity()
+        const [loaded, current] = await Promise.all([
+          optionsStore.ensureLoaded(),
+          bookkeepingApi.getActionDetail(action.id)
+        ])
+        if (!loaded || this._unloaded || requestId !== this._panelRequest || session !== sessionIdentity()) return
+        if (identity !== optionsStore.identity()) continue
+        action = current.data || {}
+        ready = true
+        break
+      }
+      if (!ready) return
+    } catch (error) {
+      if (requestId === this._panelRequest && session === sessionIdentity() && !this._unloaded) {
+        wx.showToast({ title: '记账选项加载失败，请重试', icon: 'none' })
+      }
       return
     }
-    const identity = optionsStore.identity()
-    try {
-      const current = await bookkeepingApi.getActionDetail(action.id)
-      if (identity !== optionsStore.identity()) return
-      action = current.data || {}
-    } catch (error) { return }
     if (action.available === false) { wx.showToast({ title: action.unavailableReason || '请重新配置快捷选项', icon: 'none' }); return }
     const shared = sharedScopeStore.getDefaultRecordShared()
     const formData = {
@@ -438,6 +486,7 @@ Page({
 
   closeBookkeepingPanel() {
     if (this.data.isSubmitting) return
+    this._panelRequest = (this._panelRequest || 0) + 1
     this.resetBookkeepingPanel()
   },
 

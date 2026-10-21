@@ -19,7 +19,9 @@
     </view>
   </view>
 
-  <view wx:if="{{actions.length === 0}}" class="empty">暂无快捷类别，请先点击设置添加</view>
+  <view wx:if="{{actions.length === 0 && actionsLoading}}" class="empty">正在加载快捷类别…</view>
+  <view wx:elif="{{actions.length === 0 && actionsError}}" class="empty" bindtap="fetchActions">{{actionsError}}</view>
+  <view wx:elif="{{actions.length === 0}}" class="empty">暂无快捷类别，请先点击设置添加</view>
 
   <view wx:if="{{selectedCategory === 1 && !showPanel}}" class="voice-float-wrap">
     <view wx:if="{{!isRecording && (voiceRecognizedText || voiceMessage)}}" class="voice-float-result">
