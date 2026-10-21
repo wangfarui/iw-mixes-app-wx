@@ -1,10 +1,10 @@
 <template name="dictionaryManagement">
 <view class="dm-page">
-  <view class="dm-scope" wx:if="{{hasFamily && !sorting}}">
+  <view class="dm-scope" wx:if="{{!personalOnly && hasFamily && !sorting}}">
     <view class="dm-scope-item {{scope === 'PERSONAL' ? 'is-active' : ''}}" data-scope="PERSONAL" bindtap="changeScope">我的</view>
     <view class="dm-scope-item {{scope === 'FAMILY' ? 'is-active' : ''}}" data-scope="FAMILY" bindtap="changeScope">家庭共用</view>
   </view>
-  <view class="dm-scope-desc" wx:if="{{loadedOnce && !loadError}}">{{scope === 'PERSONAL' ? '仅自己管理，可用于个人或共享账单' : (canManage ? '家庭成员均可使用，群主和家长可管理' : '家庭共用选项 · 当前仅可查看')}}</view>
+  <view class="dm-scope-desc" wx:if="{{loadedOnce && !loadError}}">{{personalOnly ? '仅自己管理，用于我的会员订阅' : scope === 'PERSONAL' ? '仅自己管理，可用于个人或共享账单' : (canManage ? '家庭成员均可使用，群主和家长可管理' : '家庭共用选项 · 当前仅可查看')}}</view>
 
   <view class="dm-sort-header" wx:if="{{sorting}}">
     <view class="dm-sort-hint">拖动手柄调整顺序</view>
@@ -101,7 +101,7 @@
       <view class="dm-input-hint {{nameError ? 'is-error' : ''}}">{{nameError || (nameUnchanged ? '名称未修改' : '1–32 个字符')}}</view>
       <view class="dm-input-count {{nameError ? 'is-error' : ''}}">{{nameCount}}/32</view>
     </view>
-    <view class="dm-rename-note" wx:if="{{editing}}">修改后，已有账单仍保留原来的名称。</view>
+    <view class="dm-rename-note" wx:if="{{editing}}">{{personalOnly ? '修改后，已有订阅仍保留原来的名称。' : '修改后，已有账单仍保留原来的名称。'}}</view>
     <view class="dm-write-error" wx:if="{{writeError}}">{{writeError}}</view>
     <view class="dm-sheet-actions">
       <view class="dm-btn dm-btn-cancel {{busy ? 'is-disabled' : ''}}" bindtap="closeEditor">取消</view>
@@ -137,7 +137,7 @@
 <view class="dm-mask dm-mask-center" wx:if="{{activeSheet === 'delete'}}" catchtap="onMaskTap">
   <view class="dm-dialog" catchtap="noop">
     <view class="dm-dialog-title">删除“{{deleteItem.name}}”？</view>
-    <view class="dm-dialog-desc">已有账单保留原名称，之后记账将不再提供此选项。</view>
+    <view class="dm-dialog-desc">{{personalOnly ? '已有订阅保留原名称，新建订阅将不再提供此选项。' : '已有账单保留原名称，之后记账将不再提供此选项。'}}</view>
     <view class="dm-sheet-actions">
       <view class="dm-btn dm-btn-cancel {{busy ? 'is-disabled' : ''}}" bindtap="cancelDelete">取消</view>
       <view class="dm-btn dm-btn-danger {{busy ? 'is-disabled' : ''}}" bindtap="confirmDelete">{{busy && busyAction === 'delete' ? '删除中…' : '删除' + typeText}}</view>

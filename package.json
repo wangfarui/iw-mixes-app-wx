@@ -4,6 +4,7 @@
   "private": true,
   "description": "IW 原生微信小程序项目",
   "scripts": {
+    "test:membership-types": "node scripts/test-membership-types.js",
     "test:bookkeeping-quick-loading": "node scripts/test-bookkeeping-quick-loading.js",
     "scaffold:pages": "node scripts/scaffold-placeholder-pages.js",
     "check:routes": "node scripts/check-routes.js",

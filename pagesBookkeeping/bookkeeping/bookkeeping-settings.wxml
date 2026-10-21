@@ -9,5 +9,5 @@
       <image class="entry-arrow" src="/static/bookkeeping/settings/chevron-right.svg" mode="aspectFit"/>
     </view>
   </view>
-  <view class="note">改名、停用或删除选项后，已有账单仍保留原来的名称。</view>
+  <view class="note">改名、停用或删除选项后，已有账单和订阅仍保留原来的名称。</view>
 </view>

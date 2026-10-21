@@ -3,17 +3,21 @@ const optionsStore = require('../../stores/bookkeeping-options')
 const familyStore = require('../../stores/family')
 const settings = require('../../utils/bookkeeping-settings')
 
-const TYPE_TEXT = { CATEGORY: '分类', EXPENSE_TAG: '标签', INCOME_TAG: '标签' }
-const PLACEHOLDER = { CATEGORY: '如：学习成长', EXPENSE_TAG: '如：外卖', INCOME_TAG: '如：工资' }
+const membershipTypes = require('../../stores/membership-types')
+const TYPE_TEXT = { MEMBERSHIP_TYPE: '会员类型', CATEGORY: '分类', EXPENSE_TAG: '标签', INCOME_TAG: '标签' }
+const PLACEHOLDER = { MEMBERSHIP_TYPE: '如：视频会员', CATEGORY: '如：学习成长', EXPENSE_TAG: '如：外卖', INCOME_TAG: '如：工资' }
 
 // 实例私有字段（不放入 data）：
 // this._request 请求序号；this._identityKey 上次请求上下文（含用户/会话/家庭，禁止打印）；
 // this._sortBaseline/_sortVersion 排序基线与进入版本；this._sortRects 行矩形缓存；
 // this._touch/_drag 触摸与拖动状态；this._measureSeq/_scrollTimer 测量与自动滚动计时器；this._disposed 卸载标记。
 module.exports = function createDictionaryManagement(type) {
+  const personalOnly = type === 'MEMBERSHIP_TYPE'
+  const identityKey = personalOnly ? membershipTypes.identity : optionsStore.identity
   return {
     data: {
       type,
+      personalOnly,
       typeText: TYPE_TEXT[type] || '选项',
       placeholder: PLACEHOLDER[type] || '请输入名称',
       scope: 'PERSONAL',
@@ -63,7 +67,7 @@ module.exports = function createDictionaryManagement(type) {
     },
 
     onShow() {
-      const identity = optionsStore.identity()
+      const identity = identityKey()
       if (this._identityKey && identity !== this._identityKey) {
         // 身份/家庭变化：清理旧弹层、草稿、排序与复制状态，回到初始范围。
         this._resetTransient()
@@ -116,14 +120,14 @@ module.exports = function createDictionaryManagement(type) {
         ? { loading: false, loadError: '' }
         : { loading: true, loadError: '', canManage: false, items: [], enabledItems: [], disabledItems: [], disabledCount: 0 })
       try {
-        if (refreshFamily) await familyStore.fetchMyGroup()
-        const group = await familyStore.ensureMyGroupLoaded()
+        if (!personalOnly && refreshFamily) await familyStore.fetchMyGroup()
+        const group = personalOnly ? null : await familyStore.ensureMyGroupLoaded()
         if (requestId !== this._request) return
         // identity 必须在家庭组确认后捕获，否则首次加载时家庭到达会误判响应过期。
-        const identity = optionsStore.identity()
+        const identity = identityKey()
         const scope = group ? this.data.scope : 'PERSONAL'
         const res = await api.list(type, scope)
-        if (requestId !== this._request || identity !== optionsStore.identity()) return
+        if (requestId !== this._request || identity !== identityKey()) return
         const data = res.data || {}
         this.setData({
           scope, hasFamily: Boolean(group), canManage: Boolean(data.canManage),
@@ -143,18 +147,18 @@ module.exports = function createDictionaryManagement(type) {
     retryRefresh() {
       // 写成功后的只读刷新重试：不重复发送任何写请求。
       const requestId = this._request
-      const identity = optionsStore.identity()
+      const identity = identityKey()
       return this._reload(requestId, identity)
     },
 
     // 写成功后的权威刷新；失败只置 refreshFailed，不破坏已保存结果。
     async _reload(requestId, identity) {
       try {
-        const group = await familyStore.ensureMyGroupLoaded()
+        const group = personalOnly ? null : await familyStore.ensureMyGroupLoaded()
         if (requestId !== this._request) return
         const scope = group ? this.data.scope : 'PERSONAL'
         const res = await api.list(type, scope)
-        if (requestId !== this._request || identity !== optionsStore.identity()) return
+        if (requestId !== this._request || identity !== identityKey()) return
         const data = res.data || {}
         this.setData({
           scope, hasFamily: Boolean(group), canManage: Boolean(data.canManage),
@@ -162,13 +166,13 @@ module.exports = function createDictionaryManagement(type) {
         })
         this._deriveList()
       } catch (error) {
-        if (requestId !== this._request || identity !== optionsStore.identity()) return
+        if (requestId !== this._request || identity !== identityKey()) return
         this.setData({ refreshFailed: true })
       }
     },
 
     changeScope(event) {
-      if (this.data.busy || this.data.sorting) return
+      if (personalOnly || this.data.busy || this.data.sorting) return
       const scope = event.currentTarget.dataset.scope
       if (scope === this.data.scope) return
       this._request = (this._request || 0) + 1
@@ -297,12 +301,12 @@ module.exports = function createDictionaryManagement(type) {
     async _write(action, fn, options = {}) {
       if (!this.data.canManage || this.data.busy) return false
       const requestId = this._request
-      const identity = optionsStore.identity()
+      const identity = identityKey()
       this.setData({ busy: true, busyAction: action, writeError: '', sortError: '' })
       try {
         await fn()
       } catch (error) {
-        if (requestId === this._request && identity === optionsStore.identity()) {
+        if (requestId === this._request && identity === identityKey()) {
           const message = (error && error.message) || '操作失败'
           const patch = options.errorField === 'sortError' ? { sortError: message } : { writeError: message }
           this.setData(patch)
@@ -311,10 +315,11 @@ module.exports = function createDictionaryManagement(type) {
         }
         return false
       } finally {
-        if (requestId === this._request && identity === optionsStore.identity()) this.setData({ busy: false, busyAction: '' })
+        if (requestId === this._request && identity === identityKey()) this.setData({ busy: false, busyAction: '' })
       }
-      optionsStore.invalidate()
-      if (requestId !== this._request || identity !== optionsStore.identity()) return true
+      if (personalOnly) membershipTypes.invalidate()
+      else optionsStore.invalidate()
+      if (requestId !== this._request || identity !== identityKey()) return true
       if (options.exitSort) { this._resetDragState(); this.setData({ sorting: false, sortItems: [], sortError: '' }) }
       if (options.keepSheet !== true) this._closeSheets()
       else if (options.clearWriteError) this.setData({ writeError: '' })
@@ -462,13 +467,13 @@ module.exports = function createDictionaryManagement(type) {
     // ---------- 家庭复制 ----------
 
     async openCopy() {
-      if (!this.data.canManage || this.data.scope !== 'FAMILY' || this.data.busy || this.data.sorting) return
+      if (personalOnly || !this.data.canManage || this.data.scope !== 'FAMILY' || this.data.busy || this.data.sorting) return
       const requestId = this._request
-      const identity = optionsStore.identity()
+      const identity = identityKey()
       this.setData({ activeSheet: 'copy', copyLoading: true, copyError: '', copyItems: [], copySelectedIds: [], writeError: '' })
       try {
         const res = await api.list(type, 'PERSONAL')
-        if (requestId !== this._request || identity !== optionsStore.identity() || this.data.scope !== 'FAMILY') {
+        if (requestId !== this._request || identity !== identityKey() || this.data.scope !== 'FAMILY') {
           // 身份/家庭已变：关闭弹层并加载新范围，禁止套用旧选择。
           this._closeSheets()
           this.setData({ copyItems: [], copySelectedIds: [], copyLoading: false })
@@ -477,7 +482,7 @@ module.exports = function createDictionaryManagement(type) {
         }
         this.setData({ copyLoading: false, copyItems: settings.deriveCopyItems((res.data || {}).items || [], this.data.items) })
       } catch (error) {
-        if (requestId !== this._request || identity !== optionsStore.identity()) return
+        if (requestId !== this._request || identity !== identityKey()) return
         this.setData({ copyLoading: false, copyError: (error && error.message) || '加载失败' })
       }
     },

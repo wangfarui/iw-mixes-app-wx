@@ -1,4 +1,6 @@
 <view class="membership-page">
+  <view class="type-state" wx:if="{{filterError}}" bindtap="refreshFilterOptions">{{filterError}}</view>
+  <view class="type-state" wx:if="{{listError}}" bindtap="fetchList">{{listError}}</view>
   <view class="toolbar">
     <view class="search-box">
       <view class="search-icon"></view>
@@ -68,7 +70,7 @@
         </view>
       </view>
     </view>
-    <view wx:if="{{displayList.length === 0}}" class="empty">暂无会员订阅</view>
+    <view wx:if="{{displayList.length === 0 && !listError}}" class="empty">暂无会员订阅</view>
   </view>
 
   <view class="floating-add" bindtap="openForm">+</view>
@@ -79,10 +81,16 @@
       <scroll-view scroll-y class="form-scroll">
         <view class="form-item">
           <view class="label">会员类型</view>
-          <picker mode="selector" range="{{membershipTypeOptions}}" range-key="dictName" value="{{membershipTypeIndex}}" bindchange="onMembershipTypeChange">
-            <view class="picker-box">{{membershipTypeName || '请选择会员类型'}}</view>
+          <picker mode="selector" range="{{membershipTypeOptions}}" range-key="dictName" disabled="{{typeLoading || !!typeError || !membershipTypeOptions.length}}" value="{{membershipTypeIndex}}" bindchange="onMembershipTypeChange">
+            <view class="picker-box">{{membershipTypeName || '请选择会员类型'}}{{originalType ? '（原类型）' : ''}}</view>
           </picker>
         </view>
+        <view class="type-state" wx:if="{{typeLoading}}">会员类型加载中…</view>
+        <view class="type-state" wx:elif="{{typeError}}" bindtap="refreshOptions">{{typeError}}</view>
+        <view class="type-state" wx:elif="{{!membershipTypeOptions.length}}" bindtap="openTypeSettings">暂无可用会员类型，前往记账设置创建 →</view>
+        <view class="type-state" wx:else bindtap="openTypeSettings">管理会员类型 →</view>
+        <view class="type-state" wx:if="{{isEditing && !typeChanged}}">保留已保存的类型名称，主动重选才更新</view>
+        <view class="type-state is-error" wx:if="{{formError}}">{{formError}}</view>
         <view class="form-item">
           <view class="label">会员名称</view>
           <input class="input" value="{{formData.membershipName}}" data-field="membershipName" placeholder="请输入会员名称" bindinput="handleInput" />
@@ -132,7 +140,7 @@
       </scroll-view>
       <view class="modal-actions">
         <button class="cancel-btn" bindtap="closeForm">取消</button>
-        <button class="confirm-btn" bindtap="saveMembership">确认</button>
+        <button class="confirm-btn" disabled="{{saving}}" loading="{{saving}}" bindtap="saveMembership">{{saving ? '保存中…' : '确认'}}</button>
       </view>
     </view>
   </view>

@@ -2,12 +2,7 @@ const bookkeepingApi = require('../../api/bookkeeping')
 const dictStore = require('../../stores/dict')
 const utils = require('../../utils/bookkeeping')
 
-const fallbackMembershipTypes = [
-  { dictCode: 1, dictName: '视频会员' },
-  { dictCode: 2, dictName: '音乐会员' },
-  { dictCode: 3, dictName: '软件订阅' },
-  { dictCode: 9, dictName: '其他' }
-]
+const membershipTypes = require('../../stores/membership-types')
 
 const fallbackBillingCycles = [
   { dictCode: 1, dictName: '按月' },
@@ -43,7 +38,7 @@ const sortOptions = [
 
 function defaultForm() {
   return {
-    membershipType: '',
+    membershipTypeId: '',
     membershipName: '',
     amount: '',
     billingCycle: '',
@@ -153,14 +148,13 @@ function buildSummary(list) {
 }
 
 function normalizeItem(item, membershipTypeOptions, billingCycleOptions, cycleUnitOptions) {
-  const typeOption = findOption(membershipTypeOptions, item.membershipType)
   const status = getStatus(item)
   const startDate = getDateValue(item.startDate)
   const endDate = getDateValue(item.endDate)
   return {
     ...item,
     amountText: utils.formatMoney(item.amount),
-    membershipTypeName: typeOption ? typeOption.dictName : `类型${item.membershipType || '-'}`,
+    membershipTypeName: Number(item.membershipTypeSnapshotStatus) === 1 && item.membershipTypeName ? item.membershipTypeName : '类型待核对',
     billingCycleText: getCycleText(item, billingCycleOptions, cycleUnitOptions),
     startDateText: startDate || '-',
     endDateText: endDate || '长期',
@@ -172,7 +166,15 @@ function normalizeItem(item, membershipTypeOptions, billingCycleOptions, cycleUn
 Page({
   data: {
     searchKeyword: '',
-    membershipTypeFilter: '',
+    membershipTypeFilter: null,
+    typeLoading: false,
+    typeError: '',
+    listError: '',
+    filterError: '',
+    saving: false,
+    formError: '',
+    typeChanged: false,
+    originalType: false,
     expiryType: '',
     sortOptionIndex: 0,
     membershipTypeFilterIndex: 0,
@@ -205,32 +207,77 @@ Page({
   },
 
   onShow() {
+    const identity = membershipTypes.identity()
+    if (this._identity && identity !== this._identity) {
+      this._detailRequest = (this._detailRequest || 0) + 1
+      this.setData({ saving: false })
+      this.closeForm()
+      this.setData({ membershipTypeFilterOptions: [{ dictName: '服务类型' }], list: [], displayList: [], currentItem: null, showActions: false, membershipTypeFilter: null, membershipTypeFilterIndex: 0, membershipTypeFilterName: '服务类型' })
+    }
+    this._identity = identity
     this.refreshOptions()
     this.fetchList()
+    this.refreshFilterOptions()
   },
 
-  refreshOptions() {
-    const membershipTypeOptions = dictStore.getDictDataArray(dictStore.dictTypeEnum.BOOKKEEPING_MEMBERSHIP_TYPE)
+  onUnload() { this._disposed = true; this._detailRequest = (this._detailRequest || 0) + 1 },
+
+  async refreshOptions() {
+    const identity = membershipTypes.identity()
+    const seq = this._typeRequest = (this._typeRequest || 0) + 1
     const billingCycleOptions = dictStore.getDictDataArray(dictStore.dictTypeEnum.BOOKKEEPING_MEMBERSHIP_BILLING_CYCLE)
     const cycleUnitOptions = dictStore.getDictDataArray(dictStore.dictTypeEnum.BOOKKEEPING_MEMBERSHIP_CYCLE_UNIT)
-    const safeMembershipTypeOptions = membershipTypeOptions.length ? membershipTypeOptions : fallbackMembershipTypes
-    this.setData({
-      membershipTypeOptions: safeMembershipTypeOptions,
-      membershipTypeFilterOptions: [{ dictCode: '', dictName: '服务类型' }].concat(safeMembershipTypeOptions),
+    this.setData({ typeLoading: true, typeError: '', membershipTypeOptions: [],
       billingCycleOptions: billingCycleOptions.length ? billingCycleOptions : fallbackBillingCycles,
-      cycleUnitOptions: cycleUnitOptions.length ? cycleUnitOptions : fallbackCycleUnits
-    })
+      cycleUnitOptions: cycleUnitOptions.length ? cycleUnitOptions : fallbackCycleUnits })
+    try {
+      const loaded = await membershipTypes.ensureLoaded(true)
+      if (!loaded || this._disposed || seq !== this._typeRequest || identity !== membershipTypes.identity()) return
+      const options = membershipTypes.get()
+      const selected = options.find(item => Number(item.id) === Number(this.data.formData.membershipTypeId))
+      const patch = { membershipTypeOptions: options, typeLoading: false }
+      if (this.data.showForm) {
+        patch.originalType = this.data.isEditing && !this.data.typeChanged && !selected
+        patch.membershipTypeIndex = selected ? options.indexOf(selected) : -1
+        if (!this.data.isEditing || this.data.typeChanged) {
+          patch.membershipTypeName = selected ? selected.dictName : ''
+          if (!selected) { patch['formData.membershipTypeId'] = '' }
+        }
+      }
+      this.setData(patch)
+    } catch (error) {
+      if (this._disposed || seq !== this._typeRequest || identity !== membershipTypes.identity()) return
+      this.setData({ typeLoading: false, typeError: '会员类型加载失败，请重试' })
+    }
   },
 
+  async refreshFilterOptions() {
+    const identity = membershipTypes.identity()
+    try {
+      const res = await bookkeepingApi.getMembershipFilterOptions()
+      if (this._disposed || identity !== membershipTypes.identity()) return
+      const options = [{ dictName: '服务类型' }].concat((res.data || []).map(item => ({ ...item, dictName: item.state === 'PENDING' ? '类型待核对' : item.name })))
+      this.setData({ membershipTypeFilterOptions: options, filterError: '' })
+    } catch (error) {
+      if (!this._disposed && identity === membershipTypes.identity()) this.setData({ filterError: '历史类型加载失败，点击重试' })
+    }
+  },
+
+  openTypeSettings() { wx.navigateTo({ url: '/pagesBookkeeping/bookkeeping/bookkeeping-membership-type-settings' }) },
+
   async fetchList() {
+    const seq = this._listRequest = (this._listRequest || 0) + 1
+    const identity = membershipTypes.identity()
     const sortOption = this.data.sortOptions[this.data.sortOptionIndex] || this.data.sortOptions[0]
     try {
       const res = await bookkeepingApi.getMembershipList({
-        membershipType: this.data.membershipTypeFilter === '' ? null : Number(this.data.membershipTypeFilter),
+        membershipTypeName: this.data.membershipTypeFilter ? this.data.membershipTypeFilter.name || null : null,
+        membershipTypeState: this.data.membershipTypeFilter ? this.data.membershipTypeFilter.state || null : null,
         expiryType: this.data.expiryType === '' ? null : Number(this.data.expiryType),
         sortType: sortOption.sortType,
         sortWay: sortOption.sortWay
       })
+      if (this._disposed || seq !== this._listRequest || identity !== membershipTypes.identity()) return
       const list = (res.data || []).map((item) => normalizeItem(
         item,
         this.data.membershipTypeOptions,
@@ -238,10 +285,11 @@ Page({
         this.data.cycleUnitOptions
       ))
       this.setData({
-        list
+        list, listError: ''
       }, () => this.applyLocalFilters())
     } catch (error) {
-      this.setData({ list: [], displayList: [], summary: { monthlyTotal: '0.00', yearlyTotal: '0.00', count: 0 } })
+      if (this._disposed || seq !== this._listRequest || identity !== membershipTypes.identity()) return
+      this.setData({ listError: '订阅加载失败，点击重试', list: [], displayList: [], summary: { monthlyTotal: '0.00', yearlyTotal: '0.00', count: 0 } })
     }
   },
 
@@ -278,7 +326,7 @@ Page({
     const option = this.data.membershipTypeFilterOptions[membershipTypeFilterIndex]
     this.setData({
       membershipTypeFilterIndex,
-      membershipTypeFilter: option && option.dictCode !== '' ? Number(option.dictCode) : '',
+      membershipTypeFilter: membershipTypeFilterIndex > 0 ? { name: option.name, state: option.state } : null,
       membershipTypeFilterName: option ? option.dictName : '服务类型'
     })
     this.fetchList()
@@ -315,12 +363,15 @@ Page({
   },
 
   openForm() {
+    if (this.data.saving) return
+    this._detailRequest = (this._detailRequest || 0) + 1
     this.setData({
       showForm: true,
       isEditing: false,
       currentItem: null,
       formData: defaultForm(),
-      membershipTypeIndex: 0,
+      membershipTypeIndex: -1,
+      typeChanged: false, originalType: false, formError: '',
       billingCycleIndex: 0,
       membershipTypeName: '',
       billingCycleName: ''
@@ -328,6 +379,8 @@ Page({
   },
 
   closeForm() {
+    if (this.data.saving) return
+    this._detailRequest = (this._detailRequest || 0) + 1
     this.setData({
       showForm: false,
       isEditing: false,
@@ -337,16 +390,19 @@ Page({
   },
 
   onMembershipTypeChange(event) {
+    this._detailRequest = (this._detailRequest || 0) + 1
     const membershipTypeIndex = Number(event.detail.value)
     const option = this.data.membershipTypeOptions[membershipTypeIndex]
     this.setData({
       membershipTypeIndex,
       membershipTypeName: option ? option.dictName : '',
-      'formData.membershipType': option ? option.dictCode : ''
+      typeChanged: Boolean(option), originalType: false,
+      'formData.membershipTypeId': option ? option.id : ''
     })
   },
 
   onBillingCycleChange(event) {
+    this._detailRequest = (this._detailRequest || 0) + 1
     const billingCycleIndex = Number(event.detail.value)
     const option = this.data.billingCycleOptions[billingCycleIndex]
     this.setData({
@@ -357,18 +413,22 @@ Page({
   },
 
   onStartDateChange(event) {
+    this._detailRequest = (this._detailRequest || 0) + 1
     this.setData({ 'formData.startDate': event.detail.value })
   },
 
   onEndDateChange(event) {
+    this._detailRequest = (this._detailRequest || 0) + 1
     this.setData({ 'formData.endDate': event.detail.value })
   },
 
   onAutoRenewChange(event) {
+    this._detailRequest = (this._detailRequest || 0) + 1
     this.setData({ 'formData.autoRenew': Boolean(event.detail.value) })
   },
 
   handleInput(event) {
+    this._detailRequest = (this._detailRequest || 0) + 1
     const field = event.currentTarget.dataset.field
     this.setData({ [`formData.${field}`]: event.detail.value })
   },
@@ -387,15 +447,12 @@ Page({
   },
 
   buildEditFormState(detail) {
-    const membershipTypeValue = getCode(detail.membershipType)
+    const membershipTypeValue = detail.membershipTypeId
     const billingCycleValue = getCode(detail.billingCycle)
     const cycleUnitValue = getCode(detail.cycleUnit)
-    const membershipTypeIndex = this.data.membershipTypeOptions.findIndex((item) => Number(item.dictCode) === membershipTypeValue)
+    const membershipTypeIndex = this.data.membershipTypeOptions.findIndex((item) => Number(item.id) === Number(membershipTypeValue))
     const billingCycleIndex = this.data.billingCycleOptions.findIndex((item) => Number(item.dictCode) === billingCycleValue)
-    const membershipTypeName = getEnumText(
-      detail.membershipType,
-      detail.membershipTypeName || getOptionText(this.data.membershipTypeOptions, membershipTypeValue, '')
-    )
+    const membershipTypeName = Number(detail.membershipTypeSnapshotStatus) === 1 && detail.membershipTypeName ? detail.membershipTypeName : '类型待核对'
     const billingCycleName = getEnumText(
       detail.billingCycle,
       getOptionText(this.data.billingCycleOptions, billingCycleValue, '')
@@ -408,7 +465,7 @@ Page({
       formData: {
         ...defaultForm(),
         ...detail,
-        membershipType: membershipTypeValue || '',
+        membershipTypeId: membershipTypeValue || '',
         membershipName: detail.membershipName || '',
         amount: detail.amount === undefined || detail.amount === null ? '' : detail.amount,
         billingCycle: billingCycleValue || '',
@@ -420,7 +477,7 @@ Page({
         remindDays: detail.remindDays === undefined || detail.remindDays === null ? '' : detail.remindDays,
         remark: detail.remark || ''
       },
-      membershipTypeIndex: membershipTypeIndex >= 0 ? membershipTypeIndex : 0,
+      membershipTypeIndex, typeChanged: false, originalType: membershipTypeIndex < 0, formError: '',
       billingCycleIndex: billingCycleIndex >= 0 ? billingCycleIndex : 0,
       membershipTypeName,
       billingCycleName
@@ -436,18 +493,22 @@ Page({
       ...this.buildEditFormState(currentItem)
     })
 
+    const seq = this._detailRequest = (this._detailRequest || 0) + 1
+    const identity = membershipTypes.identity()
     try {
       const res = await bookkeepingApi.getMembershipDetail(currentItem.id)
+      if (seq !== this._detailRequest || identity !== membershipTypes.identity() || !this.data.showForm) return
       const detail = res.data || currentItem
       this.setData(this.buildEditFormState(detail))
-    } catch (error) {
-      this.setData(this.buildEditFormState(currentItem))
-    }
+    } catch (error) { /* Existing list snapshot remains editable. */ }
   },
 
   async saveMembership() {
+    if (this.data.saving) return
+    this._detailRequest = (this._detailRequest || 0) + 1
+    const identity = membershipTypes.identity()
     const form = this.data.formData
-    if (!form.membershipType) {
+    if ((!this.data.isEditing || this.data.typeChanged) && (!form.membershipTypeId || this.data.typeLoading || this.data.typeError)) {
       wx.showToast({ title: '请选择会员类型', icon: 'none' })
       return
     }
@@ -461,7 +522,6 @@ Page({
     }
 
     const payload = {
-      membershipType: Number(form.membershipType),
       membershipName: String(form.membershipName).trim(),
       amount: form.amount === '' ? null : Number(form.amount),
       billingCycle: Number(form.billingCycle),
@@ -473,19 +533,28 @@ Page({
       remark: form.remark || ''
     }
 
+    if (this.data.isEditing && this.data.typeChanged) payload.membershipTypeChange = { sourceId: Number(form.membershipTypeId) }
+    if (!this.data.isEditing) payload.membershipTypeId = Number(form.membershipTypeId)
+
     if (form.cycleNum !== '') payload.cycleNum = Number(form.cycleNum)
     if (form.cycleUnit !== '') payload.cycleUnit = Number(form.cycleUnit)
     if (this.data.isEditing && this.data.currentItem) payload.id = this.data.currentItem.id
 
-    if (this.data.isEditing) {
-      await bookkeepingApi.updateMembership(payload)
-    } else {
-      await bookkeepingApi.addMembership(payload)
+    this.setData({ saving: true, formError: '' })
+    try {
+      if (this.data.isEditing) await bookkeepingApi.updateMembership(payload)
+      else await bookkeepingApi.addMembership(payload)
+      if (identity !== membershipTypes.identity() || this._disposed) return
+      this.setData({ saving: false })
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      this.closeForm()
+      this.fetchList()
+      this.refreshFilterOptions()
+    } catch (error) {
+      if (identity === membershipTypes.identity() && !this._disposed) this.setData({ formError: (error && error.message) || '保存失败，请重试' })
+    } finally {
+      if (identity === membershipTypes.identity() && !this._disposed) this.setData({ saving: false })
     }
-
-    wx.showToast({ title: '保存成功', icon: 'success' })
-    this.closeForm()
-    this.fetchList()
   },
 
   confirmDeleteMembership() {
@@ -512,6 +581,7 @@ Page({
         wx.showToast({ title: '删除成功', icon: 'success' })
         this.closeActions()
         this.fetchList()
+        this.refreshFilterOptions()
       }
     })
   },

@@ -21,6 +21,7 @@
         "bookkeeping/bookkeeping-budget",
         "bookkeeping/bookkeeping-wallet",
         "bookkeeping/bookkeeping-membership-subscription",
+        "bookkeeping/bookkeeping-membership-type-settings",
         "bookkeeping/bookkeeping-yearly-statistics",
         "bookkeeping/bookkeeping-yearly-overview-statistics",
         "bookkeeping/bookkeeping-yearly-consume-statistics",

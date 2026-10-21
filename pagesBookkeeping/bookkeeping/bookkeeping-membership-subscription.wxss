@@ -508,3 +508,7 @@
   margin-bottom: 0;
   color: #999;
 }
+
+.type-state { color: #697586; padding: 16rpx 0; font-size: 24rpx; overflow-wrap: anywhere; }
+.type-state.is-error { color: #d44949; }
+.type-tag, .picker-box { word-break: break-all; white-space: normal; }

@@ -268,3 +268,5 @@ module.exports = {
   updateMembership,
   deleteMembership
 }
+
+module.exports.getMembershipFilterOptions = () => http.get('/bookkeeping-service/bookkeeping/membership/filter-options')
