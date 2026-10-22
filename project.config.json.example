@@ -1,7 +1,12 @@
 {
   "description": "IW 原生微信小程序",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "docs"
+      }
+    ],
     "include": []
   },
   "setting": {

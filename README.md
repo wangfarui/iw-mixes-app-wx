@@ -22,6 +22,18 @@ IW 原生微信小程序项目。该项目用于承接 `../iw-mixes-app` 的微�
 
 体验版和发布版会根据 `wx.getAccountInfoSync().miniProgram.envVersion` 为 `"trial"` 或 `"release"` 自动切换到生产域名 `https://api.itwray.com`。
 
+## 上传包配置
+
+`docs/` 保存设计文档、原型和验收截图，不参与小程序运行。`project.config.json.example` 通过 `packOptions.ignore` 排除此目录，防止截图被打入主包。
+
+已有本地工程需要将以下条目合并到 `project.config.json` 的 `packOptions.ignore` 数组中，保留原有配置及 appid；本地配置被 Git 忽略，更新模板不会自动同步到已有工程。
+
+```json
+{ "type": "folder", "value": "docs" }
+```
+
+`.gitignore` 不控制微信上传范围，`ignoreUploadUnusedFiles` 也不能替代文档目录的显式排除。上传前在微信开发者工具中执行预览，检查输出中的 `main` 大小低于 2048KB。
+
 ## 迁移约束
 
 - 新页面只使用 `.wxml`、`.js`、`.wxss`、`.json`。
