@@ -1,5 +1,6 @@
 const wardrobeApi = require('../../api/wardrobe')
 const helper = require('./wardrobe-helper')
+const history = require('../../utils/wardrobe-filters')
 const familyScope = require('../../stores/family-shared-scope')
 const wardrobeFamily = require('./wardrobe-family')
 
@@ -29,7 +30,7 @@ Page({
   },
 
   onShow() {
-    this.refreshDictOptions()
+    this.refreshHistoryFilters()
     if (!this.data.initialized) {
       this.setData({ initialized: true })
       this.loadOwnerOptions().then(() => this.initPage())
@@ -54,18 +55,24 @@ Page({
     }
   },
 
+  async refreshHistoryFilters() {
+    const owner = this.data.ownerOptions[this.data.ownerIndex] || {}
+    try {
+      if (await history.load(this, 'ITEM', { ownerUserId:owner.value || undefined,queryOnlyMyself:this.data.ownerScopeFallback || familyScope.getQueryOnlyMyself() === 1 })) this.refreshDictOptions()
+    } catch (error) { this.setData({ filterError:error.message || '筛选项加载失败' }) }
+  },
   refreshDictOptions() {
     const itemStyleValue = (this.data.itemStyleOptions[this.data.itemStyleIndex] || {}).value
     const itemStyleOptions = this.itemStyleOptions(this.data.currentCategory)
     this.setData({
-      categories: [{ value: '', text: '全部品类' }].concat(helper.getCategoryOptions()),
+      categories: [{ value: '', text: '全部品类' }].concat(history.choices(this, 'categories')),
       itemStyleOptions,
       itemStyleIndex: helper.optionIndex(itemStyleOptions, itemStyleValue)
     })
   },
 
   itemStyleOptions(category) {
-    return [{ value: '', text: '全部款式' }].concat(helper.getItemStyleOptions(category))
+    return [{ value: '', text: '全部款式' }].concat(history.itemStyles(this, category))
   },
 
   onPullDownRefresh() {
@@ -79,6 +86,7 @@ Page({
   },
 
   initPage() {
+    this.refreshHistoryFilters()
     this.setData({
       currentPage: 1,
       list: [],
@@ -149,6 +157,7 @@ Page({
   },
 
   onOwnerChange(event) {
+    this._historyFilters = {}
     this.setData({ ownerIndex: Number(event.detail.value) })
     this.initPage()
   },

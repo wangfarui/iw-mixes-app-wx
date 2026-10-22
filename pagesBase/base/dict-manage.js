@@ -10,7 +10,7 @@ const statusOptions = [
 
 function buildDictTypeOptions() {
   return [{ value: '', text: '全部类型' }].concat(
-    dictStore.getDictTypeArray().filter((item) => ![4001, 4002, 4004, 4011].includes(Number(item.code))).map((item) => ({
+    dictStore.getDictTypeArray().filter((item) => ![4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(item.code))).map((item) => ({
       value: item.code,
       text: item.name
     }))
@@ -130,7 +130,7 @@ Page({
     try {
       const res = await baseApi.getDictPage(this.buildQuery())
       if (requestId !== this.pageRequestId) return
-      const rows = ((res.data && res.data.records) || []).filter((item) => ![4001, 4002, 4004, 4011].includes(Number(item.dictType))).map(normalizeDict)
+      const rows = ((res.data && res.data.records) || []).filter((item) => ![4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(item.dictType))).map(normalizeDict)
       const dictList = reset ? rows : this.data.dictList.concat(rows)
       const total = (res.data && res.data.total) || dictList.length
       const stats = this.buildStats(dictList, total)

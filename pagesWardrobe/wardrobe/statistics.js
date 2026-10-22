@@ -38,16 +38,16 @@ Page({
         overview,
         categoryStats: (overview.categoryStats || []).map((item) => ({
           ...item,
-          text: helper.optionText(helper.getCategoryOptions(), item.name, '未设置')
+          text: item.name
         })),
         itemStyleStats: (overview.itemStyleStats || []).map((item) => ({
           ...item,
-          text: helper.optionText(helper.getItemStyleOptions(''), item.name, '未设置')
+          text: item.name
         })),
         colorStats: overview.colorStats || [],
         seasonStats: this.mapOptionStats(overview.seasonStats, helper.SEASON_OPTIONS),
-        sceneStats: this.mapOptionStats(overview.sceneStats, helper.getSceneOptions()),
-        styleStats: this.mapOptionStats(overview.styleStats, helper.getStyleOptions()),
+        sceneStats: (overview.sceneStats || []).map(item => ({...item,text:item.name})),
+        styleStats: (overview.styleStats || []).map(item => ({...item,text:item.name})),
         statusStats: overview.statusStats || [],
         brandStats: overview.brandStats || [],
         storageStats: overview.storageStats || [],

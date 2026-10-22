@@ -1,0 +1,4 @@
+# Preserve original tool output and trailing empty TSV columns in this evidence set.
+docs/acceptance/wardrobe-settings-20261022-dev/evidence/*.log whitespace=-blank-at-eol,-blank-at-eof
+docs/acceptance/wardrobe-settings-20261022-dev/evidence/*.tsv whitespace=-blank-at-eol,-blank-at-eof
+docs/plans/wardrobe-settings-20261021/investigation-20261022/*.tsv whitespace=-blank-at-eol,-blank-at-eof

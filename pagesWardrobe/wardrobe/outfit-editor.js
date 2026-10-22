@@ -1,6 +1,8 @@
 const wardrobeApi = require('../../api/wardrobe')
 const fileStore = require('../../stores/file')
 const helper = require('./wardrobe-helper')
+const history = require('../../utils/wardrobe-filters')
+const dictionaryForm = require('../../utils/wardrobe-form')
 
 function defaultForm() {
   return {
@@ -98,11 +100,16 @@ Page({
   },
 
   async onLoad(options = {}) {
+    this._dictionaryDirty = new Set()
     if (options.id) await this.loadDetail(options.id)
     this.initItems()
+    await dictionaryForm.load(this, 'OUTFIT', this.data.formData.id)
   },
 
+  retryDictionaryOptions() { return dictionaryForm.load(this, 'OUTFIT', this.data.formData.id) },
   onShow() {
+    history.load(this, 'ITEM').then(loaded => { if (loaded) this.refreshItemFilterOptions() }).catch(error => this.setData({filterError:error.message}))
+    if (this._dictionaryDirty) dictionaryForm.load(this, 'OUTFIT', this.data.formData.id)
     this.refreshItemFilterOptions()
     this.setData({
       sceneOptions: helper.enhanceTagOptions(helper.getSceneOptions(), this.data.formData.sceneTags),
@@ -115,10 +122,10 @@ Page({
     const subcategoryValue = optionAt(this.data.itemSubcategoryFilterOptions, this.data.itemSubcategoryFilterIndex).value
     const sceneValue = optionAt(this.data.itemSceneFilterOptions, this.data.itemSceneFilterIndex).value
     const styleValue = optionAt(this.data.itemStyleFilterOptions, this.data.itemStyleFilterIndex).value
-    const itemCategoryFilterOptions = withAllOption('全部品类', helper.getCategoryOptions())
-    const itemSubcategoryFilterOptions = withAllOption('全部款式', helper.getItemStyleOptions(categoryValue))
-    const itemSceneFilterOptions = withAllOption('全部场景', helper.getSceneOptions())
-    const itemStyleFilterOptions = withAllOption('全部风格', helper.getStyleOptions())
+    const itemCategoryFilterOptions = withAllOption('全部品类', history.choices(this, 'categories'))
+    const itemSubcategoryFilterOptions = withAllOption('全部款式', history.itemStyles(this, categoryValue))
+    const itemSceneFilterOptions = withAllOption('全部场景', history.choices(this, 'scenes'))
+    const itemStyleFilterOptions = withAllOption('全部风格', history.choices(this, 'styles'))
     this.setData({
       itemCategoryFilterOptions,
       itemCategoryFilterIndex: optionIndex(itemCategoryFilterOptions, categoryValue),
@@ -195,7 +202,7 @@ Page({
     const categoryValue = optionAt(this.data.itemCategoryFilterOptions, itemCategoryFilterIndex).value
     this.setData({
       itemCategoryFilterIndex,
-      itemSubcategoryFilterOptions: withAllOption('全部款式', helper.getItemStyleOptions(categoryValue)),
+      itemSubcategoryFilterOptions: withAllOption('全部款式', history.itemStyles(this, categoryValue)),
       itemSubcategoryFilterIndex: 0
     })
     this.initItems()
@@ -243,6 +250,9 @@ Page({
   async loadDetail(id) {
     const res = await wardrobeApi.getOutfitDetail(id)
     const detail = res.data || {}
+    dictionaryForm.remember(this, detail)
+    detail.sceneTags = dictionaryForm.ids(detail.sceneSnapshots)
+    detail.styleTags = dictionaryForm.ids(detail.styleSnapshots)
     const selectedItemList = (detail.itemList || [])
       .map(formatSelectableItem)
       .filter((item) => item.id)
@@ -278,6 +288,13 @@ Page({
     return mergeUniqueById(selectedRows, rows)
   },
 
+  clearSavedTags(event) {
+    const group = event.currentTarget.dataset.group || 'sceneTags'
+    this._dictionaryDirty.add(group === 'sceneTags' ? 'sceneIds' : 'styleIds')
+    this.setData({[`formData.${group}`]:'',[group === 'sceneTags' ? 'savedSceneText' : 'savedStyleText']:'',
+      [group === 'sceneTags' ? 'sceneOptions' : 'styleOptions']:helper.enhanceTagOptions(group === 'sceneTags' ? helper.getSceneOptions() : helper.getStyleOptions(), '')})
+  },
+
   handleInput(event) {
     const field = event.currentTarget.dataset.field
     this.setData({ [`formData.${field}`]: event.detail.value })
@@ -286,13 +303,15 @@ Page({
   toggleTag(event) {
     const group = event.currentTarget.dataset.group
     const value = event.currentTarget.dataset.value
+    if (group === 'sceneTags') this._dictionaryDirty.add('sceneIds')
+    if (group === 'styleTags') this._dictionaryDirty.add('styleIds')
     const next = helper.toggleTag(this.data.formData[group], value)
     const data = {
       [`formData.${group}`]: next
     }
     if (group === 'seasonTags') data.seasonOptions = helper.enhanceTagOptions(helper.SEASON_OPTIONS, next)
-    if (group === 'sceneTags') data.sceneOptions = helper.enhanceTagOptions(helper.getSceneOptions(), next)
-    if (group === 'styleTags') data.styleOptions = helper.enhanceTagOptions(helper.getStyleOptions(), next)
+    if (group === 'sceneTags') data.sceneOptions = helper.enhanceTagOptions(this.data.sceneOptions, next)
+    if (group === 'styleTags') data.styleOptions = helper.enhanceTagOptions(this.data.styleOptions, next)
     this.setData(data)
   },
 
@@ -300,6 +319,7 @@ Page({
     const id = Number(event.currentTarget.dataset.id)
     const itemIds = this.data.formData.itemIds.slice()
     const index = itemIds.indexOf(id)
+    dictionaryForm.toggle(this, id, index >= 0)
     if (index >= 0) {
       itemIds.splice(index, 1)
     } else {
@@ -334,6 +354,7 @@ Page({
   },
 
   async submitForm() {
+    if (this.data.submitting) return
     const form = this.data.formData
     if (!String(form.outfitName || '').trim()) {
       wx.showToast({ title: '请输入搭配名称', icon: 'none' })
@@ -353,6 +374,13 @@ Page({
       itemIds: form.itemIds,
       remark: form.remark || ''
     }
+    try { dictionaryForm.prepare(this, payload, Boolean(form.id), true) } catch (error) { wx.showToast({title:error.message,icon:'none'}); return }
+    if (form.id) {
+      delete payload.itemIds
+      if (this._detailsDirty) { payload.items = dictionaryForm.details(this, form.itemIds); payload.itemSetVersion = this._itemSetVersion }
+    }
+    this.setData({ submitting: true })
+    try {
     if (form.id) {
       payload.id = form.id
       await wardrobeApi.updateOutfit(payload)
@@ -361,5 +389,6 @@ Page({
     }
     wx.showToast({ title: '已保存', icon: 'success' })
     setTimeout(() => wx.navigateBack(), 400)
+    } finally { this.setData({ submitting: false }) }
   }
 })

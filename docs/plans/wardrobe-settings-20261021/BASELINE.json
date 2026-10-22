@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-21T09:19:11.265305+00:00",
+  "repos": {
+    "iw-mixes-app-wx": {
+      "head": "a04341d7f1d99654cddf6fdab7dbc7d9942db9a7",
+      "branch": "main"
+    },
+    "iw-mixes-server": {
+      "head": "b36b69b1e2e3b7cd0abb23eeba56d8386450b6ee",
+      "branch": "main"
+    },
+    "iw-mixes-web-platform": {
+      "head": "85f3fd0b1dee532de7b774260fba4a48a83599ef",
+      "branch": "dev"
+    }
+  },
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "22864d75d1f92977fcfcb45477dff620070ee3043c1699ebe983e08ef39d9269",
+      "tracked": null
+    },
+    {
+      "path": "iw-mixes-app-wx/AGENTS.md",
+      "sha256": "edc385cea5c3e7d00ca330aa330d12ea210029156a78bf712c6201e61a380a75",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/app.json",
+      "sha256": "e3342b2e0072534988cce54e1058f3d7d524ee6f3e8e4457a6a47f29b7a480dd",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pages/menu.js",
+      "sha256": "5c5677ac9e3045c8a0b496c1c58e2f89e0ed16a704ccae123bf6d6c9f9a835de",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBase/base/dict-detail.js",
+      "sha256": "72408713bf436acf036812048cfacabf403767ef0f47f885dc6ee4887ba5f6a1",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBookkeeping/bookkeeping/dictionary-management.js",
+      "sha256": "4f5dea366fe5e2f8dc99307bc4339b1c9e96e28a51740dd4bce24a34ec919b57",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesWardrobe/wardrobe/wardrobe-helper.js",
+      "sha256": "1e71e93d2832f72a2f41ffa4b1938dda79845a0fa894d9b5e8c9a2675612b94b",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/AGENTS.md",
+      "sha256": "90cff9a99988347de3f01e7d85c9814bb199ba7393095ebae492866ea82af62f",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/BaseDictServiceImpl.java",
+      "sha256": "b1282b17bc4ea2fbb6220104533539492994198caf507f9a2dcd26a64b5ee368",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/BookkeepingDictionaryService.java",
+      "sha256": "ac05e35496afb8af88a42f6bf2d278a54ce86abd6f6356427b0e73dac7324a20",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-wardrobe/src/main/java/com/itwray/iw/wardrobe/service/impl/WardrobeAssistantServiceImpl.java",
+      "sha256": "ad4de5209aa11e49c5f705cbdf2df214a79d3da60f1bd1d6277e980deae2cab5",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-wardrobe/src/main/java/com/itwray/iw/wardrobe/service/impl/WardrobeItemAccessServiceImpl.java",
+      "sha256": "bcedcc4a05e63835c36f5b6ff271e9e27d2b2fc2c323c795ec9ae36bb23a6cdb",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-wardrobe/src/main/java/com/itwray/iw/wardrobe/service/impl/WardrobeOutfitServiceImpl.java",
+      "sha256": "08eed7d0c02adc48b82920d49e2a258c28f12690cdd4d0bdcf1b4e282a8e36d9",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/model/entity/BaseDictEntity.java",
+      "sha256": "2e82f869d530e2cdb63862f6402c93746f6093226728cff87edbf04e9046e777",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/AGENTS.md",
+      "sha256": "b7611beddd999c4c3e46389a1f0bd0ba80b1d9bd0f063a813a2b935b387324e5",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/src/views/dict/components/DictForm.vue",
+      "sha256": "fd94c79f62cefe9af2afa4895899cd73e90b763f737b320011dda8d5f18bbbd2",
+      "tracked": true
+    }
+  ]
+}

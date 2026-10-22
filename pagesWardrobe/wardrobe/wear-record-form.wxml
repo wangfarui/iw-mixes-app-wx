@@ -1,3 +1,4 @@
+<view wx:if="{{dictionaryError}}" class="wardrobe-dictionary-error"><text>{{dictionaryError}}</text><button size="mini" bindtap="retryDictionaryOptions">重试</button></view>
 <view class="wardrobe-page form-page wear-record-form">
   <view class="form-panel">
     <view>
@@ -99,6 +100,7 @@
     <view class="section-title">补充信息</view>
     <view class="section-title form-section-title">场景</view>
     <view class="tag-wrap">
+      <view wx:if="{{savedSceneText}}" class="muted">已保存：{{savedSceneText}} <text data-group="sceneTags" bindtap="clearSavedTags">清空并重新选择</text></view>
       <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}}" data-value="{{item.value}}" bindtap="toggleScene">{{item.text}}</view>
     </view>
     <view class="form-line">

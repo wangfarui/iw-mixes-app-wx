@@ -1,0 +1,170 @@
+section	db	mysql_version	tx_read_only
+schema	iw_mixes	8.0.31	1
+TABLE_NAME	COLUMN_NAME	COLUMN_TYPE	IS_NULLABLE	COLUMN_DEFAULT
+auth_family_group	id	int unsigned	NO	NULL
+auth_family_group	group_name	varchar(32)	NO	NULL
+auth_family_group	group_avatar	varchar(255)	YES	NULL
+auth_family_group	group_desc	varchar(255)	YES	NULL
+auth_family_group	owner_user_id	int unsigned	NO	NULL
+auth_family_group	max_member	int unsigned	NO	10
+auth_family_group	status	tinyint(1)	NO	1
+auth_family_group	user_id	int unsigned	NO	NULL
+auth_family_group	create_time	datetime	NO	CURRENT_TIMESTAMP
+auth_family_group	update_time	datetime	NO	CURRENT_TIMESTAMP
+auth_family_group	deleted	tinyint(1)	NO	0
+auth_family_member	id	int unsigned	NO	NULL
+auth_family_member	group_id	int unsigned	NO	NULL
+auth_family_member	user_id	int unsigned	NO	NULL
+auth_family_member	role	tinyint(1)	NO	2
+auth_family_member	default_shared	tinyint(1)	NO	0
+auth_family_member	query_only_myself	tinyint(1)	NO	0
+auth_family_member	status	tinyint(1)	NO	1
+auth_family_member	join_time	datetime	NO	CURRENT_TIMESTAMP
+auth_family_member	create_time	datetime	NO	CURRENT_TIMESTAMP
+auth_family_member	update_time	datetime	NO	CURRENT_TIMESTAMP
+auth_family_member	deleted	tinyint(1)	NO	0
+base_dict	id	int unsigned	NO	NULL
+base_dict	parent_id	int unsigned	NO	0
+base_dict	dict_type	smallint unsigned	NO	NULL
+base_dict	dict_code	smallint unsigned	NO	0
+base_dict	dict_name	varchar(32)	NO	NULL
+base_dict	dict_status	tinyint	NO	1
+base_dict	sort	smallint unsigned	NO	1
+base_dict	deleted	tinyint(1)	NO	0
+base_dict	create_time	datetime	NO	CURRENT_TIMESTAMP
+base_dict	update_time	datetime	NO	CURRENT_TIMESTAMP
+base_dict	user_id	int unsigned	NO	NULL
+base_dict	scope_type	tinyint	NO	0
+base_dict	family_group_id	int unsigned	NO	0
+base_dict	previous_id	int unsigned	YES	NULL
+base_dict	revision	int unsigned	NO	0
+base_dict	active_name_key	varbinary(128)	YES	NULL
+wardrobe_item	id	int unsigned	NO	NULL
+wardrobe_item	item_name	varchar(64)	NO	
+wardrobe_item	item_image	varchar(255)	NO	
+wardrobe_item	category	tinyint	NO	0
+wardrobe_item	item_style	smallint unsigned	NO	0
+wardrobe_item	color_name	varchar(32)	NO	
+wardrobe_item	color_hex	varchar(16)	NO	
+wardrobe_item	season_tags	varchar(64)	NO	
+wardrobe_item	scene_tags	varchar(128)	NO	
+wardrobe_item	style_tags	varchar(128)	NO	
+wardrobe_item	brand	varchar(64)	NO	
+wardrobe_item	size	varchar(32)	NO	
+wardrobe_item	material	varchar(64)	NO	
+wardrobe_item	purchase_channel	varchar(64)	NO	
+wardrobe_item	storage_location	varchar(64)	NO	
+wardrobe_item	purchase_date	date	YES	NULL
+wardrobe_item	price	decimal(10,2)	NO	0.00
+wardrobe_item	custom_tags	varchar(255)	NO	
+wardrobe_item	status	tinyint	NO	1
+wardrobe_item	wear_count	int unsigned	NO	0
+wardrobe_item	last_wear_date	date	YES	NULL
+wardrobe_item	remark	varchar(255)	NO	
+wardrobe_item	create_user_id	int unsigned	YES	NULL
+wardrobe_item	update_user_id	int unsigned	YES	NULL
+wardrobe_item	deleted	tinyint(1)	NO	0
+wardrobe_item	create_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_item	update_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_item	user_id	int unsigned	NO	0
+wardrobe_outfit	id	int unsigned	NO	NULL
+wardrobe_outfit	outfit_name	varchar(64)	NO	
+wardrobe_outfit	cover_image	varchar(255)	NO	
+wardrobe_outfit	season_tags	varchar(64)	NO	
+wardrobe_outfit	scene_tags	varchar(128)	NO	
+wardrobe_outfit	style_tags	varchar(128)	NO	
+wardrobe_outfit	custom_tags	varchar(255)	NO	
+wardrobe_outfit	color_summary	varchar(128)	NO	
+wardrobe_outfit	item_count	tinyint	NO	0
+wardrobe_outfit	wear_count	int unsigned	NO	0
+wardrobe_outfit	last_wear_date	date	YES	NULL
+wardrobe_outfit	status	tinyint	NO	1
+wardrobe_outfit	remark	varchar(255)	NO	
+wardrobe_outfit	deleted	tinyint(1)	NO	0
+wardrobe_outfit	create_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_outfit	update_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_outfit	user_id	int unsigned	NO	0
+wardrobe_outfit_item	id	int unsigned	NO	NULL
+wardrobe_outfit_item	outfit_id	int unsigned	NO	NULL
+wardrobe_outfit_item	item_id	int unsigned	NO	NULL
+wardrobe_outfit_item	item_name	varchar(64)	NO	
+wardrobe_outfit_item	item_image	varchar(255)	NO	
+wardrobe_outfit_item	category	tinyint	NO	0
+wardrobe_outfit_item	item_style	smallint unsigned	NO	0
+wardrobe_outfit_item	sort	tinyint	NO	0
+wardrobe_outfit_item	deleted	tinyint(1)	NO	0
+wardrobe_outfit_item	create_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_outfit_item	update_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_outfit_item	user_id	int unsigned	NO	0
+wardrobe_wear_record	id	int unsigned	NO	NULL
+wardrobe_wear_record	wear_date	date	NO	NULL
+wardrobe_wear_record	outfit_id	int unsigned	NO	0
+wardrobe_wear_record	outfit_name	varchar(64)	NO	
+wardrobe_wear_record	scene_tags	varchar(128)	NO	
+wardrobe_wear_record	weather_text	varchar(64)	NO	
+wardrobe_wear_record	mood_text	varchar(64)	NO	
+wardrobe_wear_record	record_type	tinyint	NO	2
+wardrobe_wear_record	item_count	tinyint	NO	0
+wardrobe_wear_record	remark	varchar(255)	NO	
+wardrobe_wear_record	deleted	tinyint(1)	NO	0
+wardrobe_wear_record	create_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_wear_record	update_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_wear_record	user_id	int unsigned	NO	0
+wardrobe_wear_record_item	id	int unsigned	NO	NULL
+wardrobe_wear_record_item	record_id	int unsigned	NO	NULL
+wardrobe_wear_record_item	item_id	int unsigned	NO	NULL
+wardrobe_wear_record_item	item_name	varchar(64)	NO	
+wardrobe_wear_record_item	item_image	varchar(255)	NO	
+wardrobe_wear_record_item	category	tinyint	NO	0
+wardrobe_wear_record_item	item_style	smallint unsigned	NO	0
+wardrobe_wear_record_item	sort	tinyint	NO	0
+wardrobe_wear_record_item	deleted	tinyint(1)	NO	0
+wardrobe_wear_record_item	create_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_wear_record_item	update_time	datetime	NO	CURRENT_TIMESTAMP
+wardrobe_wear_record_item	user_id	int unsigned	NO	0
+TABLE_NAME	INDEX_NAME	NON_UNIQUE	columns_list
+base_dict	idx_bookkeeping_scope	1	scope_type,family_group_id,user_id,dict_type,deleted
+base_dict	idx_dict_type	1	dict_type
+base_dict	PRIMARY	0	id
+base_dict	uk_bookkeeping_dict_name	0	scope_type,family_group_id,user_id,dict_type,active_name_key
+base_dict	uk_dict_previous	0	previous_id
+wardrobe_item	idx_category	1	category
+wardrobe_item	idx_item_style	1	item_style
+wardrobe_item	idx_last_wear_date	1	last_wear_date
+wardrobe_item	idx_user_id	1	user_id,id
+wardrobe_item	idx_user_status	1	user_id,status
+wardrobe_item	PRIMARY	0	id
+wardrobe_outfit	idx_last_wear_date	1	last_wear_date
+wardrobe_outfit	idx_user_status	1	user_id,status
+wardrobe_outfit	PRIMARY	0	id
+wardrobe_outfit_item	idx_item_id	1	item_id
+wardrobe_outfit_item	idx_outfit_id	1	outfit_id
+wardrobe_outfit_item	idx_user_id	1	user_id
+wardrobe_outfit_item	PRIMARY	0	id
+wardrobe_wear_record	idx_outfit_id	1	outfit_id
+wardrobe_wear_record	idx_user_id	1	user_id
+wardrobe_wear_record	idx_wear_date	1	wear_date
+wardrobe_wear_record	PRIMARY	0	id
+wardrobe_wear_record_item	idx_item_id	1	item_id
+wardrobe_wear_record_item	idx_record_id	1	record_id
+wardrobe_wear_record_item	idx_user_id	1	user_id
+wardrobe_wear_record_item	PRIMARY	0	id
+section	dict_type	scope_type	total	current_rows	deleted_rows	enabled_rows	owner_count
+dict_inventory	5002	0	11	11	0	11	1
+dict_inventory	5003	0	270	270	0	270	18
+dict_inventory	5004	0	162	162	0	162	18
+dict_inventory	5005	0	235	234	1	234	18
+dict_inventory	5006	0	121	121	0	121	1
+tbl	total	current_rows	owners
+wardrobe_item	23	17	5
+wardrobe_outfit	7	3	2
+wardrobe_outfit_item	28	9	2
+wardrobe_wear_record	7	5	2
+wardrobe_wear_record_item	18	10	2
+TABLE_NAME
+base_dict
+base_dict_business_relation
+bookkeeping_dict_v2_local_archive_baseline
+bookkeeping_dict_v2_local_archive_records
+bookkeeping_dictionary_migration_baseline
+bookkeeping_family_dict_state

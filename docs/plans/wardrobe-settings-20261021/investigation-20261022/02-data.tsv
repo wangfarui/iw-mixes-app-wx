@@ -1,0 +1,44 @@
+section	dict_type	template_owner	scope_type	total	current_rows	owners
+dictionary_scopes	5002	1	0	11	11	1
+dictionary_scopes	5003	0	0	255	255	17
+dictionary_scopes	5003	1	0	15	15	1
+dictionary_scopes	5004	0	0	153	153	17
+dictionary_scopes	5004	1	0	9	9	1
+dictionary_scopes	5005	0	0	222	221	17
+dictionary_scopes	5005	1	0	13	13	1
+dictionary_scopes	5006	1	0	121	121	1
+section	duplicate_groups
+duplicate_current_codes	0
+section	duplicate_groups
+duplicate_current_names	0
+section	total	missing_parent	wrong_type	wrong_owner	deleted_parent	disabled_parent
+subcategory_parents	121	0	0	0	0	0
+section	kind	deleted	rows_count	category_unset	category_personal_unique	category_template_only	category_unknown	style_unset	style_personal_unique	style_template_only	style_unknown
+code_source_mapping	ITEM	0	17	0	0	17	0	12	0	5	0
+code_source_mapping	ITEM	1	6	0	0	6	0	6	0	0	0
+code_source_mapping	OUTFIT_ITEM	0	9	0	0	9	0	9	0	0	0
+code_source_mapping	OUTFIT_ITEM	1	19	0	0	19	0	19	0	0	0
+code_source_mapping	RECORD_ITEM	0	10	0	0	10	0	10	0	0	0
+code_source_mapping	RECORD_ITEM	1	8	0	0	8	0	8	0	0	0
+section	kind	dict_type	field_count	empty_count	malformed_count
+tag_format	ITEM	5004	23	1	9
+tag_format	ITEM	5005	23	4	6
+tag_format	OUTFIT	5004	7	3	3
+tag_format	OUTFIT	5005	7	3	3
+tag_format	RECORD	5004	7	2	2
+section	kind	dict_type	deleted	token_count	personal_unique	deleted_personal_unique	template_only	unknown_count	history_ambiguous
+tag_source_mapping	ITEM	5004	0	33	33	0	0	0	0
+tag_source_mapping	ITEM	5005	0	32	32	0	0	0	0
+tag_source_mapping	OUTFIT	5004	0	1	1	0	0	0	0
+tag_source_mapping	OUTFIT	5005	0	1	1	0	0	0	0
+tag_source_mapping	RECORD	5004	0	4	4	0	0	0	0
+section	deleted	rows_count	empty_color	personal_exact	no_source_name
+color_mapping	1	6	0	6	0
+color_mapping	0	17	1	16	0
+section	kind	rows_count	missing_item	item_deleted	current_owner_differs
+relation_owner_drift	OUTFIT_ITEM	28	0	8	5
+relation_owner_drift	RECORD_ITEM	18	0	9	1
+section	total	active_groups
+family_inventory	6	1
+section	rows_count	previous_links	revised_rows
+current_dictionary_lineage	799	0	0

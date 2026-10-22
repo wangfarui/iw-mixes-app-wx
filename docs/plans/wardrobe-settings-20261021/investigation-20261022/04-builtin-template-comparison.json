@@ -1,0 +1,37 @@
+[
+  {
+    "dictType": 5002,
+    "builtinCount": 11,
+    "templateCount": 11,
+    "missingFromTemplate": 0,
+    "extraInTemplate": 0
+  },
+  {
+    "dictType": 5003,
+    "builtinCount": 15,
+    "templateCount": 15,
+    "missingFromTemplate": 0,
+    "extraInTemplate": 0
+  },
+  {
+    "dictType": 5004,
+    "builtinCount": 9,
+    "templateCount": 9,
+    "missingFromTemplate": 0,
+    "extraInTemplate": 0
+  },
+  {
+    "dictType": 5005,
+    "builtinCount": 13,
+    "templateCount": 13,
+    "missingFromTemplate": 0,
+    "extraInTemplate": 0
+  },
+  {
+    "dictType": 5006,
+    "builtinCount": 121,
+    "templateCount": 121,
+    "missingFromTemplate": 0,
+    "extraInTemplate": 0
+  }
+]

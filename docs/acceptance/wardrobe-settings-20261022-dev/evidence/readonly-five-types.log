@@ -1,0 +1,11 @@
+PASS MEMBER CATEGORY 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS MEMBER ITEM_STYLE 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS MEMBER COLOR 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS MEMBER SCENE 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS MEMBER STYLE 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS CHILD CATEGORY 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS CHILD ITEM_STYLE 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS CHILD COLOR 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS CHILD SCENE 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+PASS CHILD STYLE 家庭新增/改名/启停/删除/排序/复制均按真实角色拒绝
+ALL_60_READONLY_WRITE_ATTEMPTS_REJECTED

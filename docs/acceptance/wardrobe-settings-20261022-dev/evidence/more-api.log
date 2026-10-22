@@ -1,0 +1,10 @@
+PASS 父项启停不改变子项自身状态且禁删未删除子项
+PASS 后端Unicode名称超长拒绝
+PASS 批量任一来源失效整批不落库
+PASS 明细集合保留旧快照并拒绝伪造detailId
+PASS 明确重加读取衣物当前快照 既有穿着明细保持原名
+Traceback (most recent call last):
+  File "/private/tmp/iw-wardrobe-more-api.py", line 14, in <module>
+    a.ok('/wardrobe/item/update','PUT',{'id':item,'status':3,'dictionaryChanges':{}});assert a.call('/wardrobe/outfit/copy?id='+str(c['outfits'][1]),'POST',{})['code']!=200;a.ok('/wardrobe/item/update','PUT',{'id':item,'status':1,'dictionaryChanges':{}});print('PASS 复制保留原有衣物不可用校验')
+                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

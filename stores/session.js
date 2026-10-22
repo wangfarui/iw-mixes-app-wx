@@ -12,6 +12,7 @@ function getUserInfo() {
 function setLoginSession(userInfo) {
   require('./bookkeeping-options').invalidate()
   require('./membership-types').invalidate()
+  require('./wardrobe-options').invalidate()
   require('./family').clearGroup()
   const token = userInfo && userInfo.tokenValue
   if (token) {
@@ -23,6 +24,7 @@ function setLoginSession(userInfo) {
 function clearLoginSession() {
   require('./bookkeeping-options').invalidate()
   require('./membership-types').invalidate()
+  require('./wardrobe-options').invalidate()
   require('./family').clearGroup()
   wx.removeStorageSync(TOKEN_KEY)
   wx.removeStorageSync(USER_INFO_KEY)

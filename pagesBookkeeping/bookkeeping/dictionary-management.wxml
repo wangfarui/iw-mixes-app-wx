@@ -1,5 +1,5 @@
 <template name="dictionaryManagement">
-<view class="dm-page">
+<view class="dm-page {{sorting ? 'is-sorting' : ''}}">
   <view class="dm-scope" wx:if="{{!personalOnly && hasFamily && !sorting}}">
     <view class="dm-scope-item {{scope === 'PERSONAL' ? 'is-active' : ''}}" data-scope="PERSONAL" bindtap="changeScope">我的</view>
     <view class="dm-scope-item {{scope === 'FAMILY' ? 'is-active' : ''}}" data-scope="FAMILY" bindtap="changeScope">家庭共用</view>
@@ -15,6 +15,8 @@
   </view>
   <view class="dm-sort-error" wx:if="{{sorting && sortError}}">{{sortError}}</view>
 
+  <scroll-view class="dm-content {{sorting ? 'is-sorting' : ''}}" scroll-y="{{!sorting}}" enhanced show-scrollbar="{{false}}">
+  <view class="dm-content-inner" style="padding-bottom: calc(24rpx + {{canManage && loadedOnce ? 0 : safeBottom}}px);">
   <view class="dm-state" wx:if="{{!loadedOnce && loading}}">加载中…</view>
   <view class="dm-state" wx:elif="{{!loadedOnce && loadError}}">
     <view class="dm-state-text">{{loadError}}</view>
@@ -72,17 +74,17 @@
     </view>
   </block>
 
-  <view class="dm-footer-spacer {{canManage && scope === 'FAMILY' ? 'is-family' : ''}}" style="padding-bottom: {{safeBottom}}px;" wx:if="{{canManage && !sorting && loadedOnce}}"></view>
+  </view>
+  </scroll-view>
+  <view class="dm-footer" style="padding-bottom: calc(20rpx + {{safeBottom}}px);" wx:if="{{canManage && !sorting && loadedOnce}}">
+    <view class="dm-copy-entry" wx:if="{{scope === 'FAMILY'}}" bindtap="openCopy">从我的选项添加</view>
+    <view class="dm-primary {{busy ? 'is-disabled' : ''}}" bindtap="openAdd">＋ 新增{{typeText}}</view>
+  </view>
 </view>
 
 <view class="dm-drag-shadow" wx:if="{{dragItem}}" style="top: {{dragTop}}px;">
   <image class="dm-handle-img" src="/static/bookkeeping/settings/handle.svg" mode="aspectFit"/>
   <view class="dm-row-name">{{dragItem.name}}<text class="dm-row-badge" wx:if="{{!dragItem.enabled}}">已停用</text></view>
-</view>
-
-<view class="dm-footer" style="bottom: calc(32rpx + {{safeBottom}}px);" wx:if="{{canManage && !sorting && loadedOnce}}">
-  <view class="dm-copy-entry" wx:if="{{scope === 'FAMILY'}}" bindtap="openCopy">从我的选项添加</view>
-  <view class="dm-primary {{busy ? 'is-disabled' : ''}}" bindtap="openAdd">＋ 新增{{typeText}}</view>
 </view>
 
 <view class="dm-mask" wx:if="{{activeSheet === 'editor'}}" catchtap="onMaskTap">

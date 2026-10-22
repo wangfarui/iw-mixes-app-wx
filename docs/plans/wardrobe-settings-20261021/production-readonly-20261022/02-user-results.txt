@@ -1,0 +1,14 @@
+来源：用户于2026-10-22在本会话回传；AI未连接生产。以下保留原结果值。
+
+check_id,target_database,connection_id,session_read_only,autocommit
+P30_SESSION_BEFORE,iw_mixes,831272,0,1
+
+check_id,target_database,connection_id,session_read_only,autocommit
+P30_SESSION_READY,iw_mixes,831272,0,1
+
+check_id,detail_id,outfit_id,item_id,detail_owner_id,head_owner_id,current_item_owner_id,head_deleted,item_deleted,historical_category_code,historical_style_code,current_category_code,current_style_code,dict_type,historical_code,detail_owner_candidates,detail_owner_source_id,current_item_owner_candidates,current_item_owner_source_id,same_name_for_historical_code
+P31_HISTORY_OWNER_SOURCES,1,1,32,1,1,6,0,0,3,301,3,301,5002,3,1,1756,1,2020,1
+P31_HISTORY_OWNER_SOURCES,1,1,32,1,1,6,0,0,3,301,3,301,5006,301,1,1767,1,2031,1
+
+check_id,target_database,connection_id,session_read_only
+P32_SESSION_END,iw_mixes,831272,0

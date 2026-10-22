@@ -1,0 +1,84 @@
+check_id	target_database	mysql_version	query_time	transaction_read_only
+P10_SESSION	iw_mixes	8.0.31	2026-10-22 14:47:41	1
+check_id	kind	total_rows	current_rows	deleted_rows	owner_count
+P10_BUSINESS_ROWS	ITEM	23	17	6	5
+P10_BUSINESS_ROWS	OUTFIT	7	3	4	2
+P10_BUSINESS_ROWS	OUTFIT_ITEM	28	9	19	2
+P10_BUSINESS_ROWS	RECORD	7	5	2	2
+P10_BUSINESS_ROWS	RECORD_ITEM	18	10	8	2
+check_id	dict_type	scope_type	is_template	total_rows	current_rows	enabled_rows	deleted_rows	owner_count
+P11_DICTIONARY_SCOPES	5002	0	1	11	11	11	0	1
+P11_DICTIONARY_SCOPES	5003	0	0	255	255	255	0	17
+P11_DICTIONARY_SCOPES	5003	0	1	15	15	15	0	1
+P11_DICTIONARY_SCOPES	5004	0	0	153	153	153	0	17
+P11_DICTIONARY_SCOPES	5004	0	1	9	9	9	0	1
+P11_DICTIONARY_SCOPES	5005	0	0	222	221	221	1	17
+P11_DICTIONARY_SCOPES	5005	0	1	13	13	13	0	1
+P11_DICTIONARY_SCOPES	5006	0	1	121	121	121	0	1
+check_id	dict_type	business_owner_count	owners_without_any_history	owners_without_current_rows
+P12_OWNER_DICTIONARY_COVERAGE	5002	5	5	5
+P12_OWNER_DICTIONARY_COVERAGE	5003	5	0	0
+P12_OWNER_DICTIONARY_COVERAGE	5004	5	0	0
+P12_OWNER_DICTIONARY_COVERAGE	5005	5	0	0
+P12_OWNER_DICTIONARY_COVERAGE	5006	5	5	5
+check_id	duplicate_groups	affected_dict_rows
+P13_DUPLICATE_CODES	0	0
+check_id	duplicate_groups	affected_dict_rows
+P13_DUPLICATE_NAMES	0	0
+check_id	total_rows	invalid_length	edge_whitespace
+P13_NAME_SHAPE	798	0	0
+check_id	current_styles	missing_parent	wrong_parent_type	wrong_parent_scope	deleted_parent	disabled_parent
+P14_STYLE_PARENTS	121	0	0	0	0	0
+check_id	kind	dict_type	deleted	reference_rows	unset_rows	personal_current_unique	personal_current_ambiguous	personal_deleted_unique	template_only	no_personal_or_template	multiple_personal_versions	multiple_personal_names
+P15_SCALAR_CODE_SOURCES	ITEM	5002	0	17	0	0	0	NULL	17	0	NULL	NULL
+P15_SCALAR_CODE_SOURCES	ITEM	5002	1	6	0	0	0	NULL	6	0	NULL	NULL
+P15_SCALAR_CODE_SOURCES	ITEM	5006	0	17	12	0	0	0	5	0	0	0
+P15_SCALAR_CODE_SOURCES	ITEM	5006	1	6	6	0	0	0	0	0	0	0
+P15_SCALAR_CODE_SOURCES	OUTFIT_ITEM	5002	0	9	0	0	0	NULL	9	0	NULL	NULL
+P15_SCALAR_CODE_SOURCES	OUTFIT_ITEM	5002	1	19	0	0	0	NULL	19	0	NULL	NULL
+P15_SCALAR_CODE_SOURCES	OUTFIT_ITEM	5006	0	9	9	0	0	0	0	0	0	0
+P15_SCALAR_CODE_SOURCES	OUTFIT_ITEM	5006	1	19	19	0	0	0	0	0	0	0
+P15_SCALAR_CODE_SOURCES	RECORD_ITEM	5002	0	10	0	0	0	NULL	10	0	NULL	NULL
+P15_SCALAR_CODE_SOURCES	RECORD_ITEM	5002	1	8	0	0	0	NULL	8	0	NULL	NULL
+P15_SCALAR_CODE_SOURCES	RECORD_ITEM	5006	0	10	10	0	0	0	0	0	0	0
+P15_SCALAR_CODE_SOURCES	RECORD_ITEM	5006	1	8	8	0	0	0	0	0	0	0
+check_id	kind	deleted	nonzero_style_rows	unresolved_style_source	invalid_style_parent	category_code_mismatch
+P16_STYLE_CATEGORY_PAIRING	ITEM	0	5	0	0	0
+check_id	kind	dict_type	deleted	field_count	empty_fields	whitespace_only_fields	numeric_csv_fields	other_format_fields
+P17_TAG_FIELD_FORMAT	ITEM	5004	0	17	1	0	13	3
+P17_TAG_FIELD_FORMAT	ITEM	5004	1	6	0	0	0	6
+P17_TAG_FIELD_FORMAT	ITEM	5005	0	17	1	0	13	3
+P17_TAG_FIELD_FORMAT	ITEM	5005	1	6	3	0	0	3
+P17_TAG_FIELD_FORMAT	OUTFIT	5004	0	3	2	0	1	0
+P17_TAG_FIELD_FORMAT	OUTFIT	5004	1	4	1	0	0	3
+P17_TAG_FIELD_FORMAT	OUTFIT	5005	0	3	2	0	1	0
+P17_TAG_FIELD_FORMAT	OUTFIT	5005	1	4	1	0	0	3
+P17_TAG_FIELD_FORMAT	RECORD	5004	0	5	2	0	3	0
+P17_TAG_FIELD_FORMAT	RECORD	5004	1	2	0	0	0	2
+check_id	kind	dict_type	deleted	token_count	canonical_code_tokens	noncanonical_numeric_tokens	literal_tokens	personal_current_unique	personal_current_ambiguous	personal_deleted_unique	template_only	no_personal_or_template	multiple_personal_names
+P18_TAG_TOKEN_SOURCES	ITEM	5004	0	44	37	0	7	37	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	ITEM	5004	1	9	0	0	9	0	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	ITEM	5005	0	44	37	0	7	37	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	ITEM	5005	1	6	0	0	6	0	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	OUTFIT	5004	0	1	1	0	0	1	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	OUTFIT	5004	1	3	0	0	3	0	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	OUTFIT	5005	0	1	1	0	0	1	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	OUTFIT	5005	1	3	0	0	3	0	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	RECORD	5004	0	4	4	0	0	4	0	0	0	0	0
+P18_TAG_TOKEN_SOURCES	RECORD	5004	1	2	0	0	2	0	0	0	0	0	0
+check_id	duplicate_groups	extra_token_count
+P18_DUPLICATE_EXACT_TOKENS	0	0
+check_id	deleted	row_count	empty_color	personal_current_unique	personal_deleted_unique	no_personal_exact_name	personal_current_ambiguous
+P19_COLOR_TEXT_SOURCES	0	17	1	16	0	0	0
+P19_COLOR_TEXT_SOURCES	1	6	0	6	0	0	0
+check_id	kind	deleted	row_count	missing_head	deleted_head	missing_item	deleted_item	current_owner_differs	head_owner_differs
+P20_HISTORY_LINKS	OUTFIT_ITEM	1	19	0	11	0	8	3	0
+P20_HISTORY_LINKS	OUTFIT_ITEM	0	9	0	0	0	0	2	0
+P20_HISTORY_LINKS	RECORD_ITEM	0	10	0	0	0	3	1	0
+P20_HISTORY_LINKS	RECORD_ITEM	1	8	0	6	0	6	0	0
+check_id	dict_type	total_rows	predecessor_links	nonzero_revisions	deleted_rows	later_timestamp_rows
+P21_DICTIONARY_HISTORY_SIGNALS	5002	11	0	0	0	0
+P21_DICTIONARY_HISTORY_SIGNALS	5003	270	0	0	0	0
+P21_DICTIONARY_HISTORY_SIGNALS	5004	162	0	0	0	0
+P21_DICTIONARY_HISTORY_SIGNALS	5005	235	0	0	1	1
+P21_DICTIONARY_HISTORY_SIGNALS	5006	121	0	0	0	0

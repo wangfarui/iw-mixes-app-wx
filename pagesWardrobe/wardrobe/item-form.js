@@ -1,6 +1,7 @@
 const wardrobeApi = require('../../api/wardrobe')
 const fileStore = require('../../stores/file')
 const helper = require('./wardrobe-helper')
+const dictionaryOptions = require('../../stores/wardrobe-options')
 const wardrobeFamily = require('./wardrobe-family')
 const familyScope = require('../../stores/family-shared-scope')
 
@@ -12,7 +13,8 @@ function defaultForm() {
     itemImage: '',
     originalImage: '',
     optimizedImage: '',
-    category: 1,
+    category: 0,
+    colorId: 0,
     itemStyle: 0,
     colorName: '',
     colorHex: '',
@@ -86,6 +88,7 @@ Page({
 
   async onLoad(options = {}) {
     this.pageActive = true
+    this._dictionaryDirty = new Set()
     this.optimizePollToken = 0
     this.latestOptimizeQueryToken = 0
     await this.loadOwnerOptions()
@@ -93,6 +96,7 @@ Page({
     else {
       const formData = { ...this.data.formData, ownerUserId: wardrobeFamily.currentUserId() }
       this.setData({ formData, ownerIndex: this.ownerIndex(formData.ownerUserId) })
+      await this.loadDictionaryOptions()
     }
   },
 
@@ -107,15 +111,19 @@ Page({
     return index >= 0 ? index : 0
   },
 
-  onOwnerChange(event) {
+  async onOwnerChange(event) {
     if (!this.data.canChooseOwner || !this.data.canManage) return
     const ownerIndex = Number(event.detail.value)
     const owner = this.data.ownerOptions[ownerIndex]
-    this.setData({ ownerIndex, 'formData.ownerUserId': owner ? owner.value : '' })
+    this._dictionaryDirty = new Set()
+    const base = this._dictionaryOriginal || { category: 0, itemStyle: 0, colorId: 0, colorName:'',colorHex:'',sceneTags: '', styleTags: '' }
+    this.setData({ ownerIndex, formData: { ...this.data.formData, ...base, ownerUserId: owner ? owner.value : '' } })
+    await this.loadDictionaryOptions()
   },
 
   onShow() {
     this.pageActive = true
+    if (this.data.canManage && this.data.formData.ownerUserId) this.loadDictionaryOptions()
     this.setData(this.formOptionData(this.data.formData))
     if (this.data.formData.id && this.data.canOptimize) {
       this.recoverImageOptimizeTask(this.data.formData.id)
@@ -137,14 +145,20 @@ Page({
     const formData = {
       ...defaultForm(),
       ...detail,
+      category: detail.categorySourceId || 0, itemStyle: detail.itemStyleSourceId || 0, colorId: detail.colorSourceId || 0,
+      sceneTags: (detail.sceneSnapshots || []).map(item => item.sourceId).filter(Boolean).join(','),
+      styleTags: (detail.styleSnapshots || []).map(item => item.sourceId).filter(Boolean).join(','),
       originalImage: detail.originalImage || detail.itemImage || '',
       optimizedImage: detail.optimizedImage || '',
       status: helper.normalizeStatus(detail.status),
       price: detail.price == null ? '' : String(detail.price),
       purchaseDate: detail.purchaseDate || ''
     }
+    this._dictionaryOriginal = { category: formData.category, itemStyle: formData.itemStyle, colorId: formData.colorId,colorName:formData.colorName,colorHex:formData.colorHex,sceneTags: formData.sceneTags,styleTags: formData.styleTags,sceneSnapshots:formData.sceneSnapshots,styleSnapshots:formData.styleSnapshots }
     this.setData({
       formData,
+      savedSceneText:(detail.sceneSnapshots || []).map(row=>row.nameSnapshot).join('、'),
+      savedStyleText:(detail.styleSnapshots || []).map(row=>row.nameSnapshot).join('、'),
       ownerIndex: this.ownerIndex(formData.ownerUserId),
       canManage: detail.canEdit !== false,
       canOptimize,
@@ -152,22 +166,46 @@ Page({
       ...this.formOptionData(formData),
       ...this.imageOptimizeIdleState('', Boolean(formData.optimizedImage))
     })
+    if (detail.canEdit !== false) await this.loadDictionaryOptions()
     if (canOptimize) this.recoverImageOptimizeTask(formData.id)
   },
 
+  async loadDictionaryOptions() {
+    const sequence = this._dictionaryRequest = (this._dictionaryRequest || 0) + 1
+    const form = this.data.formData
+    this.setData({ dictionaryLoading: true, dictionaryError: '' })
+    try {
+      const options = await dictionaryOptions.load({ businessType: 'ITEM', ownerUserId: Number(form.ownerUserId), businessId: form.id || undefined })
+      if (sequence !== this._dictionaryRequest || String(form.ownerUserId) !== String(this.data.formData.ownerUserId)) return
+      this._dictionaryContext = { contextToken: options.contextToken }
+      const formData = { ...this.data.formData }
+      if (!formData.id && !formData.category) formData.category = options.categories[0] ? options.categories[0].preferredSourceId : 0
+      this.setData({ formData, dictionaryLoading: false, ...this.formOptionData(formData) })
+    } catch (error) {
+      if (sequence === this._dictionaryRequest) { this._dictionaryContext = null; this.setData({ dictionaryLoading: false, dictionaryError: error.message || '选项加载失败，请重试' }) }
+    }
+  },
   formOptionData(formData) {
-    const categoryOptions = helper.getCategoryOptions()
+    const categoryOptions = helper.getCategoryOptions(formData.ownerUserId)
     const itemStyleOptions = this.itemStyleOptions(formData.category)
-    const colorOptions = helper.getColorOptions()
-    const sceneOptions = helper.getSceneOptions()
-    const styleOptions = helper.getStyleOptions()
+    const colorOptions = [{value: 0, text: '未设置', hex: ''}].concat(helper.getColorOptions(formData.ownerUserId))
+    const sceneOptions = helper.getSceneOptions(formData.ownerUserId)
+    const styleOptions = helper.getStyleOptions(formData.ownerUserId)
+    const dirty = this._dictionaryDirty || new Set()
+    if (formData.id && !formData.category && formData.categoryNameSnapshot && !dirty.has('categoryId')) categoryOptions.unshift({value:0,text:formData.categoryNameSnapshot + '（历史）',historical:true})
+    if (formData.id && !formData.itemStyle && formData.itemStyleNameSnapshot && !dirty.has('itemStyleId')) itemStyleOptions.unshift({value:0,text:formData.itemStyleNameSnapshot + '（历史）',historical:true})
+    if (formData.id && !formData.colorId && formData.colorName && !dirty.has('colorId')) colorOptions.unshift({value:0,text:formData.colorName + '（历史）',historical:true})
+    if (formData.id && formData.category && !categoryOptions.some(item => (item.sourceIds || [item.value]).includes(formData.category))) categoryOptions.unshift({value:formData.category, text:(formData.categoryNameSnapshot || '原品类') + '（历史）', historical:true})
+    if (formData.id && formData.itemStyle && !itemStyleOptions.some(item => item.value === formData.itemStyle)) itemStyleOptions.push({value:formData.itemStyle,text:(formData.itemStyleNameSnapshot || '原款式') + '（历史）',historical:true})
+    if (formData.id && formData.colorId && !colorOptions.some(item => item.value === formData.colorId)) colorOptions.push({value:formData.colorId,text:(formData.colorName || '原颜色') + '（历史）',historical:true})
+    for (const [choices, stored] of [[sceneOptions,formData.sceneSnapshots],[styleOptions,formData.styleSnapshots]]) for (const tag of stored || []) if (!choices.some(item => item.value === tag.sourceId)) choices.push({value:tag.sourceId,text:tag.nameSnapshot + '（历史）',historical:true})
     return {
       categoryOptions,
       itemStyleOptions,
       colorOptions,
       categoryIndex: helper.optionIndex(categoryOptions, formData.category),
       itemStyleIndex: helper.optionIndex(itemStyleOptions, formData.itemStyle),
-      colorIndex: helper.optionIndex(colorOptions, formData.colorName),
+      colorIndex: helper.optionIndex(colorOptions, formData.colorId),
       statusIndex: helper.optionIndex(this.data.statusOptions, helper.normalizeStatus(formData.status)),
       seasonOptions: helper.enhanceTagOptions(helper.SEASON_OPTIONS, formData.seasonTags),
       sceneOptions: helper.enhanceTagOptions(sceneOptions, formData.sceneTags),
@@ -176,7 +214,7 @@ Page({
   },
 
   itemStyleOptions(category) {
-    return [{ value: 0, text: '未设置' }].concat(helper.getItemStyleOptions(category))
+    return [{ value: 0, text: '未设置' }].concat(helper.getItemStyleOptions(category, this.data.formData.ownerUserId))
   },
 
   handleInput(event) {
@@ -189,6 +227,8 @@ Page({
     if (!this.data.canManage) return
     const categoryIndex = Number(event.detail.value)
     const option = this.data.categoryOptions[categoryIndex]
+    if (!option || option.historical) return
+    this._dictionaryDirty.add('categoryId'); this._dictionaryDirty.add('itemStyleId')
     const itemStyleOptions = this.itemStyleOptions(option.value)
     const currentItemStyleIndex = helper.optionIndex(itemStyleOptions, this.data.formData.itemStyle)
     const itemStyleIndex = currentItemStyleIndex > 0 ? currentItemStyleIndex : 0
@@ -196,7 +236,7 @@ Page({
       categoryIndex,
       itemStyleOptions,
       itemStyleIndex,
-      'formData.category': option.value,
+      'formData.category': itemStyleOptions[itemStyleIndex].parentId || option.value,
       'formData.itemStyle': itemStyleOptions[itemStyleIndex].value
     })
   },
@@ -205,9 +245,12 @@ Page({
     if (!this.data.canManage) return
     const itemStyleIndex = Number(event.detail.value)
     const option = this.data.itemStyleOptions[itemStyleIndex]
+    if (!option || option.historical) return
+    this._dictionaryDirty.add('itemStyleId')
     this.setData({
       itemStyleIndex,
-      'formData.itemStyle': option.value
+      'formData.itemStyle': option.value,
+      'formData.category': option.parentId || this.data.formData.category
     })
   },
 
@@ -215,9 +258,12 @@ Page({
     if (!this.data.canManage) return
     const colorIndex = Number(event.detail.value)
     const option = this.data.colorOptions[colorIndex]
+    if (!option || option.historical) return
+    this._dictionaryDirty.add('colorId')
     this.setData({
       colorIndex,
-      'formData.colorName': option.value,
+      'formData.colorId': option.value,
+      'formData.colorName': option.text,
       'formData.colorHex': option.hex
     })
   },
@@ -302,17 +348,30 @@ Page({
     )
   },
 
+  clearSavedTags(event) {
+    if (!this.data.canManage) return
+    const group = event.currentTarget.dataset.group
+    this._dictionaryDirty.add(group === 'sceneTags' ? 'sceneIds' : 'styleIds')
+    this.setData({[`formData.${group}`]:'',[group === 'sceneTags' ? 'savedSceneText' : 'savedStyleText']:''})
+    this.setData(this.formOptionData(this.data.formData))
+  },
+
   toggleTag(event) {
     if (!this.data.canManage) return
     const group = event.currentTarget.dataset.group
     const value = event.currentTarget.dataset.value
+    const choices = group === 'sceneTags' ? this.data.sceneOptions : group === 'styleTags' ? this.data.styleOptions : this.data.seasonOptions
+    const choice = choices.find(row => String(row.value) === String(value))
+    if (choice && choice.historical && !choice.active) return
     const next = helper.toggleTag(this.data.formData[group], value)
     const data = {
       [`formData.${group}`]: next
     }
     if (group === 'seasonTags') data.seasonOptions = helper.enhanceTagOptions(helper.SEASON_OPTIONS, next)
-    if (group === 'sceneTags') data.sceneOptions = helper.enhanceTagOptions(helper.getSceneOptions(), next)
-    if (group === 'styleTags') data.styleOptions = helper.enhanceTagOptions(helper.getStyleOptions(), next)
+    if (group === 'sceneTags') this._dictionaryDirty.add('sceneIds')
+    if (group === 'styleTags') this._dictionaryDirty.add('styleIds')
+    if (group === 'sceneTags') data.sceneOptions = helper.enhanceTagOptions(this.data.sceneOptions, next)
+    if (group === 'styleTags') data.styleOptions = helper.enhanceTagOptions(this.data.styleOptions, next)
     this.setData(data)
   },
 
@@ -644,11 +703,15 @@ Page({
   async recognizeImageDraft(imageUrl) {
     this.showAiDraftLoading('AI识别中')
     try {
+      const requestedOwner = this.data.formData.ownerUserId
       const res = await wardrobeApi.recognizeItemDraft({
         imageUrl,
         prompt: this.data.aiDraftPrompt,
-        useAi: true
+        useAi: true,
+        ownerUserId: Number(this.data.formData.ownerUserId),
+        dictionaryContext: this._dictionaryContext
       })
+      if (String(requestedOwner) !== String(this.data.formData.ownerUserId)) return
       this.applyAiDraft(res.data || {})
       this.hideAiDraftLoading()
       wx.showToast({ title: '草稿已生成', icon: 'success' })
@@ -685,7 +748,14 @@ Page({
       status: helper.normalizeStatus(draftNumber(draft, current, 'status', 1)),
       remark: draftText(draft, current, 'remark')
     }
-    const colorOption = helper.getColorOptions().find((option) => option.value === formData.colorName)
+    const selected = draft.dictionarySelection
+    if (selected) {
+      formData.category = selected.categoryId; formData.itemStyle = selected.itemStyleId || 0; formData.colorId = selected.colorId || 0
+      formData.sceneTags = (selected.sceneIds || []).join(','); formData.styleTags = (selected.styleIds || []).join(',')
+      for (const key of ['categoryId','itemStyleId','colorId','sceneIds','styleIds']) this._dictionaryDirty.add(key)
+      this._dictionaryContext = draft.dictionaryContext
+    }
+    const colorOption = helper.getColorOptions(formData.ownerUserId).find((option) => option.value === formData.colorId)
     if (!formData.colorHex && colorOption) formData.colorHex = colorOption.hex
     this.setData({
       formData,
@@ -695,7 +765,7 @@ Page({
   },
 
   async submitForm() {
-    if (!this.data.canManage) return
+    if (!this.data.canManage || this._saving) return
     const form = this.data.formData
     if (!String(form.itemName || '').trim()) {
       wx.showToast({ title: '请输入衣物名称', icon: 'none' })
@@ -723,6 +793,18 @@ Page({
       status: helper.normalizeStatus(form.status),
       remark: form.remark || ''
     }
+    const selection = { categoryId: Number(form.category || 0), itemStyleId: Number(form.itemStyle || 0) || null,
+      colorId: Number(form.colorId || 0) || null, sceneIds: helper.splitTags(form.sceneTags).map(Number), styleIds: helper.splitTags(form.styleTags).map(Number) }
+    delete payload.category; delete payload.itemStyle; delete payload.colorName; delete payload.sceneTags; delete payload.styleTags
+    payload.dictionaryContext = this._dictionaryContext
+    if (form.id) {
+      payload.dictionaryChanges = {}
+      for (const key of this._dictionaryDirty) payload.dictionaryChanges[key] = selection[key]
+      if (this._dictionaryDirty.has('itemStyleId') && selection.itemStyleId) payload.dictionaryChanges.categoryId = selection.categoryId
+    } else {
+      if (!this._dictionaryContext || !selection.categoryId) { wx.showToast({title:'请先加载并选择可用品类',icon:'none'}); return }
+      payload.dictionarySelection = selection
+    }
     if (form.id
       && familyScope.getCurrentUserRole() === 3
       && String(this.data.originalOwnerUserId) !== String(payload.ownerUserId)) {
@@ -735,6 +817,7 @@ Page({
       }))
       if (!confirmed) return
     }
+    this._saving = true
     let savedItem = null
     try {
       if (form.id) {
@@ -744,6 +827,7 @@ Page({
         await wardrobeApi.addItem(payload)
       }
     } catch (error) {
+      this._saving = false
       wx.showToast({ title: (error && error.message) || '保存失败', icon: 'none' })
       return
     }
@@ -757,11 +841,13 @@ Page({
     }
     wx.showToast({ title: '已保存', icon: 'success' })
     if (!form.id && this.data.continueAdd) {
+      this._saving = false
       const nextFormData = {
         ...defaultForm(),
         ownerUserId: form.ownerUserId,
         category: form.category,
         itemStyle: form.itemStyle,
+        colorId: form.colorId,
         colorName: form.colorName,
         colorHex: form.colorHex,
         seasonTags: form.seasonTags,

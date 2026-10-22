@@ -1,5 +1,6 @@
 const wardrobeApi = require('../../api/wardrobe')
 const helper = require('./wardrobe-helper')
+const dictionaryForm = require('../../utils/wardrobe-form')
 
 function defaultForm() {
   return {
@@ -35,6 +36,7 @@ Page({
   },
 
   onShow() {
+    dictionaryForm.load(this, 'WEAR_RECORD')
     this.setData({
       sceneOptions: helper.enhanceTagOptions(helper.getSceneOptions(), this.data.formData.sceneTags)
     })
@@ -117,7 +119,7 @@ Page({
       wx.showToast({ title: '请选择搭配', icon: 'none' })
       return
     }
-    await wardrobeApi.addWearRecord({
+    const payload = {
       wearDate: form.wearDate,
       outfitId: Number(form.outfitId),
       recordType: Number(form.recordType),
@@ -125,7 +127,9 @@ Page({
       weatherText: form.weatherText || '',
       moodText: form.moodText || '',
       remark: form.remark || ''
-    })
+    }
+    dictionaryForm.prepare(this, payload, false, false)
+    await wardrobeApi.addWearRecord(payload)
     wx.showToast({ title: '已保存', icon: 'success' })
     this.setData({
       formData: defaultForm(),

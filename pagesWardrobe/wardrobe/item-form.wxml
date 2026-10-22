@@ -1,3 +1,5 @@
+<view wx:if="{{dictionaryError}}" class="wardrobe-dictionary-error"><text>{{dictionaryError}}</text><button size="mini" bindtap="loadDictionaryOptions">重试</button></view>
+<view wx:if="{{!dictionaryLoading && !dictionaryError && !categoryOptions.length}}" class="wardrobe-dictionary-error">暂无可用品类，请在衣柜设置中添加或启用后重试。</view>
 <view class="wardrobe-page form-page">
   <view wx:if="{{!formData.id}}" class="form-panel ai-panel">
     <view class="row-between ai-head">
@@ -137,10 +139,12 @@
     </view>
     <view class="section-title form-section-title">场景</view>
     <view class="tag-wrap">
+      <view wx:if="{{savedSceneText}}" class="muted">已保存：{{savedSceneText}} <text wx:if="{{canManage}}" data-group="sceneTags" bindtap="clearSavedTags">清空并重新选择</text></view>
       <view wx:for="{{sceneOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}} {{!canManage ? 'is-disabled' : ''}}" data-group="sceneTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
     </view>
     <view class="section-title form-section-title">风格</view>
     <view class="tag-wrap">
+      <view wx:if="{{savedStyleText}}" class="muted">已保存：{{savedStyleText}} <text wx:if="{{canManage}}" data-group="styleTags" bindtap="clearSavedTags">清空并重新选择</text></view>
       <view wx:for="{{styleOptions}}" wx:key="value" class="chip {{item.active ? 'active' : ''}} {{!canManage ? 'is-disabled' : ''}}" data-group="styleTags" data-value="{{item.value}}" bindtap="toggleTag">{{item.text}}</view>
     </view>
   </view>

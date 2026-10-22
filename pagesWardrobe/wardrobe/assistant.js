@@ -58,7 +58,9 @@ Page({
     const index = Number(event.currentTarget.dataset.index)
     const suggestion = this.data.suggestions[index]
     if (!suggestion || !suggestion.itemIds.length) return
+    const context = await require('../../stores/wardrobe-options').load({businessType:'OUTFIT'})
     await wardrobeApi.addOutfit({
+      dictionaryContext:{contextToken:context.contextToken},dictionarySelection:{sceneIds:[],styleIds:[]},
       outfitName: suggestion.suggestionName,
       itemIds: suggestion.itemIds,
       remark: `${this.data.summary || ''}\n${suggestion.reason || ''}`

@@ -83,7 +83,13 @@
         "wardrobe/assistant",
         "wardrobe/wear-record-form",
         "wardrobe/calendar",
-        "wardrobe/statistics"
+        "wardrobe/statistics",
+        "wardrobe/wardrobe-settings",
+        "wardrobe/wardrobe-category-settings",
+        "wardrobe/wardrobe-item-style-settings",
+        "wardrobe/wardrobe-color-settings",
+        "wardrobe/wardrobe-scene-settings",
+        "wardrobe/wardrobe-style-settings"
       ]
     },
     {

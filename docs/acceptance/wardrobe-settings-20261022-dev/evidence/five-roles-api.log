@@ -1,0 +1,14 @@
+PASS MEMBER 正常登录、真实角色匹配、个人字典可管理
+PASS MEMBER 家庭只读且伪造写入6路径被拒绝
+PASS PARENT 正常登录、真实角色匹配、个人字典可管理
+PASS PARENT 家庭可管理
+PASS OWNER 正常登录、真实角色匹配、个人字典可管理
+PASS OWNER 家庭可管理
+PASS CHILD 正常登录、真实角色匹配、个人字典可管理
+PASS CHILD 家庭只读且伪造写入6路径被拒绝
+PASS NO_FAMILY 正常登录、真实角色匹配、个人字典可管理
+PASS NO_FAMILY 无家庭入口/接口拒绝、候选仅个人
+PASS 成人代录孩子选项、儿童不能获取他人、无家庭不能跨家庭获取
+PASS 个人字典跨用户来源ID越权修改被拒绝
+ALL_FIVE_ROLES_API_PASS
+CLEANUP_ROLE_CREATED_DICTIONARIES 7

@@ -1,0 +1,36 @@
+PASS_NATIVE_LAYOUT wardrobe-category PERSONAL items=0 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT wardrobe-category FAMILY items=11 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_SORT_CANCEL wardrobe-category
+PASS_ACTION_SHEETS wardrobe-category
+PASS_NATIVE_LAYOUT wardrobe-item-style PERSONAL items=0 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT wardrobe-item-style FAMILY items=15 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_SORT_CANCEL wardrobe-item-style
+PASS_ACTION_SHEETS wardrobe-item-style
+PASS_NATIVE_LAYOUT wardrobe-color PERSONAL items=15 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT wardrobe-color FAMILY items=15 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_SORT_CANCEL wardrobe-color
+PASS_ACTION_SHEETS wardrobe-color
+PASS_NATIVE_LAYOUT wardrobe-scene PERSONAL items=9 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT wardrobe-scene FAMILY items=9 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_SORT_CANCEL wardrobe-scene
+PASS_ACTION_SHEETS wardrobe-scene
+PASS_NATIVE_LAYOUT wardrobe-style PERSONAL items=13 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT wardrobe-style FAMILY items=13 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_SORT_CANCEL wardrobe-style
+PASS_ACTION_SHEETS wardrobe-style
+PASS_NATIVE_LAYOUT bookkeeping-category PERSONAL items=9 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT bookkeeping-category FAMILY items=10 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_SORT_CANCEL bookkeeping-category
+PASS_ACTION_SHEETS bookkeeping-category
+PASS_NATIVE_LAYOUT bookkeeping-consume-tag PERSONAL items=10 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT bookkeeping-consume-tag FAMILY items=12 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_SORT_CANCEL bookkeeping-consume-tag
+PASS_ACTION_SHEETS bookkeeping-consume-tag
+PASS_NATIVE_LAYOUT bookkeeping-income-tag PERSONAL items=4 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_NATIVE_LAYOUT bookkeeping-income-tag FAMILY items=1 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_ACTION_SHEETS bookkeeping-income-tag
+PASS_NATIVE_LAYOUT bookkeeping-membership-type PERSONAL items=9 {"listBottom":625,"footerTop":625,"safeBottom":34}
+PASS_ACTION_SHEETS bookkeeping-membership-type
+PASS_READONLY_NO_FOOTER_SAFE_AREA wardrobe-category
+PASS_READONLY_NO_FOOTER_SAFE_AREA bookkeeping-category
+RESTORED_PARENT_SESSION

@@ -1,0 +1,9 @@
+本轮最终前端检查观察汇总（非完整 stdout）
+2026-10-22，批量所属人修复后执行。
+npm run test:wardrobe-dictionary-context: PASS（含新增批量默认本人/无代录权限固定本人）
+npm run test:wardrobe-list-sync: PASS
+npm run test:wardrobe-item-readonly: PASS
+npm run test:bookkeeping-settings: PASS
+npm run check:routes: PASS 79 pages
+node --check: PASS 29 个新增/修改 JS（逐个执行）
+Web type-check/build 原始日志另存，此后未改 Web 代码。

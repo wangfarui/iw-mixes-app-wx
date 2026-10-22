@@ -29,7 +29,8 @@ const menuList = [
       { url: '/static/menus/wardrobe-item.svg', text: '衣物', path: '/pagesWardrobe/wardrobe/item-list' },
       { url: '/static/menus/wardrobe-outfit.svg', text: '搭配', path: '/pagesWardrobe/wardrobe/outfit-list' },
       { url: '/static/menus/wardrobe-record.svg', text: '穿着记录', path: '/pagesWardrobe/wardrobe/index' },
-      { url: '/static/menus/wardrobe-statistics.svg', text: '穿搭统计', path: '/pagesWardrobe/wardrobe/statistics' }
+      { url: '/static/menus/wardrobe-statistics.svg', text: '穿搭统计', path: '/pagesWardrobe/wardrobe/statistics' },
+      { url: '/static/menus/bookkeeping-settings.svg', text: '衣柜设置', path: '/pagesWardrobe/wardrobe/wardrobe-settings' }
     ]
   },
   {

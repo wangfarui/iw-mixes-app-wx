@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-22T05:40:38.566298+00:00",
+  "repos": {
+    "iw-mixes-app-wx": {
+      "head": "a04341d7f1d99654cddf6fdab7dbc7d9942db9a7",
+      "branch": "main"
+    },
+    "iw-mixes-server": {
+      "head": "b36b69b1e2e3b7cd0abb23eeba56d8386450b6ee",
+      "branch": "main"
+    },
+    "iw-mixes-web-platform": {
+      "head": "85f3fd0b1dee532de7b774260fba4a48a83599ef",
+      "branch": "dev"
+    }
+  },
+  "files": [
+    {
+      "path": "iw-mixes-app-wx/api/request.js",
+      "sha256": "2598891bc10fc717481320eebf05ef876fc7fc7e50ad0d60bb91dc03170ff092",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/api/wardrobe.js",
+      "sha256": "878078c756a7e8f7a27b8fc777b6f1cc488fcd02208bebc9da8782030578cc80",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesWardrobe/wardrobe/item-form.js",
+      "sha256": "5f9bb1612d93b6e8a5f34a0303cc7506bfc53c1b539adae21b624c7ecb3eca6e",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesWardrobe/wardrobe/outfit-editor.js",
+      "sha256": "5f09b81ad4a72ae4f5d9712c96121d4dd50fb9dda4c375f5504b5bab0aea3c32",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesWardrobe/wardrobe/wear-record-form.js",
+      "sha256": "eb1ff16f49e745b396de8737ba6cfdec8883c8dd5f0c9b58ba7a8eafcb3ed0b0",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/deploy/nginx/iw-mixes-server.conf",
+      "sha256": "69950ff5ac63ac1521be461d6adc56320f135800c7cfc4cd2c34e7072cc7ecd6",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/deploy/nginx/iw-mixes-server.local.conf",
+      "sha256": "9a4edbd3cd5046686dbbe74ea356729153a860c7041bde0f194a0356f5223efe",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/AuthFamilyGroupServiceImpl.java",
+      "sha256": "f5c8a00503f85368fbf8d57fd39e3a687ec69b554381d3e21d18a60c19a463fa",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-wardrobe/src/main/java/com/itwray/iw/wardrobe/service/impl/WardrobeItemServiceImpl.java",
+      "sha256": "28fe5ec3039ba54e8fe214fb63687a0d6325bc1777df78b6e148dd5a0b06083d",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-wardrobe/src/main/java/com/itwray/iw/wardrobe/service/impl/WardrobeWearRecordServiceImpl.java",
+      "sha256": "a46aa098a5ddaab02cdb2191eeb479191a7ba9319e59f213339b960ee08d9554",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/core/mybatis/UserDataPermissionHandler.java",
+      "sha256": "b9d63d170077b8f01f5f57502a37574d58d63af056f16710fa2913aff34f3579",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/src/views/dict/components/DictManagementTable.vue",
+      "sha256": "4f47dc0335b59c0cb0b5e48aa633cebdcd5ef4f4d853835db90c271eb5d70112",
+      "tracked": true
+    }
+  ]
+}

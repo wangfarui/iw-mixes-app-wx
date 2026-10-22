@@ -54,7 +54,7 @@ function visibleTagNames(options, tags) {
 
 function formatRecordForList(record) {
   const formatted = helper.formatRecord(record)
-  const sceneNames = visibleTagNames(helper.getSceneOptions(), record.sceneTags)
+  const sceneNames = (record.sceneSnapshots || []).map(tag => tag.nameSnapshot).join('、')
   return {
     ...formatted,
     sceneNames,

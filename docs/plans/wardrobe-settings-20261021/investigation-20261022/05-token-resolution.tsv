@@ -1,0 +1,23 @@
+section	kind	dict_type	deleted	token_count	numeric_tokens	numeric_current_unique	numeric_deleted_unique	numeric_unknown	literal_tokens	literal_without_known_alias
+all_tokens	ITEM	5004	0	44	37	37	0	0	7	0
+all_tokens	ITEM	5004	1	9	0	0	0	0	9	0
+all_tokens	ITEM	5005	0	44	37	37	0	0	7	0
+all_tokens	ITEM	5005	1	6	0	0	0	0	6	0
+all_tokens	OUTFIT	5004	0	1	1	1	0	0	0	0
+all_tokens	OUTFIT	5004	1	3	0	0	0	0	3	0
+all_tokens	OUTFIT	5005	0	1	1	1	0	0	0	0
+all_tokens	OUTFIT	5005	1	3	0	0	0	0	3	0
+all_tokens	RECORD	5004	0	4	4	4	0	0	0	0
+all_tokens	RECORD	5004	1	2	0	0	0	0	2	0
+section	kind	deleted	record_count	field_count
+legacy_affected_records	ITEM	0	3	6
+legacy_affected_records	ITEM	1	6	9
+legacy_affected_records	OUTFIT	1	3	6
+legacy_affected_records	RECORD	1	2	2
+section	total	not_deleted
+user_counts	17	15
+section	dict_rows	rows_with_later_change
+dictionary_mutation_evidence	799	1
+section	kind	rows_count	item_deleted	owner_differs
+current_relation_owner_drift	OUTFIT_ITEM	9	0	2
+current_relation_owner_drift	RECORD_ITEM	10	3	1

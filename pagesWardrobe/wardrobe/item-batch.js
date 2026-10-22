@@ -1,5 +1,6 @@
 const wardrobeApi = require('../../api/wardrobe')
 const helper = require('./wardrobe-helper')
+const dictionaryOptions = require('../../stores/wardrobe-options')
 const wardrobeFamily = require('./wardrobe-family')
 
 Page({
@@ -17,10 +18,11 @@ Page({
     sceneOptions: helper.enhanceTagOptions(helper.getSceneOptions(), ''),
     styleOptions: helper.enhanceTagOptions(helper.getStyleOptions(), ''),
     common: {
-      category: 1,
+      category: 0,
+      colorId: 0,
       itemStyle: 0,
-      colorName: '黑色',
-      colorHex: '#1f2329',
+      colorName: '',
+      colorHex: '',
       seasonTags: '',
       sceneTags: '',
       styleTags: '',
@@ -35,38 +37,55 @@ Page({
   },
 
   async onShow() {
-    const categoryOptions = helper.getCategoryOptions()
-    const itemStyleOptions = this.itemStyleOptions(this.data.common.category)
-    const colorOptions = helper.getColorOptions()
-    this.setData({
-      categoryOptions,
-      itemStyleOptions,
-      colorOptions,
-      categoryIndex: helper.optionIndex(categoryOptions, this.data.common.category),
-      itemStyleIndex: helper.optionIndex(itemStyleOptions, this.data.common.itemStyle),
-      colorIndex: helper.optionIndex(colorOptions, this.data.common.colorName),
-      sceneOptions: helper.enhanceTagOptions(helper.getSceneOptions(), this.data.common.sceneTags),
-      styleOptions: helper.enhanceTagOptions(helper.getStyleOptions(), this.data.common.styleTags)
-    })
     await this.loadOwnerOptions()
+    await this.loadDictionaryOptions()
   },
-
+  async loadDictionaryOptions() {
+    const request = this._request = (this._request || 0) + 1
+    const owner = this.data.ownerOptions[this.data.ownerIndex]
+    const ownerId = Number(owner && owner.value || wardrobeFamily.currentUserId())
+    this.setData({ dictionaryLoading: true, dictionaryError: '' })
+    try {
+      const options = await dictionaryOptions.load({ businessType: 'ITEM', ownerUserId: ownerId })
+      if (request !== this._request) return
+      this._dictionaryContext = { contextToken: options.contextToken }
+      const common = { ...this.data.common }
+      const categoryOptions = helper.getCategoryOptions(ownerId)
+      if (!common.category) common.category = categoryOptions[0] ? categoryOptions[0].value : 0
+      const itemStyleOptions = [{value:0,text:'未设置'}].concat(helper.getItemStyleOptions(common.category, ownerId))
+      const colorOptions = [{value:0,text:'未设置',hex:''}].concat(helper.getColorOptions(ownerId))
+      this.setData({ common, categoryOptions, itemStyleOptions, colorOptions, dictionaryLoading:false,
+        categoryIndex:helper.optionIndex(categoryOptions,common.category),itemStyleIndex:helper.optionIndex(itemStyleOptions,common.itemStyle),
+        colorIndex:helper.optionIndex(colorOptions,common.colorId),
+        sceneOptions:helper.enhanceTagOptions(helper.getSceneOptions(ownerId),common.sceneTags),
+        styleOptions:helper.enhanceTagOptions(helper.getStyleOptions(ownerId),common.styleTags) })
+    } catch (error) {
+      if (request === this._request) { this._dictionaryContext = null; this.setData({dictionaryLoading:false,dictionaryError:error.message || '选项加载失败'}) }
+    }
+  },
   async loadOwnerOptions() {
+    const previous = this.data.ownerOptions[this.data.ownerIndex]
     const state = await wardrobeFamily.loadOwnerState()
+    const myself = wardrobeFamily.currentUserId()
+    const ownerOptions = state.canChooseOwner
+      ? state.ownerOptions
+      : state.ownerOptions.filter(item => Number(item.value) === myself)
+    const selectedOwner = state.canChooseOwner && previous ? Number(previous.value) : myself
     this.setData({
-      ownerOptions: state.ownerOptions,
-      ownerIndex: 0,
+      ownerOptions,
+      ownerIndex: Math.max(0, ownerOptions.findIndex(item => Number(item.value) === selectedOwner)),
       canChooseOwner: state.canChooseOwner
     })
     if (state.fallbackToMyself) wx.showToast({ title: '家庭成员加载失败，已使用自己', icon: 'none' })
   },
 
   onOwnerChange(event) {
-    this.setData({ ownerIndex: Number(event.detail.value) })
+    this.setData({ ownerIndex:Number(event.detail.value), common:{...this.data.common,category:0,itemStyle:0,colorId:0,colorName:'',sceneTags:'',styleTags:''} })
+    this.loadDictionaryOptions()
   },
 
   itemStyleOptions(category) {
-    return [{ value: 0, text: '未设置' }].concat(helper.getItemStyleOptions(category))
+    return [{ value: 0, text: '未设置' }].concat(helper.getItemStyleOptions(category, (this.data.ownerOptions[this.data.ownerIndex] || {}).value))
   },
 
   handleTextInput(event) {
@@ -81,6 +100,7 @@ Page({
   onCategoryChange(event) {
     const categoryIndex = Number(event.detail.value)
     const option = this.data.categoryOptions[categoryIndex]
+    if (!option) return
     const itemStyleOptions = this.itemStyleOptions(option.value)
     const currentItemStyleIndex = helper.optionIndex(itemStyleOptions, this.data.common.itemStyle)
     const itemStyleIndex = currentItemStyleIndex > 0 ? currentItemStyleIndex : 0
@@ -88,7 +108,7 @@ Page({
       categoryIndex,
       itemStyleOptions,
       itemStyleIndex,
-      'common.category': option.value,
+      'common.category': itemStyleOptions[itemStyleIndex].parentId || option.value,
       'common.itemStyle': itemStyleOptions[itemStyleIndex].value
     })
   },
@@ -96,7 +116,8 @@ Page({
   onItemStyleChange(event) {
     const itemStyleIndex = Number(event.detail.value)
     const option = this.data.itemStyleOptions[itemStyleIndex]
-    this.setData({ itemStyleIndex, 'common.itemStyle': option.value })
+    if (!option) return
+    this.setData({ itemStyleIndex, 'common.itemStyle': option.value, 'common.category': option.parentId || this.data.common.category })
   },
 
   onColorChange(event) {
@@ -104,7 +125,8 @@ Page({
     const option = this.data.colorOptions[colorIndex]
     this.setData({
       colorIndex,
-      'common.colorName': option.value,
+      'common.colorId': option.value,
+      'common.colorName': option.text,
       'common.colorHex': option.hex
     })
   },
@@ -123,8 +145,8 @@ Page({
     const next = helper.toggleTag(this.data.common[group], value)
     const data = { [`common.${group}`]: next }
     if (group === 'seasonTags') data.seasonOptions = helper.enhanceTagOptions(helper.SEASON_OPTIONS, next)
-    if (group === 'sceneTags') data.sceneOptions = helper.enhanceTagOptions(helper.getSceneOptions(), next)
-    if (group === 'styleTags') data.styleOptions = helper.enhanceTagOptions(helper.getStyleOptions(), next)
+    if (group === 'sceneTags') data.sceneOptions = helper.enhanceTagOptions(helper.getSceneOptions((this.data.ownerOptions[this.data.ownerIndex] || {}).value), next)
+    if (group === 'styleTags') data.styleOptions = helper.enhanceTagOptions(helper.getStyleOptions((this.data.ownerOptions[this.data.ownerIndex] || {}).value), next)
     this.setData(data)
   },
 
@@ -150,6 +172,13 @@ Page({
     if (!itemList.length) {
       wx.showToast({ title: '请输入衣物名称', icon: 'none' })
       return
+    }
+    if (!this._dictionaryContext || !this.data.common.category) { wx.showToast({title:'请先加载并选择可用品类',icon:'none'}); return }
+    for (const item of itemList) {
+      item.dictionaryContext = this._dictionaryContext
+      item.dictionarySelection = { categoryId:item.category,itemStyleId:item.itemStyle || null,colorId:item.colorId || null,
+        sceneIds:helper.splitTags(item.sceneTags).map(Number),styleIds:helper.splitTags(item.styleTags).map(Number) }
+      delete item.category;delete item.itemStyle;delete item.colorId;delete item.colorName;delete item.sceneTags;delete item.styleTags
     }
     this.setData({ submitting: true })
     try {

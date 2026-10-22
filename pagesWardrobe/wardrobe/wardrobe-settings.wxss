@@ -1,0 +1,13 @@
+page { background: #f5f5f5; }
+.settings-home { padding: 24rpx 32rpx calc(32rpx + env(safe-area-inset-bottom)); }
+.group { background: #fff; border-radius: 28rpx; overflow: hidden; }
+.entry { display: flex; align-items: center; gap: 24rpx; padding: 28rpx 24rpx; min-height: 168rpx; box-sizing: border-box; }
+.entry-hover { background: #f2f2f2; }
+.entry + .entry { border-top: 1rpx solid #f0f0f0; }
+.entry-icon { flex: 0 0 auto; width: 84rpx; height: 84rpx; border-radius: 24rpx; background: #e8f6ef; display: flex; align-items: center; justify-content: center; }
+.entry-icon-img { width: 44rpx; height: 44rpx; }
+.entry-text { flex: 1; min-width: 0; }
+.entry-name { font-size: 32rpx; color: #222; line-height: 44rpx; }
+.entry-desc { font-size: 24rpx; color: #888; line-height: 34rpx; margin-top: 6rpx; word-break: break-all; }
+.entry-arrow { flex: 0 0 auto; width: 32rpx; height: 32rpx; }
+.note { margin-top: 28rpx; font-size: 24rpx; color: #999; line-height: 36rpx; padding: 0 8rpx; }

@@ -1,5 +1,7 @@
 const wardrobeApi = require('../../api/wardrobe')
 const helper = require('./wardrobe-helper')
+const history = require('../../utils/wardrobe-filters')
+const dictionaryForm = require('../../utils/wardrobe-form')
 
 const MODE_OUTFIT = 'outfit'
 const MODE_ITEMS = 'items'
@@ -139,6 +141,7 @@ Page({
   },
 
   async onLoad(options = {}) {
+    this._dictionaryDirty = new Set()
     const recordId = Number(options.id || 0)
     if (recordId) {
       this.setData({
@@ -152,9 +155,13 @@ Page({
     }
     this.initOutfits()
     this.initItems()
+    await dictionaryForm.load(this, 'WEAR_RECORD', this.data.recordId)
   },
 
+  retryDictionaryOptions() { return dictionaryForm.load(this, 'WEAR_RECORD', this.data.recordId) },
   onShow() {
+    history.load(this, 'ITEM').then(loaded => { if (loaded) this.refreshItemFilterOptions() }).catch(error => this.setData({filterError:error.message}))
+    if (this._dictionaryDirty) dictionaryForm.load(this, 'WEAR_RECORD', this.data.recordId)
     this.refreshItemFilterOptions()
     this.setData({
       sceneOptions: helper.enhanceTagOptions(helper.getSceneOptions(), this.data.formData.sceneTags)
@@ -166,6 +173,9 @@ Page({
     try {
       const res = await wardrobeApi.getWearRecordDetail(recordId)
       const detail = res.data || {}
+      dictionaryForm.remember(this, detail)
+      detail.sceneTags = dictionaryForm.ids(detail.sceneSnapshots)
+      this._originalRecordType = detail.recordType
       const selectedItemList = (detail.itemList || [])
         .map(formatSelectableItem)
         .filter((item) => item.id)
@@ -201,10 +211,10 @@ Page({
     const subcategoryValue = optionAt(this.data.itemSubcategoryFilterOptions, this.data.itemSubcategoryFilterIndex).value
     const sceneValue = optionAt(this.data.itemSceneFilterOptions, this.data.itemSceneFilterIndex).value
     const styleValue = optionAt(this.data.itemStyleFilterOptions, this.data.itemStyleFilterIndex).value
-    const itemCategoryFilterOptions = withAllOption('全部品类', helper.getCategoryOptions())
-    const itemSubcategoryFilterOptions = withAllOption('全部款式', helper.getItemStyleOptions(categoryValue))
-    const itemSceneFilterOptions = withAllOption('全部场景', helper.getSceneOptions())
-    const itemStyleFilterOptions = withAllOption('全部风格', helper.getStyleOptions())
+    const itemCategoryFilterOptions = withAllOption('全部品类', history.choices(this, 'categories'))
+    const itemSubcategoryFilterOptions = withAllOption('全部款式', history.itemStyles(this, categoryValue))
+    const itemSceneFilterOptions = withAllOption('全部场景', history.choices(this, 'scenes'))
+    const itemStyleFilterOptions = withAllOption('全部风格', history.choices(this, 'styles'))
     this.setData({
       itemCategoryFilterOptions,
       itemCategoryFilterIndex: optionIndex(itemCategoryFilterOptions, categoryValue),
@@ -332,7 +342,7 @@ Page({
     const categoryValue = optionAt(this.data.itemCategoryFilterOptions, itemCategoryFilterIndex).value
     this.setData({
       itemCategoryFilterIndex,
-      itemSubcategoryFilterOptions: withAllOption('全部款式', helper.getItemStyleOptions(categoryValue)),
+      itemSubcategoryFilterOptions: withAllOption('全部款式', history.itemStyles(this, categoryValue)),
       itemSubcategoryFilterIndex: 0
     })
     this.initItems()
@@ -410,6 +420,8 @@ Page({
     const modeIndex = Number(event.currentTarget.dataset.index)
     const option = this.data.modeOptions[modeIndex]
     if (!option || option.value === this.data.mode) return
+    this._detailsDirty = true
+    this._replaceOutfit = true
     this.setData({
       modeIndex,
       mode: option.value,
@@ -422,6 +434,7 @@ Page({
   },
 
   selectOutfit(event) {
+    this._replaceOutfit = true
     const id = Number(event.currentTarget.dataset.id)
     const outfit = this.data.outfitList.find((item) => Number(item.id) === id) || null
     this.setData({
@@ -434,6 +447,7 @@ Page({
     const id = Number(event.currentTarget.dataset.id)
     const itemIds = this.data.formData.itemIds.slice()
     const index = itemIds.indexOf(id)
+    dictionaryForm.toggle(this, id, index >= 0)
     if (index >= 0) {
       itemIds.splice(index, 1)
     } else {
@@ -456,11 +470,19 @@ Page({
 
   toggleScene(event) {
     const value = event.currentTarget.dataset.value
+    this._dictionaryDirty.add('sceneIds')
     const next = helper.toggleTag(this.data.formData.sceneTags, value)
     this.setData({
       'formData.sceneTags': next,
-      sceneOptions: helper.enhanceTagOptions(helper.getSceneOptions(), next)
+      sceneOptions: helper.enhanceTagOptions(this.data.sceneOptions, next)
     })
+  },
+
+  clearSavedTags(event) {
+    const group = event.currentTarget.dataset.group || 'sceneTags'
+    this._dictionaryDirty.add(group === 'sceneTags' ? 'sceneIds' : 'styleIds')
+    this.setData({[`formData.${group}`]:'',[group === 'sceneTags' ? 'savedSceneText' : 'savedStyleText']:'',
+      [group === 'sceneTags' ? 'sceneOptions' : 'styleOptions']:helper.enhanceTagOptions(group === 'sceneTags' ? helper.getSceneOptions() : helper.getStyleOptions(), '')})
   },
 
   handleInput(event) {
@@ -491,6 +513,16 @@ Page({
         return
       }
       payload.itemIds = form.itemIds
+    }
+    try { dictionaryForm.prepare(this, payload, this.data.isEdit, false) } catch (error) { wx.showToast({title:error.message,icon:'none'}); return }
+    if (this.data.isEdit) {
+      delete payload.itemIds
+      payload.recordType = this._originalRecordType
+      if (this.data.mode === MODE_OUTFIT) {
+        if (this._replaceOutfit) payload.replaceOutfit = true
+      } else if (this._detailsDirty) {
+        payload.items = dictionaryForm.details(this, form.itemIds); payload.itemSetVersion = this._itemSetVersion
+      }
     }
     this.setData({ submitting: true })
     try {

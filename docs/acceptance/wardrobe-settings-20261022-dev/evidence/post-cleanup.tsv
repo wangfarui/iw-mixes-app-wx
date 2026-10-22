@@ -1,0 +1,22 @@
+metric	observed
+READY_PHASE	1
+metric	failures
+ACTIVE_CREATED_DICT	0
+metric	failures
+ACTIVE_CREATED_ITEM	0
+metric	failures
+ACTIVE_CREATED_OUTFIT	0
+metric	failures
+ORIGINAL_ITEM_MEMBERSHIP	0
+metric	failures
+ORIGINAL_ITEM_FIELDS	0
+metric	failures
+ORIGINAL_DICT_FIELDS	0
+business_type	original_rows
+DICT	1855
+ITEM	23
+OUTFIT	7
+OUTFIT_ITEM	28
+WEAR_RECORD	7
+WEAR_RECORD_ITEM	18
+

@@ -1,0 +1,7 @@
+PASS_NATIVE_BATCH 两件实际入库，个人优先品类下家庭独有款式保存真实家庭父子来源
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+undefined !== ''
+
+    at /private/tmp/iw-wardrobe-native-batch.js:9:130
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)

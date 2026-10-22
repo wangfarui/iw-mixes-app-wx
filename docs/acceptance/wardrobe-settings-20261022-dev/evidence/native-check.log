@@ -1,0 +1,19 @@
+NATIVE_PERSONAL_PAGE_PASS category 2
+NATIVE_FAMILY_PAGE_PASS category 12
+NATIVE_PERSONAL_PAGE_PASS item-style 1
+NATIVE_FAMILY_PAGE_PASS item-style 15
+NATIVE_PERSONAL_PAGE_PASS color 18
+NATIVE_FAMILY_PAGE_PASS color 15
+NATIVE_PERSONAL_PAGE_PASS scene 10
+NATIVE_FAMILY_PAGE_PASS scene 9
+NATIVE_PERSONAL_PAGE_PASS style 14
+NATIVE_FAMILY_PAGE_PASS style 13
+NATIVE_ITEM_EDIT_PASS 13
+NATIVE_OUTFIT_EDIT_PASS 1
+NATIVE_RECORD_PAGE  9 0
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(rd.selectedItemList.length)
+
+    at /private/tmp/iw-wardrobe-native-check.js:12:261
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)

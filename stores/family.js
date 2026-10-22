@@ -16,7 +16,7 @@ function syncSession() {
     wx.removeStorageSync(MY_GROUP_KEY)
   }
 }
-function invalidateOptions() { require('./bookkeeping-options').invalidate() }
+function invalidateOptions() { require('./bookkeeping-options').invalidate(); require('./wardrobe-options').invalidate() }
 
 function getMyGroupState() {
   syncSession()
@@ -74,7 +74,8 @@ function fetchMyGroup() {
       if (key !== currentSessionKey() || requestId !== requestGeneration) return null
       const previousGroup = myGroup && (myGroup.id || myGroup.familyGroupId)
       const nextGroup = res.data && (res.data.id || res.data.familyGroupId)
-      if (String(previousGroup || '') !== String(nextGroup || '')) invalidateOptions()
+      if (String(previousGroup || '') !== String(nextGroup || '')
+        || JSON.stringify([myGroup && myGroup.currentUserRole,myGroup && myGroup.defaultShared,myGroup && myGroup.queryOnlyMyself]) !== JSON.stringify([res.data && res.data.currentUserRole,res.data && res.data.defaultShared,res.data && res.data.queryOnlyMyself])) invalidateOptions()
       myGroup = res.data || null
       if (myGroup) wx.setStorageSync(MY_GROUP_KEY, myGroup)
       else wx.removeStorageSync(MY_GROUP_KEY)

@@ -1,7 +1,21 @@
-const http = require('./request')
+const request = require('./request')
+const http = {
+  get: (url, params) => request.request(request.appendQuery(`/auth-service${url}`, params), 'GET', {}, { header: { 'X-IW-Wardrobe-Contract': '2' } }),
+  post: (url, data) => request.request(`/auth-service${url}`, 'POST', data || {}, { header: { 'X-IW-Wardrobe-Contract': '2' } }),
+  put: (url, data) => request.request(`/auth-service${url}`, 'PUT', data || {}, { header: { 'X-IW-Wardrobe-Contract': '2' } }),
+  delete: (url, params) => request.request(request.appendQuery(`/auth-service${url}`, params), 'DELETE', {}, { header: { 'X-IW-Wardrobe-Contract': '2' } })
+}
 
+function snapshotFilters(data) {
+  const result = { ...data }
+  for (const [field, target] of Object.entries({category:'categoryFilterKey',itemStyle:'itemStyleFilterKey',colorName:'colorFilterKey',scene:'sceneFilterKey',style:'styleFilterKey'})) {
+    const value = result[field]
+    if (typeof value === 'string' && /^[A-Za-z0-9_-]{16,}$/.test(value)) { result[target] = value; delete result[field] }
+  }
+  return result
+}
 function getItemPage(data) {
-  return http.post('/wardrobe/item/page', data)
+  return http.post('/wardrobe/item/page', snapshotFilters(data))
 }
 
 function getItemDetail(id) {
@@ -33,7 +47,7 @@ function getItemTags() {
 }
 
 function getOutfitPage(data) {
-  return http.post('/wardrobe/outfit/page', data)
+  return http.post('/wardrobe/outfit/page', snapshotFilters(data))
 }
 
 function getOutfitDetail(id) {
@@ -125,6 +139,8 @@ function getStatisticsOverview() {
 }
 
 module.exports = {
+  getOptions: (params) => http.get('/wardrobe/options', params),
+  getFilters: (params) => http.get('/wardrobe/filters', params),
   getItemPage,
   getItemDetail,
   addItem,
