@@ -20,6 +20,26 @@ const sortWayOptions = [
   { value: 1, text: '升序' }
 ]
 
+function decodeCategoryName(value) {
+  try {
+    // Decode only at the route boundary; a literal "%26" must remain "%26".
+    return decodeURIComponent(value)
+  } catch (error) {
+    return value
+  }
+}
+
+function buildRecordTypeButtons(categories, selectedName) {
+  const buttons = [{ name: '', dictName: '全部' }].concat(
+    (categories || []).map((item) => ({ ...item, dictName: item.name }))
+  )
+  // A comparison-only category may have no records in the selected period.
+  if (selectedName && !buttons.some((item) => item.name === selectedName)) {
+    buttons.push({ name: selectedName, dictName: selectedName })
+  }
+  return buttons
+}
+
 function createDto() {
   return {
     currentPage: 1,
@@ -116,8 +136,9 @@ Page({
     if (['UNCATEGORIZED', 'PENDING'].includes(options.categoryState)) {
       update.selectedCategoryState = options.categoryState
     } else if (options.categoryName) {
-      update.selectedCategoryName = options.categoryName
+      update.selectedCategoryName = decodeCategoryName(options.categoryName)
     }
+    update.recordTypeButtons = buildRecordTypeButtons([], update.selectedCategoryName)
 
     if (options.ignoreNotStatistics !== undefined) {
       update.ignoreNotStatistics = options.ignoreNotStatistics === 'true'
@@ -143,9 +164,15 @@ Page({
       const data = res.data || {}
       const tags = Number(this.data.dto.recordCategory) === 1 ? data.expenseTags || [] : Number(this.data.dto.recordCategory) === 2 ? data.incomeTags || [] : (data.expenseTags || []).concat(data.incomeTags || [])
       this._historicalTags = Array.from(new Set(tags.map((item) => item.name)))
-      this.setData({ recordTypeButtons: [{ name: '', dictName: '全部' }].concat((data.categories || []).map((item) => ({ ...item, dictName: item.name }))) })
+      this.setData({ recordTypeButtons: buildRecordTypeButtons(data.categories, this.data.selectedCategoryName) })
       this.renderFilterTags()
-    } catch (error) { if (requestId === this._filterRequest) { this._historicalTags = []; this.setData({ recordTypeButtons: [] }); this.renderFilterTags() } }
+    } catch (error) {
+      if (requestId === this._filterRequest) {
+        this._historicalTags = []
+        this.setData({ recordTypeButtons: buildRecordTypeButtons([], this.data.selectedCategoryName) })
+        this.renderFilterTags()
+      }
+    }
   },
 
   renderFilterTags() {
