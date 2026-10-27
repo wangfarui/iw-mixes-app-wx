@@ -1,5 +1,6 @@
 const { refreshDictCache, startVersionPolling } = require('./api/login')
 const familyStore = require('./stores/family')
+const kitchenOptionsStore = require('./stores/kitchen-options')
 const sessionStore = require('./stores/session')
 const env = require('./config/env')
 const { redirectToLogin } = require('./utils/auth')
@@ -38,9 +39,11 @@ App({
     if (token && userInfo) {
       startVersionPolling()
       familyStore.fetchMyGroup()
+      kitchenOptionsStore.invalidate()
       refreshDictCache(true)
     } else {
       familyStore.clearGroup()
+      kitchenOptionsStore.invalidate()
       redirectToLogin()
     }
   }

@@ -1,4 +1,15 @@
 const http = require('./request')
+const kitchenHeader = { 'X-IW-Kitchen-Contract': '1' }
+
+function fridgeRequest(path, method, data) {
+  const query = method === 'GET' || method === 'DELETE'
+  return http.request(
+    query ? http.appendQuery(`/eat-service/fridge/food${path}`, data) : `/eat-service/fridge/food${path}`,
+    method,
+    query ? {} : data,
+    { header: kitchenHeader }
+  )
+}
 
 function getDishesPage(data) {
   return http.post('/eat-service/eat/dishes/page', data)
@@ -41,27 +52,35 @@ function deleteMeal(id) {
 }
 
 function getFridgeFoodPage(data) {
-  return http.post('/eat-service/fridge/food/page', data)
+  return fridgeRequest('/page', 'POST', data)
 }
 
 function getFridgeFoodDetail(id) {
-  return http.get('/eat-service/fridge/food/detail', { id })
+  return fridgeRequest('/detail', 'GET', { id })
 }
 
 function addFridgeFood(data) {
-  return http.post('/eat-service/fridge/food/add', data)
+  return fridgeRequest('/add', 'POST', data)
 }
 
 function updateFridgeFood(data) {
-  return http.put('/eat-service/fridge/food/update', data)
+  return fridgeRequest('/update', 'PUT', data)
 }
 
 function markFridgeFoodAsUsed(id) {
-  return http.put(`/eat-service/fridge/food/markAsUsed?id=${id}`)
+  return http.request(`/eat-service/fridge/food/markAsUsed?id=${encodeURIComponent(id)}`, 'PUT', {}, { header: kitchenHeader })
 }
 
 function deleteFridgeFood(id) {
-  return http.delete('/eat-service/fridge/food/delete', { id })
+  return fridgeRequest('/delete', 'DELETE', { id })
+}
+
+function getFridgeFoodOptions(params) {
+  return fridgeRequest('/options', 'GET', params)
+}
+
+function getFridgeFoodFilters(params) {
+  return fridgeRequest('/filters', 'GET', params)
 }
 
 module.exports = {
@@ -80,5 +99,7 @@ module.exports = {
   addFridgeFood,
   updateFridgeFood,
   markFridgeFoodAsUsed,
-  deleteFridgeFood
+  deleteFridgeFood,
+  getFridgeFoodOptions,
+  getFridgeFoodFilters
 }

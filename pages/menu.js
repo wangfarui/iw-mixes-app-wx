@@ -8,7 +8,8 @@ const menuList = [
       { url: '/static/menus/eat-recipe.svg', text: '食谱', path: '/pagesEat/eat/recipe/index' },
       { url: '/static/menus/eat-dishes.svg', text: '点餐', path: '/pagesEat/eat/dishes/index' },
       { url: '/static/menus/eat-meal.svg', text: '用餐记录', path: '/pagesEat/eat/meal/index' },
-      { url: '/static/menus/eat-fridge.svg', text: '冰箱', path: '/pagesEat/eat/fridge/index' }
+      { url: '/static/menus/eat-fridge.svg', text: '冰箱', path: '/pagesEat/eat/fridge/index' },
+      { url: '/static/menus/kitchen-settings.svg', text: '厨房设置', path: '/pagesEat/eat/kitchen-settings' }
     ]
   },
   {

@@ -1,5 +1,6 @@
 const DICT_TYPE_KEY = 'dictTypeArray'
 const DICT_DATA_KEY = 'dictArrayMap'
+const EXCLUDED_USER_DICT_TYPES = ['3010', '3011']
 
 const dictTypeEnum = Object.freeze({
   BASE_DICT_TYPE: 'dictType',
@@ -41,7 +42,8 @@ function getDictTypeName(code) {
 }
 
 function setDictDataArrayMap(data) {
-  dictArrayMap = data || {}
+  dictArrayMap = { ...(data || {}) }
+  EXCLUDED_USER_DICT_TYPES.forEach((type) => { delete dictArrayMap[type] })
   wx.setStorageSync(DICT_DATA_KEY, dictArrayMap)
 }
 

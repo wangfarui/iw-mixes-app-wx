@@ -1,5 +1,5 @@
 const eatApi = require('../../../api/eat')
-const dictStore = require('../../../stores/dict')
+const kitchenOptions = require('../../../stores/kitchen-options')
 const utils = require('../../../utils/bookkeeping')
 const helper = require('../eat-helper')
 
@@ -66,17 +66,24 @@ Page({
   },
 
   refreshOptions() {
-    this.setData({
-      sectionOptions: helper.optionList(dictStore.dictTypeEnum.EAT_FRIDGE_SECTION, '全部分区'),
-      categoryOptions: helper.optionList(dictStore.dictTypeEnum.EAT_FRIDGE_CATEGORY, '全部分类')
+    kitchenOptions.loadFilters().then((data) => {
+      this.setData({
+        sectionOptions: helper.snapshotOptionList(data.sections, '全部分区'),
+        categoryOptions: helper.snapshotOptionList(data.categories, '全部分类')
+      })
+    }).catch(() => {
+      this.setData({
+        sectionOptions: helper.snapshotOptionList([], '全部分区'),
+        categoryOptions: helper.snapshotOptionList([], '全部分类')
+      })
     })
   },
 
   buildParams() {
     const params = {
       name: this.data.filters.name,
-      section: this.data.filters.section || null,
-      category: this.data.filters.category || null,
+      sectionNameSnapshot: this.data.filters.section || null,
+      categoryNameSnapshot: this.data.filters.category || null,
       sortType: this.data.sortOptions[this.data.sortIndex].value,
       sortWay: this.data.sortWay,
       currentPage: this.data.currentPage,

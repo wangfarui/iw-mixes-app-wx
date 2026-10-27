@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-23T02:32:42.838055+00:00",
+  "repos": {
+    "iw-mixes-app-wx": {
+      "head": "d0b91d6e6a4c06bacd3279cdb6fb179cafdb87e3",
+      "branch": "main"
+    },
+    "iw-mixes-server": {
+      "head": "342c207662fe5806645c749f1d5b3505596dd577",
+      "branch": "main"
+    },
+    "iw-mixes-web-platform": {
+      "head": "4eb3e992e7aea39e431c7b678524ad5b5a18be5d",
+      "branch": "dev"
+    }
+  },
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "22864d75d1f92977fcfcb45477dff620070ee3043c1699ebe983e08ef39d9269",
+      "tracked": null
+    },
+    {
+      "path": "iw-mixes-app-wx/AGENTS.md",
+      "sha256": "edc385cea5c3e7d00ca330aa330d12ea210029156a78bf712c6201e61a380a75",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/api/eat.js",
+      "sha256": "63e676685ad34288eeb47b12fd8cb88f8032ec770f93249ea3c9b5dd44aba73f",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/app.json",
+      "sha256": "2509767a02cddcd41c3f88727b67ac9f21afb6fd52ab0484eadb88a5aa339ed3",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/BASELINE.json",
+      "sha256": "6f4466fd08bc0621d9038767ac5778ae87dc96bc9b1dd09f16328f1a4890000f",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/IMPLEMENTATION.md",
+      "sha256": "88c4bc293f3acc6c443c33a7a580d4966c2fa1063775b5570ccf4409fd22e336",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/PROMPT.md",
+      "sha256": "13888b5fe9edb3a72825621549429e5e9d595406bfd43470f677df76d9dbdd66",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/README.md",
+      "sha256": "811ab94e2ef94236484d2d9e1c4e19a936aae59396358b05bfbc02958c770175",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/assets/editor.png",
+      "sha256": "5f8d0aa78fa143c26a078c1b898f8ded686866e13297f838590b09e304d10cdc",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/assets/family-management.png",
+      "sha256": "d3a8ff39b1003f2dc7a21b000edab85d9aa1bae9801e8f94f1125c5fbe4ead37",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/assets/family-readonly.png",
+      "sha256": "dd16fa6f166af766262db9944b223689a00d48e34be543958818c28989923837",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/assets/home.png",
+      "sha256": "fd7554baaaa8ee729259ded1cbf2d8a5c406f9a67721f07898fdbb2baf17fc10",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/docs/plans/kitchen-settings-20261023/prototype.html",
+      "sha256": "2828d9f10c6b9dd9544c0d680713c44b57e4f8bee8cbff6b3d9cb10a1dd5b382",
+      "tracked": false
+    },
+    {
+      "path": "iw-mixes-app-wx/pages/menu.js",
+      "sha256": "e2e2e4bbb04a60c1045e7a3d979ab1235197724d6c6bdab391aa5432ecd71b7a",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesEat/eat/eat-helper.js",
+      "sha256": "14af3519e99da69f4b166faeae6f1f871659c9407d4f9801c27d3d64862a294a",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesEat/eat/fridge/detail.js",
+      "sha256": "472e16b1f57941f1b3de4038eaf19ddc63664062fcf20f00f0db6016c734bd6e",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesEat/eat/fridge/index.js",
+      "sha256": "1822fb7ef874d20040432a0be5eb0e8b1644354135c4f358a775603a39759d91",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesWardrobe/wardrobe/dictionary-management.wxml",
+      "sha256": "815f1bb819b3028fd25856d834e9d776053c754be7dd8d8b6dedb17e23b3b472",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesWardrobe/wardrobe/dictionary-management.wxss",
+      "sha256": "59732be11f9e02f02d93f57287f44c02bc4db257f7dd6b272f123c0f594b9616",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/AGENTS.md",
+      "sha256": "90cff9a99988347de3f01e7d85c9814bb199ba7393095ebae492866ea82af62f",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/deploy/nginx/iw-mixes-server.conf",
+      "sha256": "b2146b41f7efadcf0d865b22eee3d6a50b1228b4717248d5f168902a251b5273",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/docs/acceptance/bookkeeping-dictionary-v2/evidence/maven-settings.xml",
+      "sha256": "a904dea81a826e08ed0412469cd667284f8a59891ac41d918bad887e86007f33",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/controller/WardrobeDictionaryController.java",
+      "sha256": "47343cd748e130221de44644e21e1008a60ff25158aa479408b9efe268f575ae",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/AuthFamilyGroupServiceImpl.java",
+      "sha256": "7709cc924fd124984faf4e64f41255e31de19ab8c9b4a31f1ccaa782c8cf71d8",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/BaseDictServiceImpl.java",
+      "sha256": "4412b64c16abd7ec3731ac1b8db57cefa672239a76af679a6a0668b4d3630b0d",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-eat/src/main/java/com/itwray/iw/eat/model/dto/EatFridgeFoodAddDto.java",
+      "sha256": "ff4261344b00260addbc883dbb31bdaeb83eefbceb4120633eadff64c8cea3f7",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-eat/src/main/java/com/itwray/iw/eat/model/dto/EatFridgeFoodPageDto.java",
+      "sha256": "ce97542019d5c799ef97d4adc167d38f73345092ab7218ee345f83940299c38e",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-eat/src/main/java/com/itwray/iw/eat/model/dto/EatFridgeFoodUpdateDto.java",
+      "sha256": "1bffe91765b0dd8e536a3a1a974d39f09b2a901db4db70ac74d0af49ba2cc833",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-eat/src/main/java/com/itwray/iw/eat/model/entity/EatFridgeFoodEntity.java",
+      "sha256": "e3bb99724c300f0572c9c76b4d3f62af3838d975d8e054d41048cb1362cfa5cb",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-eat/src/main/java/com/itwray/iw/eat/service/impl/EatFridgeFoodServiceImpl.java",
+      "sha256": "55f41f1fd89829f59587b039fe4471ac341a38928c573a176e82ca2c5bbd2e69",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/bookkeeping/DictionaryNames.java",
+      "sha256": "dd6ce845035e6f39126c56665681be32d8fc2692a6e36b5a0a6d6f4d0928a1c5",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/model/entity/BaseDictEntity.java",
+      "sha256": "0b2c81a0baa85eb5d52c0c9a3309fdd1ee20cdd25f8dc1dd0abac53d4e8356d7",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/model/enums/DictTypeEnum.java",
+      "sha256": "891ba5dd9aef211df1db878c2590cf7eae0a040a3e17aaa96a9201a55ae2ba67",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/wardrobe/WardrobeDictionaryAccess.java",
+      "sha256": "e7be5df392efa18a1fcc86c5cfa342fc507e739787e6dd412d926624ae06ce0d",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/scripts/local-backend.sh",
+      "sha256": "da5b5ab38f4975618df6a716e92f11fcdc008c757bfdb200e1b5563a2286f8fa",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/AGENTS.md",
+      "sha256": "b7611beddd999c4c3e46389a1f0bd0ba80b1d9bd0f063a813a2b935b387324e5",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/src/views/dict/components/DictForm.vue",
+      "sha256": "3af951b9f2f246cebcc4ff0198f57851b3dc41b1e853d236f88f247eceb2782b",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/src/views/dict/components/DictManagementTable.vue",
+      "sha256": "310f7f82f4cb08b9dd36804e8bba2e8d65dd0b2e602cee7ce6e80025e8283a56",
+      "tracked": true
+    }
+  ]
+}

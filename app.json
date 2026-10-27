@@ -69,7 +69,10 @@
         "eat/meal/index",
         "eat/meal/meal-detail",
         "eat/fridge/index",
-        "eat/fridge/detail"
+        "eat/fridge/detail",
+        "eat/kitchen-settings",
+        "eat/fridge-category-settings",
+        "eat/fridge-section-settings"
       ]
     },
     {

@@ -17,6 +17,7 @@
         <view>{{sectionName || '请选择分区'}}</view>
       </picker>
     </view>
+    <view class="form-tip" wx:if="{{optionsError}}">厨房选项加载失败，可先保存其他信息；如需修改分类或分区，请稍后重试。</view>
     <view class="form-line">
       <view class="form-label">数量</view>
       <input class="form-input" value="{{formData.quantity}}" placeholder="例：500g / 3个 / 1盒" data-field="quantity" bindinput="handleInput" />

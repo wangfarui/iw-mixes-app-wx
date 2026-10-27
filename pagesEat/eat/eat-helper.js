@@ -14,6 +14,14 @@ function optionList(type, includeAllText) {
   return includeAllText ? [{ value: '', text: includeAllText }].concat(rows) : rows
 }
 
+function snapshotOptionList(rows, includeAllText) {
+  const options = (rows || []).map((item) => {
+    const name = typeof item === 'string' ? item : (item.name || item.text || item.value || item.categoryNameSnapshot || item.sectionNameSnapshot || '')
+    return name ? { value: name, text: name } : null
+  }).filter(Boolean)
+  return includeAllText ? [{ value: '', text: includeAllText }].concat(options) : options
+}
+
 function formatDish(item) {
   return {
     ...item,
@@ -38,8 +46,8 @@ function formatFood(item) {
   return {
     ...item,
     emoji: item.emoji || '🍎',
-    categoryName: dictName(dictStore.dictTypeEnum.EAT_FRIDGE_CATEGORY, item.category, '未分类'),
-    sectionName: dictName(dictStore.dictTypeEnum.EAT_FRIDGE_SECTION, item.section, '未分区'),
+    categoryName: item.categoryNameSnapshot || item.categoryName || '未分类',
+    sectionName: item.sectionNameSnapshot || item.sectionName || '未分区',
     isExpired: diffDays != null && diffDays < 0,
     isExpiring: diffDays != null && diffDays >= 0 && diffDays <= 3,
     expireText: expireDate || '-'
@@ -107,6 +115,7 @@ module.exports = {
   CART_KEY: eatCartStore.CART_KEY,
   dictName,
   optionList,
+  snapshotOptionList,
   formatDish,
   formatMeal,
   formatFood,

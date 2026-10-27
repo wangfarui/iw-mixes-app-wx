@@ -1,1 +1,8 @@
 @import "../eat-common.wxss";
+
+.form-tip {
+  color: #ad6800;
+  font-size: 24rpx;
+  line-height: 36rpx;
+  padding: 8rpx 0 0 150rpx;
+}
