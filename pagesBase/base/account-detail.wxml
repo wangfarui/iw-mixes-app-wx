@@ -1,35 +1,22 @@
-<view class="base-page">
-  <view class="form-card">
-    <view class="form-row">
-      <view class="form-label">应用名称</view>
-      <input class="form-input" value="{{formData.name}}" placeholder="请输入应用名称" data-field="name" bindinput="handleInput" />
+<view class="account-page">
+  <view class="empty" wx:if="{{loading}}">加载中…</view><view class="retry" wx:elif="{{error}}" bindtap="load">{{error}}</view>
+  <block wx:else>
+    <view class="section-head">应用信息</view><view class="group">
+      <view class="form-row"><view class="label">应用名称</view><input value="{{formData.name}}" placeholder="例如：GitHub" data-field="name" bindinput="handleInput" maxlength="32" disabled="{{busy}}"/></view>
+      <view class="form-row" bindtap="openTypes"><view class="label">应用分类</view><view class="type-value">{{typeName}}</view><view class="arrow">›</view></view>
+      <view class="form-row"><view class="label">应用地址</view><input value="{{formData.address}}" placeholder="网站或应用地址" data-field="address" bindinput="handleInput" maxlength="255" disabled="{{busy}}"/></view>
     </view>
-    <view class="form-row">
-      <view class="form-label">应用地址</view>
-      <input class="form-input" value="{{formData.address}}" placeholder="请输入应用地址" data-field="address" bindinput="handleInput" />
+    <view class="section-head">登录信息</view><view class="group">
+      <view class="form-row"><view class="label">账号</view><input value="{{formData.account}}" placeholder="用户名、邮箱或手机号" data-field="account" bindinput="handleInput" maxlength="64" disabled="{{busy}}"/></view>
+      <view class="form-row"><view class="label">密码</view><input value="{{formData.password}}" password="{{!passwordVisible}}" placeholder="{{isEdit ? '不修改则留空' : '请输入密码'}}" data-field="password" bindinput="handleInput" maxlength="64" disabled="{{busy}}"/><view class="eye" bindtap="togglePassword"><image src="/static/account/eye.svg"/></view></view>
     </view>
-    <view class="form-row">
-      <view class="form-label">账号</view>
-      <input class="form-input" value="{{formData.account}}" placeholder="请输入账号" data-field="account" bindinput="handleInput" />
-    </view>
-    <view class="form-row">
-      <view class="form-label">应用分类</view>
-      <picker class="form-control" mode="selector" range="{{typeOptions}}" range-key="text" value="{{typeIndex}}" bindchange="onTypeChange">
-        <view>{{typeName || '请选择应用分类'}}</view>
-      </picker>
-    </view>
-    <view class="form-row">
-      <view class="form-label">密码</view>
-      <input class="form-input" password value="{{formData.password}}" placeholder="{{isEdit ? '不修改则留空' : '请输入密码'}}" data-field="password" bindinput="handleInput" />
-    </view>
-    <view class="form-row">
-      <view class="form-label">备注</view>
-      <textarea class="form-textarea" value="{{formData.remark}}" placeholder="请输入备注" data-field="remark" bindinput="handleInput" auto-height />
-    </view>
-  </view>
-
-  <view class="footer-actions">
-    <button wx:if="{{isEdit}}" class="danger-btn" bindtap="handleDelete">删除</button>
-    <button class="primary-btn" bindtap="handleSave">保存</button>
-  </view>
+    <view class="section-head">备注</view><view class="group remark-wrap"><textarea value="{{formData.remark}}" placeholder="补充说明（选填）" data-field="remark" bindinput="handleInput" maxlength="255" disabled="{{busy}}" auto-height cursor-spacing="120"/><view class="count">{{remarkCount}} / 255</view></view>
+    <view class="sheet-note">应用名称、应用地址、账号至少填写一项</view>
+    <view class="delete-entry" wx:if="{{isEdit}}" bindtap="handleDelete">删除账号</view>
+  </block>
 </view>
+<view class="footer" wx:if="{{!error}}"><button class="primary" disabled="{{busy || loading}}" loading="{{busy}}" bindtap="handleSave">保存账号</button></view>
+<view class="mask" wx:if="{{sheet}}"><view class="sheet" style="margin-bottom: {{keyboardHeight}}px; max-height: calc(100vh - {{keyboardHeight}}px - 64rpx);" catchtap="noop"><view class="sheet-handle"></view><view class="sheet-title">{{sheet === 'types' ? '选择应用分类' : '新增分类'}}<view class="close" bindtap="closeSheet">×</view></view>
+  <block wx:if="{{sheet === 'types'}}"><view class="muted">仅展示可用分类和当前分类</view><view class="muted" wx:if="{{categoryLoading}}">加载中…</view><view class="retry" wx:elif="{{categoryError}}" bindtap="loadOptions">{{categoryError}}</view><scroll-view wx:else class="sheet-scroll" scroll-y><view class="sheet-row" data-code="" bindtap="chooseType"><text>未分类</text><text wx:if="{{formData.type == null}}" class="check">✓</text></view><view class="sheet-row" wx:for="{{typeOptions}}" wx:key="id" data-code="{{item.code}}" bindtap="chooseType"><text>{{item.name}}{{item.enabled ? '' : ' · 已停用（当前分类）'}}</text><text class="check" wx:if="{{formData.type == item.code}}">✓</text></view></scroll-view><view wx:if="{{!categoryLoading && !categoryError}}" class="quick-add" bindtap="openQuickAdd">＋ 快速新增分类<text>›</text></view><view class="sheet-note">新增后自动选用，已填写内容会保留</view></block>
+  <block wx:else><view class="sheet-label">分类名称</view><input class="sheet-input" value="{{draftName}}" bindinput="inputName" maxlength="-1" disabled="{{busy}}" adjust-position="{{false}}" bindkeyboardheightchange="keyboardChange" placeholder="例如：工作、生活、开发"/><view class="sheet-note">{{nameCount}} / 32</view><view class="error">{{nameError}}</view><view class="sheet-buttons"><view class="secondary" bindtap="closeSheet">取消</view><button class="primary" disabled="{{busy}}" loading="{{busy}}" bindtap="saveCategory">新增并选用</button></view></block>
+</view></view>

@@ -1,0 +1,16 @@
+@import "./account-common.wxss";
+.category-row { display:flex; gap:24rpx; align-items:center; padding:24rpx 28rpx; min-height:132rpx; box-sizing:border-box; }
+.category-row + .category-row,.sort-row + .sort-row { border-top:1rpx solid #eff2f0; }
+.category-main { flex:1; min-width:0; font-size:30rpx; line-height:44rpx; word-break:break-all; }
+.category-main .muted { margin-top:4rpx; }
+.more { width:72rpx; min-height:88rpx; display:flex; align-items:center; justify-content:center; font-size:36rpx; color:#7c8780; flex-shrink:0; }
+.fold { background:#fff; border-radius:20rpx; padding:28rpx; margin-top:28rpx; font-size:26rpx; color:#8b958e; }
+.disabled-list { margin-top:20rpx; color:#919a94; }
+.disabled-badge { color:#99a19c; font-size:20rpx; margin-left:12rpx; white-space:nowrap; }
+.sort-actions { display:flex; gap:28rpx; align-items:center; }
+.sort-row { display:flex; align-items:center; gap:16rpx; padding:20rpx 24rpx 20rpx 12rpx; min-height:112rpx; box-sizing:border-box; }
+.drag-handle { width:64rpx; height:88rpx; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7rpx; }
+.drag-handle view { height:3rpx; width:24rpx; background:#9ca59f; }
+.sort-name { flex:1; font-size:28rpx; min-width:0; word-break:break-all; }
+.move { font-size:24rpx; color:#087e50; padding:16rpx 8rpx; flex-shrink:0; }
+.dragging { background:#e6f3eb; }

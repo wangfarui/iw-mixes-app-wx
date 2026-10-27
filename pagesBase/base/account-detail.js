@@ -1,124 +1,116 @@
-const baseApi = require('../../api/base')
-const dictStore = require('../../stores/dict')
-
-function defaultForm() {
-  return {
-    id: '',
-    name: '',
-    address: '',
-    account: '',
-    type: '',
-    remark: '',
-    password: ''
-  }
-}
-
-function buildTypeOptions() {
-  return dictStore.getDictDataArray(dictStore.dictTypeEnum.AUTH_APPLICATION_ACCOUNT_TYPE)
-    .map((item) => ({
-      value: item.dictCode,
-      text: item.dictName
-    }))
-}
-
+const api = require('../../api/base')
+const categories = require('../../api/account-categories')
+const session = require('../../stores/session')
+const emptyForm = () => ({ id: '', name: '', address: '', account: '', type: null, remark: '', password: '' })
 Page({
-  data: {
-    isEdit: false,
-    formData: defaultForm(),
-    typeOptions: [],
-    typeIndex: 0,
-    typeName: ''
-  },
-
+  data: { isEdit: false, formData: emptyForm(), loading: true, error: '', busy: false, typeOptions: [], typeName: '未分类',
+    sheet: '', passwordVisible: false, categoryLoading: false, categoryError: '', scopeVersion: '', draftName: '', nameError: '', nameCount: 0, remarkCount: 0, keyboardHeight: 0 },
   onLoad(options = {}) {
-    this.refreshOptions()
-    if (options.id) {
-      this.setData({ isEdit: true })
-      this.getDetail(options.id)
-    }
+    this._token = session.getToken(); this._alive = true
+    this._id = options.id
+    this.setData({ isEdit: Boolean(options.id) }); wx.setNavigationBarTitle({ title: options.id ? '编辑账号' : '新增账号' })
+    this.load()
   },
-
-  refreshOptions() {
-    this.setData({ typeOptions: buildTypeOptions() })
+  onShow() { if (this._token && this._token !== session.getToken()) { this._alive = false; this.setData({ formData: emptyForm(), sheet: '', error: '会话已变化，请重新进入页面' }) } },
+  onHide() { this.setData({ passwordVisible: false }) },
+  onUnload() { this._alive = false; this.setData({ 'formData.password': '', passwordVisible: false }) },
+  valid() { return this._alive && this._token === session.getToken() },
+  async load() {
+    this.setData({ loading: true, error: '' })
+    try {
+      if (this._id) {
+        const res = await api.getAccountDetail(this._id)
+        if (!this.valid()) return
+        const row = res.data || {}
+        if (row.type === 0) row.type = null
+        this.setData({ formData: { ...emptyForm(), ...row, password: '' }, typeName: row.typeName || '未分类', remarkCount: Array.from(row.remark || '').length })
+      }
+      await this.loadOptions()
+    } catch (e) { if (this.valid()) this.setData({ error: '账号加载失败，请重试' }) }
+    finally { if (this.valid()) this.setData({ loading: false }) }
   },
-
-  async getDetail(id) {
-    const res = await baseApi.getAccountDetail(id)
-    const detail = res.data || {}
-    const typeIndex = this.data.typeOptions.findIndex((item) => Number(item.value) === Number(detail.type))
-    this.setData({
-      formData: {
-        ...defaultForm(),
-        ...detail,
-        password: ''
-      },
-      typeIndex: typeIndex >= 0 ? typeIndex : 0,
-      typeName: dictStore.getDictNameByCode(dictStore.dictTypeEnum.AUTH_APPLICATION_ACCOUNT_TYPE, detail.type, '')
-    })
+  async loadOptions() {
+    this.setData({ categoryLoading: true, categoryError: '' })
+    try {
+      const data = await categories.list()
+      if (!this.valid()) return false
+      const row = data.items.find(i => i.code === this.data.formData.type)
+      this.setData({ typeOptions: data.items.filter(i => i.enabled || i.code === this.data.formData.type), scopeVersion: data.scopeVersion, categoryError: '' })
+      if (row) this.setData({ typeName: row.name })
+      return true
+    } catch (e) { if (this.valid()) this.setData({ categoryError: '分类加载失败，请重试' }); return false }
+    finally { if (this.valid()) this.setData({ categoryLoading: false }) }
   },
-
-  onTypeChange(event) {
-    const typeIndex = Number(event.detail.value)
-    const option = this.data.typeOptions[typeIndex]
-    this.setData({
-      typeIndex,
-      typeName: option ? option.text : '',
-      'formData.type': option ? option.value : ''
-    })
+  handleInput(e) {
+    const field = e.currentTarget.dataset.field
+    this.setData({ [`formData.${field}`]: e.detail.value })
+    if (field === 'remark') this.setData({ remarkCount: Array.from(e.detail.value).length })
   },
-
-  handleInput(event) {
-    const field = event.currentTarget.dataset.field
-    this.setData({ [`formData.${field}`]: event.detail.value })
+  togglePassword() { this.setData({ passwordVisible: !this.data.passwordVisible }) },
+  openTypes() { if (this.data.busy || this.data.loading) return; wx.hideKeyboard(); this.setData({ sheet: 'types' }); this.loadOptions() },
+  chooseType(e) {
+    const value = e.currentTarget.dataset.code, code = value === '' ? null : Number(value)
+    const row = this.data.typeOptions.find(i => i.code === code)
+    this.setData({ 'formData.type': code, typeName: row ? row.name : '未分类', sheet: '' })
   },
-
+  openQuickAdd() { if (this.data.categoryLoading || this.data.categoryError || this.data.busy) return; this.setData({ sheet: 'quick', draftName: '', nameError: '', nameCount: 0 }); this._categoryCreated = false },
+  inputName(e) { this.setData({ draftName: e.detail.value, nameCount: Array.from(e.detail.value.trim()).length, nameError: '' }) },
+  keyboardChange(e) { this.setData({ keyboardHeight: e.detail.height || 0 }) },
+  closeSheet() { if (this.data.busy) return; wx.hideKeyboard(); this.setData({ sheet: '', keyboardHeight: 0, nameError: '' }) },
+  async saveCategory() {
+    if (this.data.busy || !this.valid()) return
+    const name = this.data.draftName.trim()
+    if (!name || Array.from(name).length > 32) { this.setData({ nameError: '请输入1–32个字符的分类名称' }); return }
+    this.setData({ busy: true, nameError: '' })
+    try {
+      if (!this._categoryCreated) {
+        const result = await categories.create({ name, scopeVersion: this.data.scopeVersion })
+        if (!this.valid()) return
+        this._categoryCreated = true
+        this.setData({ 'formData.type': result.item.code, typeName: result.item.name })
+      }
+      const refreshed = await this.loadOptions()
+      if (!this.valid()) return
+      if (!refreshed) { this.setData({ nameError: '分类已新增并选用，列表刷新失败；可重试刷新或关闭继续录入' }); return }
+      wx.hideKeyboard(); this.setData({ sheet: '', keyboardHeight: 0 })
+      wx.showToast({ title: '已新增并选用', icon: 'success' })
+    } catch (e) {
+      if (this.valid()) this.setData({ nameError: e.message || '新增失败，请重试' })
+      if (/已变化/.test(e.message || '')) await this.loadOptions()
+    } finally { if (this.valid()) this.setData({ busy: false }) }
+  },
   validateForm() {
-    const form = this.data.formData
-    if (!form.name && !form.address && !form.account) {
-      return '应用名称、应用地址、账号至少填写一项'
+    const f = this.data.formData
+    if (![f.name, f.address, f.account].some(v => String(v || '').trim())) return '应用名称、应用地址、账号至少填写一项'
+    for (const [field, max, label] of [['name',32,'应用名称'],['address',255,'应用地址'],['account',64,'账号'],['password',64,'密码'],['remark',255,'备注']]) {
+      if (String(f[field] || '').length > max) return `${label}不能超过${max}个字符`
     }
     return ''
   },
-
   async handleSave() {
+    if (this.data.busy || this.data.loading || this.data.error || !this.valid()) return
     const message = this.validateForm()
-    if (message) {
-      wx.showToast({ title: message, icon: 'none' })
-      return
-    }
-
-    const form = this.data.formData
-    const payload = {
-      ...form,
-      name: String(form.name || '').trim(),
-      address: String(form.address || '').trim(),
-      account: String(form.account || '').trim(),
-      remark: form.remark || '',
-      updatePassword: Boolean(form.password)
-    }
-    if (form.type !== '') payload.type = Number(form.type)
-
-    if (this.data.isEdit) {
-      await baseApi.updateAccount(payload)
-    } else {
-      await baseApi.addAccount(payload)
-    }
-
-    wx.showToast({ title: '保存成功', icon: 'success' })
-    setTimeout(() => wx.navigateBack(), 600)
+    if (message) return wx.showToast({ title: message, icon: 'none' })
+    const f = this.data.formData
+    const payload = { ...f, name: f.name.trim(), address: f.address.trim(), account: f.account.trim(), type: f.type == null ? null : Number(f.type), updatePassword: Boolean(f.password) }
+    this.setData({ busy: true })
+    try {
+      await (this.data.isEdit ? api.updateAccount(payload) : api.addAccount(payload))
+      if (!this.valid()) return
+      this._saved = true
+      this.setData({ 'formData.password': '', passwordVisible: false })
+      wx.showToast({ title: '保存成功' }); wx.navigateBack()
+    } catch (e) { /* Request wrapper displays error; retain the draft for retry. */ }
+    finally { if (this.valid() && !this._saved) this.setData({ busy: false }) }
   },
-
   handleDelete() {
-    if (!this.data.formData.id) return
-    wx.showModal({
-      title: '提示',
-      content: '确认删除该账号吗？',
-      success: async (res) => {
-        if (!res.confirm) return
-        await baseApi.deleteAccount(this.data.formData.id)
-        wx.showToast({ title: '删除成功', icon: 'success' })
-        setTimeout(() => wx.navigateBack(), 600)
-      }
-    })
-  }
+    if (this.data.busy || !this.valid()) return
+    wx.showModal({ title: '删除账号', content: '确认删除该账号吗？', confirmText: '删除', confirmColor: '#c34d46', success: async res => {
+      if (!res.confirm || !this.valid() || this.data.busy) return
+      this.setData({ busy: true })
+      try { await api.deleteAccount(this.data.formData.id); if (this.valid()) { this._saved = true; wx.navigateBack() } }
+      catch (e) {} finally { if (this.valid() && !this._saved) this.setData({ busy: false }) }
+    } })
+  },
+  noop() {}
 })

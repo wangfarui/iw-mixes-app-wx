@@ -39,6 +39,7 @@
         "base/dict-detail",
         "base/account-manage",
         "base/account-detail",
+        "base/account-category-settings",
         "my/profile",
         "my/security",
         "my/securityAction",

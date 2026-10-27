@@ -1,36 +1,30 @@
-@import "./base-common.wxss";
-
-.account-item {
-  align-items: center;
-}
-
-.account-item .item-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.account-actions {
-  flex: 0 0 118rpx;
-  width: 118rpx;
-  justify-content: flex-end;
-}
-
-.password-action {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 112rpx;
-  height: 52rpx;
-  border-radius: 8rpx;
-  background: #eef5ff;
-  color: #007aff;
-  font-size: 22rpx;
-  font-weight: 600;
-  line-height: 52rpx;
-  white-space: nowrap;
-  box-sizing: border-box;
-}
-
-.password-action:active {
-  opacity: 0.72;
-}
+@import "./account-common.wxss";
+.search-row { display:flex; align-items:center; gap:20rpx; }
+.search { display:flex; align-items:center; gap:20rpx; background:#e9ecea; border-radius:20rpx; padding:0 24rpx; flex:1; min-width:0; height:84rpx; }
+.search input { flex:1; min-width:0; height:84rpx; font-size:28rpx; }
+.search-icon { width:24rpx; height:24rpx; border:3rpx solid #8d9690; border-radius:50%; position:relative; flex-shrink:0; }
+.search-icon::after { content:''; position:absolute; width:12rpx; height:3rpx; background:#8d9690; transform:rotate(45deg); right:-9rpx; bottom:-4rpx; }
+.filter-entry { flex:0 0 auto; }
+.filter-row { display:flex; gap:16rpx; align-items:center; margin:24rpx 0 0; }
+.chips { flex:1; min-width:0; white-space:nowrap; }
+.chips-inner { display:inline-flex; gap:12rpx; }
+.chip { display:inline-block; padding:14rpx 24rpx; font-size:26rpx; border-radius:36rpx; background:#e9ecea; color:#737e77; }
+.chip.active { color:#fff; background:#07a665; }
+.manage-categories { flex:0 0 auto; }
+.account-row { display:flex; align-items:center; gap:20rpx; padding:32rpx 24rpx; }
+.account-row + .account-row { border-top:1rpx solid #eff2f0; }
+.avatar { width:80rpx; height:80rpx; border-radius:22rpx; background:#e2f2e8; color:#338762; font-size:36rpx; font-weight:500; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.account-main { flex:1; min-width:0; }
+.name-line { display:flex; gap:12rpx; align-items:center; flex-wrap:wrap; }
+.account-name { font-size:30rpx; font-weight:500; word-break:break-all; }
+.badge { font-size:20rpx; color:#4b8768; background:#eff7f2; border-radius:8rpx; padding:2rpx 10rpx; max-width:100%; word-break:break-all; }
+.account-sub { display:flex; align-items:center; gap:4rpx; margin-top:6rpx; font-size:24rpx; color:#6e7972; }
+.username { flex:0 1 auto; min-width:0; word-break:break-all; }
+.copy-button { width:64rpx; height:64rpx; flex:0 0 64rpx; display:flex; align-items:center; justify-content:center; }
+.copy-button image { width:32rpx; height:32rpx; }
+.domain { font-size:22rpx; color:#929b95; margin-top:2rpx; word-break:break-all; line-height:32rpx; }
+.password-button { flex:0 0 132rpx; min-height:88rpx; display:flex; align-items:center; }
+.password-inner { display:flex; align-items:center; justify-content:center; gap:8rpx; background:#f0f2f3; border-radius:24rpx; height:68rpx; width:132rpx; color:#65726b; font-size:24rpx; white-space:nowrap; }
+.password-button image { width:36rpx; height:36rpx; }
+.load-more { color:#98a199; font-size:24rpx; text-align:center; padding:32rpx; }
+.password-text { font-size:34rpx; line-height:50rpx; word-break:break-all; margin:40rpx 0; }

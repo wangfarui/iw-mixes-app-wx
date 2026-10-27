@@ -1,0 +1,25 @@
+<view class="account-page">
+  <view class="muted">仅自己管理，用于我的应用账号</view>
+  <view class="empty" wx:if="{{loading && !loaded}}">加载中…</view>
+  <view class="retry" wx:if="{{error}}" bindtap="retry">{{error}} · 重试</view>
+  <block wx:if="{{loaded}}">
+    <block wx:if="{{!sorting}}"><view class="section-head"><text>已启用 · {{enabledItems.length}} 项</text><view wx:if="{{items.length > 1 && !refreshFailed}}" class="link" bindtap="startSort">排序</view></view>
+      <view class="group"><view class="category-row" wx:for="{{enabledItems}}" wx:key="id"><view class="category-main" data-id="{{item.id}}" bindtap="openName"><view>{{item.name}}</view><view class="muted">{{item.accountCount}} 个账号</view></view><view class="more" data-id="{{item.id}}" bindtap="openMenu">···</view></view></view>
+      <view wx:if="{{!enabledItems.length}}" class="empty">暂无启用分类</view>
+      <view wx:if="{{disabledItems.length}}" class="fold" bindtap="toggleDisabled">{{showDisabled ? '⌃' : '⌄'}}　已停用 · {{disabledItems.length}} 项</view>
+      <view class="group disabled-list" wx:if="{{showDisabled}}"><view class="category-row" wx:for="{{disabledItems}}" wx:key="id"><view class="category-main" data-id="{{item.id}}" bindtap="openName"><view>{{item.name}}<text class="disabled-badge">已停用</text></view><view class="muted">{{item.accountCount}} 个账号</view></view><view class="more" data-id="{{item.id}}" bindtap="openMenu">···</view></view></view>
+      <view class="sheet-note">分类改名后，账号会同步显示新名称。
+被账号使用的分类需要先调整归属才能删除。</view>
+    </block>
+    <block wx:else><view class="section-head"><text>长按手柄拖动排序</text><view class="sort-actions"><view bindtap="cancelSort">取消</view><view class="link" bindtap="finishSort">{{busy ? '提交中…' : '完成'}}</view></view></view><view class="group"><view class="sort-row {{draggingId === item.id ? 'dragging' : ''}}" wx:for="{{sortItems}}" wx:key="id"><view class="drag-handle" data-id="{{item.id}}" bindtouchstart="touchStart" bindlongpress="startDrag" catchtouchmove="dragMove" bindtouchend="endDrag" bindtouchcancel="endDrag"><view></view><view></view><view></view></view><view class="sort-name">{{item.name}}<text wx:if="{{!item.enabled}}" class="disabled-badge">已停用</text></view><view class="move" data-index="{{index}}" data-direction="-1" bindtap="move">上移</view><view class="move" data-index="{{index}}" data-direction="1" bindtap="move">下移</view></view></view></block>
+    <view class="error" wx:if="{{nameError && !sheet}}">{{nameError}}</view>
+  </block>
+</view>
+<view wx:if="{{loaded && !sorting && !refreshFailed}}" class="footer"><button class="primary" disabled="{{busy || loading}}" bindtap="openAdd">＋ 新增分类</button></view>
+<view class="mask" wx:if="{{sheet}}"><view class="sheet" style="margin-bottom: {{keyboardHeight}}px; max-height: calc(100vh - {{keyboardHeight}}px - 64rpx);" catchtap="noop"><view class="sheet-handle"></view>
+  <view class="sheet-title">{{sheet === 'editor' ? (editing ? '修改分类' : '新增分类') : sheet === 'menu' ? editing.name : sheet === 'referenced' ? '该分类正在使用' : '删除分类'}}<view class="close" bindtap="closeSheet">×</view></view>
+  <block wx:if="{{sheet === 'editor'}}"><view class="sheet-label">分类名称</view><input class="sheet-input" value="{{draftName}}" bindinput="inputName" maxlength="-1" disabled="{{busy}}" adjust-position="{{false}}" bindkeyboardheightchange="keyboardChange" placeholder="例如：工作、生活、开发"/><view class="sheet-note">{{nameCount}} / 32</view><view class="sheet-note">{{editing ? '修改后，使用此分类的账号将同步更新名称' : '分类仅自己可用，名称不能与现有分类重复'}}</view><view class="error">{{nameError}}</view><view class="sheet-buttons"><view class="secondary" bindtap="closeSheet">取消</view><button class="primary" loading="{{busy}}" disabled="{{busy}}" bindtap="saveName">保存</button></view></block>
+  <block wx:elif="{{sheet === 'menu'}}"><view class="sheet-row" bindtap="menuRename">修改名称</view><view class="sheet-row" bindtap="menuStatus">{{editing.enabled ? '停用' : '启用'}}分类</view><view class="sheet-row danger" bindtap="menuDelete">删除分类</view><view class="error">{{nameError}}</view></block>
+  <block wx:elif="{{sheet === 'referenced'}}"><view class="sheet-note">仍有 {{editing.accountCount}} 个账号使用「{{editing.name}}」，请先调整账号分类。</view><view class="sheet-buttons"><view class="primary" bindtap="viewAccounts">查看相关账号</view></view></block>
+  <block wx:else><view class="sheet-note">确认删除「{{editing.name}}」吗？</view><view class="error">{{nameError}}</view><view class="sheet-buttons"><view class="secondary" bindtap="closeSheet">取消</view><button class="primary" disabled="{{busy}}" loading="{{busy}}" bindtap="confirmDelete">确认删除</button></view></block>
+</view></view>

@@ -1,0 +1,111 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO]
+[INFO] iw-parent                                                          [pom]
+[INFO] iw-common                                                          [jar]
+[INFO] iw-starter                                                         [pom]
+[INFO] iw-redis-starter                                                   [jar]
+[INFO] iw-web                                                             [jar]
+[INFO]
+[INFO] ---------------------< com.itwray.mixes:iw-parent >---------------------
+[INFO] Building iw-parent 0.2.1                                           [1/5]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-cli) @ iw-parent ---
+[INFO] No tests to run.
+[INFO]
+[INFO] ---------------------< com.itwray.mixes:iw-common >---------------------
+[INFO] Building iw-common 0.2.1                                           [2/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ iw-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/wangfarui/workspaces/wfr/iw-mixes_ai/iw-mixes-server/iw-common/src/main/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ iw-common ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ iw-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/wangfarui/workspaces/wfr/iw-mixes_ai/iw-mixes-server/iw-common/src/test/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.11.0:testCompile (default-testCompile) @ iw-common ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-cli) @ iw-common ---
+[INFO] No tests to run.
+[INFO]
+[INFO] --------------------< com.itwray.mixes:iw-starter >---------------------
+[INFO] Building iw-starter 0.2.1                                          [3/5]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-cli) @ iw-starter ---
+[INFO] No tests to run.
+[INFO]
+[INFO] -----------------< com.itwray.mixes:iw-redis-starter >------------------
+[INFO] Building iw-redis-starter 0.2.1                                    [4/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ iw-redis-starter ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ iw-redis-starter ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ iw-redis-starter ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/wangfarui/workspaces/wfr/iw-mixes_ai/iw-mixes-server/iw-starter/iw-redis-starter/src/test/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.11.0:testCompile (default-testCompile) @ iw-redis-starter ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-cli) @ iw-redis-starter ---
+[INFO] No tests to run.
+[INFO]
+[INFO] ----------------------< com.itwray.mixes:iw-web >-----------------------
+[INFO] Building iw-web 0.2.1                                              [5/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ iw-web ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 6 resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ iw-web ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ iw-web ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/wangfarui/workspaces/wfr/iw-mixes_ai/iw-mixes-server/iw-web/src/test/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.11.0:testCompile (default-testCompile) @ iw-web ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-cli) @ iw-web ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.itwray.iw.web.core.webmvc.AccountPasswordLoggingTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.110 s -- in com.itwray.iw.web.core.webmvc.AccountPasswordLoggingTest
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for iw-parent 0.2.1:
+[INFO]
+[INFO] iw-parent .......................................... SUCCESS [  0.263 s]
+[INFO] iw-common .......................................... SUCCESS [  0.202 s]
+[INFO] iw-starter ......................................... SUCCESS [  0.006 s]
+[INFO] iw-redis-starter ................................... SUCCESS [  0.201 s]
+[INFO] iw-web ............................................. SUCCESS [  1.089 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.019 s
+[INFO] Finished at: 2026-10-27T15:57:37+08:00
+[INFO] ------------------------------------------------------------------------

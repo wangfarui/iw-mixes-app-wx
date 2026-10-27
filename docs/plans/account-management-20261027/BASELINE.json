@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-27T07:13:35.574837+00:00",
+  "repos": {
+    "iw-mixes-app-wx": {
+      "head": "59bfc3fcb5d6d8e21a14dde5899503910e18863f",
+      "branch": "main"
+    },
+    "iw-mixes-server": {
+      "head": "afa6f81dc5eb562136912426ec6ff0fd67241ce1",
+      "branch": "main"
+    }
+  },
+  "files": [
+    {
+      "path": "iw-mixes-app-wx/api/base.js",
+      "sha256": "493ec55df7de45b286bb435ef08523a7d1071c6a1074f6b8653beb3825d318fa",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBase/base/account-detail.js",
+      "sha256": "7dfc69e34724ed9bfcb6146471d4f07564155c23527dfb84be33f930a23a9799",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBase/base/account-manage.js",
+      "sha256": "86345abd0c8f45d70461cd28f2adb976b4479eb0cb582c251c63df198398b0ca",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBase/base/account-manage.wxml",
+      "sha256": "ea9e4b540f0bb3b00cdfbd32abdd732fbed61292a7ed3c79452e4075612bc56e",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/stores/dict.js",
+      "sha256": "44370318431d8eef63dc4814d02527690bf057eff24f1f549862c5cb5ba21af3",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/model/dto/ApplicationAccountPageDto.java",
+      "sha256": "0902d90402cf52934e0023ede440d0ccecdb524d5d1d4f3ff2bd28ece631bb4d",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/model/entity/BaseApplicationAccountEntity.java",
+      "sha256": "731c0b358088f90f74c4369250734a824dd0759f6b6db1e1751e8cdb97ea49f8",
+      "tracked": true
+    }
+  ]
+}

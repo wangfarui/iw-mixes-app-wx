@@ -21,7 +21,7 @@ function defaultForm() {
 }
 
 function buildDictTypeOptions() {
-  return dictStore.getDictTypeArray().filter((item) => ![4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(item.code))).map((item) => ({
+  return dictStore.getDictTypeArray().filter((item) => ![2010, 4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(item.code))).map((item) => ({
     value: item.code,
     text: item.name
   }))
@@ -68,7 +68,7 @@ Page({
     if (options.id) {
       this.setData({ isEdit: true })
       wx.setNavigationBarTitle({ title: '编辑字典' })
-      this.getDetail(options.id).catch(() => { this.setData({ blocked: true }); wx.showModal({ title: '无法在此维护', content: '记账选项请从记账设置进入；衣柜五类选项请从菜单 → 衣柜穿搭 → 衣柜设置进入。', showCancel: false, success: () => wx.navigateBack() }) })
+      this.getDetail(options.id).catch(() => { this.setData({ blocked: true }); wx.showModal({ title: '无法在此维护', content: '应用分类请从账号管理进入；记账选项请从记账设置进入；衣柜五类选项请从菜单 → 衣柜穿搭 → 衣柜设置进入。', showCancel: false, success: () => wx.navigateBack() }) })
     } else {
       wx.setNavigationBarTitle({ title: '新增字典' })
     }
@@ -98,7 +98,7 @@ Page({
   async getDetail(id) {
     const res = await baseApi.getDictDetail(id)
     const detail = res.data || {}
-    if ([4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(detail.dictType))) throw new Error('请从对应业务设置维护')
+    if ([2010, 4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(detail.dictType))) throw new Error('请从对应业务设置维护')
     const dictTypeIndex = this.data.dictTypeOptions.findIndex((item) => item.value === detail.dictType)
     const showParentCategory = isWardrobeItemSubcategory(detail.dictType)
     const parentCategoryIndex = this.data.parentCategoryOptions.findIndex((item) => Number(item.value) === Number(detail.parentId))
@@ -172,7 +172,7 @@ Page({
 
   validateForm() {
     const form = this.data.formData
-    if (this.data.blocked || [4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(form.dictType))) return '请使用记账设置或衣柜设置'
+    if (this.data.blocked || [2010, 4001, 4002, 4004, 4011, 5002, 5003, 5004, 5005, 5006].includes(Number(form.dictType))) return '请使用账号管理、记账设置或衣柜设置'
     if (!form.dictType) return '请选择字典类型'
     if (this.data.showParentCategory && !form.parentId) return '请选择所属品类'
     if (!String(form.dictName || '').trim()) return '请输入字典名称'

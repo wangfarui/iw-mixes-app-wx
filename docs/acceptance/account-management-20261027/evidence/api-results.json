@@ -1,0 +1,51 @@
+{
+  "environment": "loopback 18003, real MySQL",
+  "fixturePrefix": "AC-1ebedb20",
+  "results": [
+    {
+      "case": "create categories",
+      "status": "PASS"
+    },
+    {
+      "case": "keyword name OR address + category AND",
+      "status": "PASS"
+    },
+    {
+      "case": "reject deleting referenced category",
+      "status": "PASS"
+    },
+    {
+      "case": "rename updates account display, keeps type code",
+      "status": "PASS"
+    },
+    {
+      "case": "stale classification version rejected",
+      "status": "PASS"
+    },
+    {
+      "case": "disabled preserved, new selection denied, unchanged password preserved",
+      "status": "PASS"
+    },
+    {
+      "case": "disabled duplicate rejected",
+      "status": "PASS"
+    },
+    {
+      "case": "sort exact set, reorder and restore",
+      "status": "PASS"
+    },
+    {
+      "case": "clear classification + unclassified query",
+      "status": "PASS"
+    },
+    {
+      "case": "legacy generic classification endpoints blocked",
+      "status": "PASS"
+    },
+    {
+      "case": "account delete",
+      "status": "PASS"
+    }
+  ],
+  "remainingAccounts": 0
+}

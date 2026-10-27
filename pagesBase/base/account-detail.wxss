@@ -1,1 +1,16 @@
-@import "./base-common.wxss";
+@import "./account-common.wxss";
+.account-page { padding-top:4rpx; }
+.form-row { display:flex; align-items:center; gap:20rpx; padding:12rpx 28rpx; min-height:112rpx; box-sizing:border-box; font-size:28rpx; }
+.form-row + .form-row { border-top:1rpx solid #eff2f0; }
+.label { width:156rpx; flex-shrink:0; }
+.form-row input { flex:1; min-width:0; font-size:28rpx; height:88rpx; }
+.type-value { flex:1; color:#078453; word-break:break-all; padding:16rpx 0; }
+.arrow { color:#939b96; font-size:38rpx; }
+.eye { height:88rpx; width:64rpx; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.eye image { width:40rpx; height:40rpx; }
+.remark-wrap { padding:28rpx; }
+.remark-wrap textarea { width:100%; font-size:28rpx; min-height:124rpx; line-height:44rpx; }
+.count { color:#9da59f; font-size:22rpx; text-align:right; margin-top:20rpx; }
+.quick-add { display:flex; align-items:center; justify-content:space-between; margin-top:24rpx; background:#edf8f2; color:#078453; border-radius:20rpx; padding:28rpx 24rpx; font-size:28rpx; }
+.check { color:#07a665; }
+.delete-entry { color:#c34d46; text-align:center; padding:40rpx 0; font-size:28rpx; }

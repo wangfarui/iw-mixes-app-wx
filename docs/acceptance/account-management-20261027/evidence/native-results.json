@@ -1,0 +1,26 @@
+{
+  "environment": "WeChat developer tools simulator, real APIs on 18003, temporary URL forwarding restored",
+  "prefix": "UI-AC-mvqe07oj",
+  "results": [
+    {
+      "case": "new account: actual input, quick category, preserve account/password draft",
+      "status": "PASS"
+    },
+    {
+      "case": "saved account, list filter, password button and clear-on-close",
+      "status": "PASS"
+    },
+    {
+      "case": "native category rename, live account name, sort entry/cancel",
+      "status": "PASS"
+    },
+    {
+      "case": "edit account: current category and blank password field",
+      "status": "PASS"
+    },
+    {
+      "case": "fixture cleanup",
+      "status": "PASS"
+    }
+  ]
+}
