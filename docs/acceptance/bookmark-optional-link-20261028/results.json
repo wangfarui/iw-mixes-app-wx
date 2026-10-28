@@ -1,0 +1,22 @@
+{
+  "environment": "WeChat simulator + real localhost:18000 core APIs",
+  "prefix": "LIFE-AC-20261028-optional-mvrujkoe",
+  "fixtures": [
+    15,
+    16
+  ],
+  "results": [
+    {
+      "name": "real API: omitted URL, existing URL preserved, URL cleared and invalid filled URL rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "native UI: save with name only, exactly one list action, pin and unpin",
+      "status": "PASS"
+    },
+    {
+      "name": "fixture cleanup: no active records",
+      "status": "PASS"
+    }
+  ]
+}

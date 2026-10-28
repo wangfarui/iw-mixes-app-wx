@@ -45,22 +45,25 @@ const menuList = [
     ]
   },
   {
-    title: '基础功能',
-    iconTheme: 'base',
+    title: '生活工具',
+    iconTheme: 'life',
     components: [
-      { url: '/static/menus/account-manage.svg', text: '账号管理', path: '/pagesBase/base/account-manage' }
+      { url: '/static/menus/life-wish.svg', text: '心愿清单', path: '/pagesLife/life/wish-list' },
+      { url: '/static/menus/life-date.svg', text: '重要日期', path: '/pagesLife/life/date-list' },
+      { url: '/static/menus/life-bookmark.svg', text: '收藏夹', path: '/pagesLife/life/bookmark-list' },
+      { url: '/static/menus/account-manage.svg', text: '应用账号', aliases: ['账号管理'], path: '/pagesBase/base/account-manage' }
     ]
   }
 ]
 
-function filterMenus(keyword) {
+function filterMenus(keyword, list = menuList) {
   const value = (keyword || '').trim().toLowerCase()
-  if (!value) return menuList
+  if (!value) return list
 
-  return menuList
+  return list
     .map((menu) => ({
       ...menu,
-      components: menu.components.filter((item) => item.text.toLowerCase().includes(value))
+      components: menu.components.filter((item) => [item.text].concat(item.aliases || []).some(text => text.toLowerCase().includes(value)))
     }))
     .filter((menu) => menu.components.length > 0)
 }
@@ -82,7 +85,24 @@ Page({
     filteredMenuList: menuList
   },
 
+  onShow() {
+    this._menuActive = true
+    const request = this._menuRequest = (this._menuRequest || 0) + 1
+    const session = require('../stores/session'), token = session.getToken()
+    this._menuList = menuList
+    this.setData({ filteredMenuList: filterMenus(this.data.searchValue) })
+    if (!token) return
+    require('../api/life').reminders().then(res => {
+      if (!this._menuActive || request !== this._menuRequest || token !== session.getToken()) return
+      this._menuList = menuList.map(group => ({ ...group, components: group.components.map(item => ({ ...item, badge: item.text === '重要日期' ? Number((res.data || {}).activeReminderCount || 0) : 0 })) }))
+      if (!this.data.showDialog) this.setData({ filteredMenuList: filterMenus(this.data.searchValue, this._menuList) })
+    }).catch(() => {})
+  },
+
+  onHide() { this._menuActive = false },
+
   onUnload() {
+    this._menuActive = false
     this.closeSocket()
   },
 
@@ -90,7 +110,7 @@ Page({
     const searchValue = event.detail.value
     this.setData({
       searchValue,
-      filteredMenuList: filterMenus(searchValue)
+      filteredMenuList: filterMenus(searchValue, this._menuList || menuList)
     })
   },
 
@@ -104,7 +124,7 @@ Page({
       loading: true,
       searchValue: '',
       dialogList,
-      filteredMenuList: menuList,
+      filteredMenuList: this._menuList || menuList,
       scrollToId: `dialog-item-${dialogList.length - 1}`
     })
 
@@ -183,7 +203,7 @@ Page({
       dialogList: [],
       loading: false,
       scrollToId: '',
-      filteredMenuList: menuList
+      filteredMenuList: this._menuList || menuList
     })
   },
 

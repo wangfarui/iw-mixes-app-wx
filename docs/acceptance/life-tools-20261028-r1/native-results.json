@@ -1,0 +1,52 @@
+{
+  "environment": "WeChat simulator; real authenticated core APIs on http://127.0.0.1:18000; standard app base URL, no forwarding",
+  "prefix": "LIFE-AC-20261028-mvrtpj6z-",
+  "fixtures": [
+    {
+      "kind": "bookmark",
+      "id": 9,
+      "cleanup": "API soft-delete attempted; see failures"
+    },
+    {
+      "kind": "date",
+      "id": 16,
+      "cleanup": "API soft-delete attempted; see failures"
+    },
+    {
+      "kind": "date",
+      "id": 15,
+      "cleanup": "API soft-delete attempted; see failures"
+    },
+    {
+      "kind": "wish",
+      "id": 24,
+      "cleanup": "API soft-delete attempted; see failures"
+    }
+  ],
+  "cases": [
+    {
+      "name": "real APIs: authentication and invalid URL rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "native wish: actual Chinese/emoji and money input, save, fulfill, filter",
+      "status": "PASS"
+    },
+    {
+      "name": "native lunar date: calendar switch, real leap-month metadata, save and occurrence",
+      "status": "PASS"
+    },
+    {
+      "name": "real date reminder, menu badge, create replay and old account search alias",
+      "status": "PASS"
+    },
+    {
+      "name": "native bookmark: create, full URL, pin, conflict rejection and edit",
+      "status": "PASS"
+    },
+    {
+      "name": "existing application-account list still loads through original route",
+      "status": "PASS"
+    }
+  ]
+}

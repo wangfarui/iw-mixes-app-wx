@@ -1,0 +1,24 @@
+{
+  "database": "local iw_mixes",
+  "scope": "Only LIFE-AC-20261028- fixtures in the three new tables",
+  "results": [
+    {
+      "table": "life_wish",
+      "activeAcceptanceRows": 0,
+      "softDeletedAcceptanceRows": 9,
+      "invalidAcceptanceRows": 0
+    },
+    {
+      "table": "life_important_date",
+      "activeAcceptanceRows": 0,
+      "softDeletedAcceptanceRows": 7,
+      "invalidAcceptanceRows": 0
+    },
+    {
+      "table": "life_bookmark",
+      "activeAcceptanceRows": 0,
+      "softDeletedAcceptanceRows": 3,
+      "invalidAcceptanceRows": 0
+    }
+  ]
+}

@@ -8,7 +8,7 @@ Page({
   onLoad(options = {}) {
     this._token = session.getToken(); this._alive = true
     this._id = options.id
-    this.setData({ isEdit: Boolean(options.id) }); wx.setNavigationBarTitle({ title: options.id ? '编辑账号' : '新增账号' })
+    this.setData({ isEdit: Boolean(options.id) }); wx.setNavigationBarTitle({ title: options.id ? '编辑应用账号' : '新增应用账号' })
     this.load()
   },
   onShow() { if (this._token && this._token !== session.getToken()) { this._alive = false; this.setData({ formData: emptyForm(), sheet: '', error: '会话已变化，请重新进入页面' }) } },
@@ -105,7 +105,7 @@ Page({
   },
   handleDelete() {
     if (this.data.busy || !this.valid()) return
-    wx.showModal({ title: '删除账号', content: '确认删除该账号吗？', confirmText: '删除', confirmColor: '#c34d46', success: async res => {
+    wx.showModal({ title: '删除应用账号', content: '确认删除该账号吗？', confirmText: '删除', confirmColor: '#c34d46', success: async res => {
       if (!res.confirm || !this.valid() || this.data.busy) return
       this.setData({ busy: true })
       try { await api.deleteAccount(this.data.formData.id); if (this.valid()) { this._saved = true; wx.navigateBack() } }

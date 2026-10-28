@@ -1,0 +1,53 @@
+{
+  "environment": "Real local core HTTP API on 18000; existing authorized session; no business responses mocked",
+  "prefix": "LIFE-AC-20261028-api-mvrspa8m-",
+  "fixtures": [
+    {
+      "kind": "bookmark",
+      "id": 8,
+      "cleanup": "API soft-deleted"
+    },
+    {
+      "kind": "bookmark",
+      "id": 7,
+      "cleanup": "API soft-deleted"
+    },
+    {
+      "kind": "date",
+      "id": 12,
+      "cleanup": "API soft-deleted"
+    },
+    {
+      "kind": "date",
+      "id": 11,
+      "cleanup": "API soft-deleted"
+    },
+    {
+      "kind": "wish",
+      "id": 22,
+      "cleanup": "API soft-deleted"
+    }
+  ],
+  "cases": [
+    {
+      "name": "missing login rejected for data and calendar metadata",
+      "status": "PASS"
+    },
+    {
+      "name": "wish zero/null, idempotent create, state transitions, explicit clearing and revision conflict",
+      "status": "PASS"
+    },
+    {
+      "name": "solar/lunar dates, real leap-month metadata, occurrence calculation and reminder count",
+      "status": "PASS"
+    },
+    {
+      "name": "bookmark full URL, pin, edit, duplicate-link allowance and unsafe URL rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "page-size limit and negative-amount validation",
+      "status": "PASS"
+    }
+  ]
+}

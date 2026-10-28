@@ -31,7 +31,7 @@
           <view class="icon-wrapper">
             <image src="{{menuItem.url}}" class="image" mode="aspectFit" />
           </view>
-          <text class="text">{{menuItem.text}}</text>
+          <text class="text">{{menuItem.text}}</text><text wx:if="{{menuItem.badge > 0}}" class="menu-badge">{{menuItem.badge > 99 ? '99+' : menuItem.badge}}</text>
         </view>
       </view>
     </view>

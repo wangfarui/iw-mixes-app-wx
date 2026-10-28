@@ -17,7 +17,8 @@
     "test:wardrobe-item-readonly": "node scripts/test-wardrobe-item-form-readonly.js",
     "test:bookkeeping-payer": "node scripts/test-bookkeeping-payer.js",
     "test:bookkeeping-settings": "node scripts/test-bookkeeping-settings.js",
-    "test:wardrobe-dictionary-context": "node scripts/test-wardrobe-dictionary-context.js"
+    "test:wardrobe-dictionary-context": "node scripts/test-wardrobe-dictionary-context.js",
+    "test:life-tools": "node scripts/test-life-tools.js"
   },
   "dependencies": {
     "weui-miniprogram": "1.5.6"

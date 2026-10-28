@@ -1,0 +1,1 @@
+<import src="editor.wxml"/><template is="life-editor" data="{{kind,label,isEdit,form,loading,busy,error,saveError,uncertain,categories,categoryIndex,dateTypes,typeIndex,reminders,remindIndex,priorityIndex,repeatIndex,years,yearIndex,lunarMonths,lunarDays,lunarMonthIndex,lunarDayIndex,lunarMonthText,lunarDayText,calendarLoading,calendarError}}"/>

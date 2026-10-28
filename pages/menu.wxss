@@ -121,7 +121,7 @@
   background: #eaf8f3;
 }
 
-.menu-section--base .icon-wrapper {
+.menu-section--life .icon-wrapper {
   background: #f0f3f7;
 }
 
@@ -194,3 +194,7 @@
 .loading-text {
   color: #999;
 }
+
+.menu-badge { position:absolute; top:14rpx; right:16rpx; min-width:28rpx; padding:3rpx 7rpx; border-radius:18rpx; background:#f9eee1; color:#b38346; text-align:center; font-size:20rpx; white-space:nowrap; }
+.menu-item { position:relative; }
+.menu-item .text { min-width:0; white-space:nowrap; }

@@ -1,0 +1,1 @@
+<import src="list.wxml"/><template is="life-list" data="{{kind,placeholder,keyword,loaded,pendingCount,total,selected,filters,items,loading,error,hasMore,busy,label,emptyText}}"/>

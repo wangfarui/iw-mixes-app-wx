@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-28T03:38:36.323247+00:00",
+  "repos": {
+    "iw-mixes-app-wx": {
+      "head": "2a42404cff323c2f438574b6e101542245e1034a",
+      "branch": "main"
+    },
+    "iw-mixes-server": {
+      "head": "159b11c731c599a2d2e39b2c8bfda57d0dd9ff49",
+      "branch": "main"
+    }
+  },
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "22864d75d1f92977fcfcb45477dff620070ee3043c1699ebe983e08ef39d9269",
+      "tracked": null
+    },
+    {
+      "path": "iw-mixes-app-wx/AGENTS.md",
+      "sha256": "edc385cea5c3e7d00ca330aa330d12ea210029156a78bf712c6201e61a380a75",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/api/base.js",
+      "sha256": "493ec55df7de45b286bb435ef08523a7d1071c6a1074f6b8653beb3825d318fa",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/api/request.js",
+      "sha256": "2598891bc10fc717481320eebf05ef876fc7fc7e50ad0d60bb91dc03170ff092",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/app.json",
+      "sha256": "6c1b461e5c698d46f328074aa4ddd06d642ce4e41c3c558041e453fc5ea61838",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pages/menu.js",
+      "sha256": "24f6dbec0486b8a71c530a941717f3cb83172cf004b8faaaa4ceda2001a6c160",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pages/menu.wxss",
+      "sha256": "fb8c790bbfb62c29e97986adc92d2786ed349fa44c1f1d9cc09319e7710260a4",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBase/base/account-detail.js",
+      "sha256": "4bb6c3aaa782cc54cfc252c535c15c3c7e6ecd1551759df4d1b2b3969dfacecf",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBase/base/account-manage.json",
+      "sha256": "e4f132827a7d3851ee4cb7ea48a70dae26e7d6cc6bb6994267c41eca852a56b9",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/AGENTS.md",
+      "sha256": "90cff9a99988347de3f01e7d85c9814bb199ba7393095ebae492866ea82af62f",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/deploy/nginx/iw-mixes-server.conf",
+      "sha256": "07dfc192f9f73b71e0fec949ffa0615d999e2247557f49b083e38ac5dbce4d8c",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/model/entity/BaseWebsiteNavigationEntity.java",
+      "sha256": "bab4680a3f936b85692190a5ee3b207c2fe146afb12524aa06cf9e5fda3f210c",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/BaseApplicationAccountServiceImpl.java",
+      "sha256": "4ee763906f5cbd06cfc3506fdbb1c73951a59457da2c4c7db743261bd79ce2b1",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/BaseWebsiteNavigationServiceImpl.java",
+      "sha256": "b8618f23ddbac632b8505a5ccc1a5d6fe0a5bde01248db65a33d7e87b5e272ee",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-core/pom.xml",
+      "sha256": "7120b240f55a4ca13a38aa850409a62e351696cfff16d66eec8075b575b0cb16",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-core/src/main/java/com/itwray/iw/core/IwCoreApplication.java",
+      "sha256": "8373f0ade4105c3020f7abe268f2adc306a814d541998b8d66475730a51826e2",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-core/src/main/java/com/itwray/iw/core/localgateway/LocalGatewayCompatibilityFilter.java",
+      "sha256": "1559cff29403221d24704399b5fe76af444a84481e9ed2d3fa5af0630e4a6a76",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/pom.xml",
+      "sha256": "bd871ea44931241dd5469f628bf4904ad34fb91f81bae817b0e0f8851afabfcb",
+      "tracked": true
+    }
+  ]
+}

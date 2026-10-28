@@ -1,0 +1,21 @@
+<template name="life-list">
+  <view class="life-page">
+    <view class="search"><text class="search-icon">⌕</text><input value="{{keyword}}" placeholder="{{placeholder}}" bindinput="search" bindconfirm="confirmSearch" confirm-type="search" /></view>
+    <view class="summary" wx:if="{{loaded}}"><block wx:if="{{kind === 'wish'}}"><text class="number">{{pendingCount}}</text> 个心愿，慢慢实现</block><block wx:elif="{{kind === 'date'}}">{{selected === 'UPCOMING' ? '未来30天' : '全部'}} · {{total}} 个日子</block><block wx:else>共 {{total}} 条收藏</block></view>
+    <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="{{false}}"><view class="filters"><view wx:for="{{filters}}" wx:key="value" class="chip {{selected === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="choose">{{item.text}}</view></view></scroll-view>
+    <view class="rows" wx:if="{{items.length}}">
+      <view class="row" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="edit">
+        <view wx:if="{{kind === 'bookmark' && item.pinned}}" class="pin">置顶</view>
+        <view class="line"><view class="row-main"><text class="name">{{item.title}}</text><view class="meta" wx:if="{{kind === 'date'}}">{{item.originalDateText}} · {{item.repeatText}}</view></view><text wx:if="{{kind === 'wish' && item.amountText !== ''}}" class="amount">¥ {{item.amountText}}</text><text wx:elif="{{kind === 'bookmark'}}" class="tag">{{item.categoryText}}</text><view wx:elif="{{kind === 'date'}}" class="countdown {{item.reminderActive ? 'due' : ''}}"><text>{{item.daysUntil === 0 ? '今天' : item.dayText}}</text><text class="day-label">{{item.daysUntil === 0 ? '' : item.dayLabel}}</text></view></view>
+        <view class="meta" wx:if="{{kind === 'bookmark' && item.domain}}">{{item.domain}}</view>
+        <view class="meta" wx:if="{{item.remark}}">{{item.remark}}</view>
+        <view wx:if="{{kind === 'wish'}}" class="meta"><text class="tag {{item.priority === 'HIGH' ? 'warm' : ''}}">{{item.priorityText}}</text><text wx:if="{{item.targetDate}}" class="target">目标 {{item.targetDate}}</text></view>
+        <view wx:if="{{kind === 'date'}}" class="meta"><block wx:if="{{item.nextOccurrenceDate}}">{{item.occurrenceStatus === 'EXPIRED' ? '原定' : '下一次'}} {{item.nextOccurrenceDate}} · {{item.remindText}}</block><block wx:else>超出支持日期范围，请调整日期</block><text wx:if="{{item.reminderActive}}" class="due-label">{{item.daysUntil === 0 ? '今天' : '临近'}}</text></view>
+        <view wx:if="{{kind === 'wish'}}" class="row-actions"><block wx:if="{{item.status === 'PENDING'}}"><view class="small-button" data-id="{{item.id}}" data-action="FULFILL" catchtap="action">标记已实现</view><view class="small-button quiet" data-id="{{item.id}}" data-action="ARCHIVE" catchtap="action">搁置</view></block><view wx:else class="small-button" data-id="{{item.id}}" data-action="RESTORE" catchtap="action">重新加入心愿</view></view>
+        <view wx:if="{{kind === 'bookmark'}}" class="row-actions"><view class="small-button" data-id="{{item.id}}" catchtap="action">{{item.pinned ? '取消置顶' : '置顶'}}</view></view>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{loading && !loaded}}">加载中…</view><view class="retry" wx:if="{{error}}" bindtap="retry">{{error}}</view><view class="empty" wx:elif="{{loaded && !items.length && !loading}}">{{emptyText}}</view><view class="load-more" wx:elif="{{items.length}}">{{loading ? '加载中…' : hasMore ? '上拉加载更多' : '没有更多了'}}</view>
+  </view>
+  <view class="footer"><button class="primary" disabled="{{busy}}" bindtap="add">＋ 添加{{label}}</button></view>
+</template>

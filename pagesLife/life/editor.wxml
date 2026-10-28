@@ -1,0 +1,39 @@
+<template name="life-editor">
+  <view class="life-page editor-page">
+    <view class="empty" wx:if="{{loading}}">加载中…</view><view class="retry" wx:elif="{{error}}" bindtap="load">{{error}}</view>
+    <block wx:else>
+      <view class="section-label">{{kind === 'bookmark' ? '收藏内容' : kind === 'wish' ? '心愿内容' : '日期信息'}}</view>
+      <view class="form-group">
+        <view class="field vertical"><text class="field-label">名称 <text class="required">*</text></text><input class="form-input" value="{{form.title}}" data-field="title" bindinput="input" placeholder="{{kind === 'wish' ? '想买、想体验、想完成的事' : kind === 'date' ? '例如：生日、纪念日、证件到期' : '给收藏起个容易找到的名称'}}" maxlength="80" disabled="{{busy || uncertain}}" cursor-spacing="24" /></view>
+        <block wx:if="{{kind === 'wish'}}">
+          <view class="field"><text class="field-label">预计金额</text><input class="form-input right" type="digit" value="{{form.estimatedAmount}}" data-field="estimatedAmount" bindinput="input" placeholder="选填（元）" disabled="{{busy || uncertain}}" cursor-spacing="24" /></view>
+          <view class="field"><text class="field-label">优先级</text><picker class="field-picker" range="{{['慢慢来','优先实现']}}" value="{{priorityIndex}}" data-field="priority" bindchange="select" disabled="{{busy || uncertain}}"><view class="picker-value">{{priorityIndex === 1 ? '优先实现' : '慢慢来'}}<text class="arrow">›</text></view></picker></view>
+          <view class="field"><text class="field-label">目标日期</text><picker class="field-picker" mode="date" value="{{form.targetDate}}" start="1901-01-01" end="2099-12-31" data-field="targetDate" bindchange="setDate" disabled="{{busy || uncertain}}"><view class="picker-value {{!form.targetDate ? 'muted' : ''}}">{{form.targetDate || '选填'}}<text class="arrow">›</text></view></picker><view wx:if="{{form.targetDate && !uncertain}}" class="clear" bindtap="clearTarget">清除</view></view>
+        </block>
+        <block wx:if="{{kind === 'bookmark'}}">
+          <view class="field"><text class="field-label">类型</text><picker class="field-picker" range="{{categories}}" range-key="text" value="{{categoryIndex}}" data-field="category" bindchange="select" disabled="{{busy || uncertain}}"><view class="picker-value">{{categories[categoryIndex].text}}<text class="arrow">›</text></view></picker></view>
+        </block>
+        <block wx:if="{{kind === 'date'}}">
+          <view class="field"><text class="field-label">类型</text><picker class="field-picker" range="{{dateTypes}}" range-key="text" value="{{typeIndex}}" data-field="dateType" bindchange="select" disabled="{{busy || uncertain}}"><view class="picker-value">{{dateTypes[typeIndex].text}}<text class="arrow">›</text></view></picker></view>
+          <view class="field"><text class="field-label">历法</text><view class="segments"><view class="segment {{form.calendarType === 'SOLAR' ? 'selected' : ''}}" data-value="SOLAR" bindtap="changeCalendar">公历</view><view class="segment {{form.calendarType === 'LUNAR' ? 'selected' : ''}}" data-value="LUNAR" bindtap="changeCalendar">农历</view></view></view>
+          <view class="field" wx:if="{{form.calendarType === 'SOLAR'}}"><text class="field-label">日期 <text class="required">*</text></text><picker class="field-picker" mode="date" value="{{form.solarDate}}" start="1901-01-01" end="2099-12-31" data-field="solarDate" bindchange="setDate" disabled="{{busy || uncertain}}"><view class="picker-value">{{form.solarDate}}<text class="arrow">›</text></view></picker></view>
+          <block wx:else>
+            <view class="field"><text class="field-label">农历年</text><picker class="field-picker" range="{{years}}" value="{{yearIndex}}" bindchange="chooseYear" disabled="{{busy || uncertain || calendarLoading}}"><view class="picker-value">{{form.eventYear}}年<text class="arrow">›</text></view></picker></view>
+            <view wx:if="{{calendarLoading}}" class="hint">正在加载农历日期…</view><view wx:if="{{calendarError}}" class="retry" bindtap="loadCalendar">{{calendarError}}</view>
+            <view class="field"><text class="field-label">农历月 <text class="required">*</text></text><picker class="field-picker" range="{{lunarMonths}}" range-key="label" value="{{lunarMonthIndex}}" bindchange="chooseMonth" disabled="{{busy || uncertain || calendarLoading || calendarError}}"><view class="picker-value">{{lunarMonthText}}<text class="arrow">›</text></view></picker></view>
+            <view class="field"><text class="field-label">农历日 <text class="required">*</text></text><picker class="field-picker" range="{{lunarDays}}" value="{{lunarDayIndex}}" bindchange="chooseDay" disabled="{{busy || uncertain || calendarLoading || !lunarDays.length}}"><view class="picker-value">{{lunarDayText}}<text class="arrow">›</text></view></picker></view>
+          </block>
+          <view class="field"><text class="field-label">重复</text><picker class="field-picker" range="{{['不重复','每年']}}" value="{{repeatIndex}}" data-field="repeatType" bindchange="select" disabled="{{busy || uncertain}}"><view class="picker-value">{{repeatIndex === 1 ? '每年' : '不重复'}}<text class="arrow">›</text></view></picker></view>
+          <view class="field"><text class="field-label">应用内提示</text><picker class="field-picker" range="{{reminders}}" range-key="text" value="{{remindIndex}}" data-field="remindDays" bindchange="select" disabled="{{busy || uncertain}}"><view class="picker-value">{{reminders[remindIndex].text}}<text class="arrow">›</text></view></picker></view>
+        </block>
+      </view>
+      <block wx:if="{{kind === 'bookmark' || kind === 'wish'}}"><view class="section-label">{{kind === 'bookmark' ? '链接（选填）' : '参考链接（选填）'}}<text wx:if="{{kind === 'bookmark' && !uncertain}}" class="text-action" bindtap="paste">粘贴链接</text></view><view class="form-group"><textarea class="url-input" value="{{kind === 'bookmark' ? form.url : form.referenceUrl}}" data-field="{{kind === 'bookmark' ? 'url' : 'referenceUrl'}}" bindinput="input" placeholder="https://" maxlength="2048" auto-height disabled="{{busy || uncertain}}" cursor-spacing="40" /></view></block>
+      <view class="section-label">备注（选填）</view><view class="form-group"><textarea class="remark-input" value="{{form.remark}}" data-field="remark" bindinput="input" maxlength="1000" placeholder="写下补充说明" auto-height disabled="{{busy || uncertain}}" cursor-spacing="40" /></view>
+      <view class="hint" wx:if="{{kind === 'date'}}">到期提示仅在应用内展示，不发送微信消息。<block wx:if="{{form.calendarType === 'LUNAR' && form.repeatType === 'YEARLY'}}">每年按农历计算；无同名闰月时按普通月，小月无三十时按当月最后一天。</block><block wx:elif="{{form.calendarType === 'SOLAR' && form.repeatType === 'YEARLY'}}">2月29日在非闰年按2月28日计算。</block></view>
+      <view class="hint" wx:if="{{kind === 'wish'}}">实现心愿只更新完成状态，不会自动新增账单。</view>
+      <view class="error-message" wx:if="{{saveError}}">{{saveError}}</view><view class="reload" wx:if="{{isEdit && saveError}}" bindtap="reloadConflict">重新加载最新记录</view>
+      <view class="delete-entry" wx:if="{{isEdit && !uncertain}}" bindtap="remove">删除{{label}}</view>
+    </block>
+  </view>
+  <view class="footer" wx:if="{{!loading && !error}}"><button class="primary" loading="{{busy}}" disabled="{{busy || calendarLoading}}" bindtap="save">{{uncertain ? '核对并重试' : '保存' + label}}</button></view>
+</template>
