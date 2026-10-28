@@ -1,0 +1,126 @@
+[
+  {
+    "identity": "member",
+    "systemRole": 1,
+    "familyRole": 3,
+    "capabilities": {
+      "manageSystemOptions": false,
+      "repairSystemOptions": false
+    },
+    "directApisDenied": true,
+    "businessCandidatesRetained": true,
+    "numericVersionPassed": true
+  },
+  {
+    "identity": "parent",
+    "systemRole": 10,
+    "familyRole": 2,
+    "capabilities": {
+      "manageSystemOptions": true,
+      "repairSystemOptions": false
+    },
+    "previews": [
+      {
+        "type": 3003,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 3002,
+        "differences": 0,
+        "issues": 16
+      },
+      {
+        "type": 3004,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 4003,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 4005,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 4006,
+        "differences": 0,
+        "issues": 0
+      }
+    ],
+    "allRepairDenied": true,
+    "businessCandidatesRetained": true,
+    "numericVersionPassed": true
+  },
+  {
+    "identity": "owner",
+    "systemRole": 20,
+    "familyRole": 1,
+    "capabilities": {
+      "manageSystemOptions": true,
+      "repairSystemOptions": true
+    },
+    "previews": [
+      {
+        "type": 3003,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 3002,
+        "differences": 0,
+        "issues": 16
+      },
+      {
+        "type": 3004,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 4003,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 4005,
+        "differences": 0,
+        "issues": 0
+      },
+      {
+        "type": 4006,
+        "differences": 0,
+        "issues": 0
+      }
+    ],
+    "allRepairLocalAnomalyProtected": true,
+    "businessCandidatesRetained": true,
+    "numericVersionPassed": true
+  },
+  {
+    "identity": "child",
+    "systemRole": 1,
+    "familyRole": 4,
+    "capabilities": {
+      "manageSystemOptions": false,
+      "repairSystemOptions": false
+    },
+    "directApisDenied": true,
+    "businessCandidatesRetained": true,
+    "numericVersionPassed": true
+  },
+  {
+    "identity": "personal",
+    "systemRole": 1,
+    "familyRole": null,
+    "capabilities": {
+      "manageSystemOptions": false,
+      "repairSystemOptions": false
+    },
+    "directApisDenied": true,
+    "businessCandidatesRetained": true,
+    "numericVersionPassed": true
+  }
+]

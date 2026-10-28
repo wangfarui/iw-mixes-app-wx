@@ -48,7 +48,6 @@ const menuList = [
     title: '基础功能',
     iconTheme: 'base',
     components: [
-      { url: '/static/menus/dict-manage.svg', text: '字典管理', path: '/pagesBase/base/dict-manage' },
       { url: '/static/menus/account-manage.svg', text: '账号管理', path: '/pagesBase/base/account-manage' }
     ]
   }

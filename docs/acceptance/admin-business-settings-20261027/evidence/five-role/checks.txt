@@ -1,0 +1,41 @@
+默认服务:
+iw-core started, PID 46273, log /Users/wangfarui/workspaces/wfr/iw-mixes_ai/iw-mixes-server/logs/local/iw-core.log
+
+五角色API:
+PASS API member system=1 family=3
+PASS API parent system=10 family=2
+PASS API owner system=20 family=1
+PASS API child system=1 family=4
+PASS API personal system=1 family=null
+
+原生前三角色:
+PASS native member system=1 family=3
+PASS native parent system=10 family=2
+PASS native owner system=20 family=1
+
+原生后两角色:
+PASS native child system=1 family=4
+PASS native personal system=1 family=null
+PASS final two native roles
+
+原生弹层布局:
+PASS native dialog layout-only probe with real role and preview; no synchronization request
+
+SYSTEM_OPTIONS_REDIS_VERSION concurrentDistinctVersions=100 numericProtocol=passed smallVersion=passed disposableKeyCleanup=finally
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.443 s -- in com.itwray.iw.auth.settings.SystemOptionsRedisVersionTest
+SYSTEM_OPTIONS_MYSQL_READ rows=368 unknownCodes=16 duplicateCodes=0 structureIssues=0
+SYSTEM_OPTIONS_UNKNOWN_TYPE_CODE_COUNTS {3002:4=16}
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.594 s -- in com.itwray.iw.auth.settings.SystemOptionsMysqlReadTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.129 s -- in com.itwray.iw.auth.settings.SystemOptionsServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.itwray.iw.auth.service.impl.MembershipLegacyDictionaryTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in com.itwray.iw.auth.service.impl.AccountCategoryServiceTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+Web五角色真实登录与界面结果：web-five-role.json（CUA正常表单登录，未注入浏览器认证状态）。
+Maven package通过；Web type-check及build通过；小程序5项行为单测和84页路由检查通过。
+订阅计费周期和周期单位实际各校准16条，保留本地同步后的受支持结果。
+其他字典内容、目标字典记录ID/编码/归属的前后指纹一致，见database-scope-check.json。
+原生五角色Page数据与真实权限验证已完成。原生前三角色使用SDK截图；后两角色因SDK截图超时，仅完成实际页面与接口状态断言，不用历史截图充当其证据。
+原生弹层图为真实管理员+真实零差异预览的独立布局探测，只切换confirmOpen，未发同步请求；真实写入证据见parent角色sync结果和Web实际确认图。
+当前本地后端iw-core-0.2.8-admin-settings-local.jar运行于18000；未操作生产，未提交或推送。

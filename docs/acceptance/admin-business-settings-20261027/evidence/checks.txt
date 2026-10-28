@@ -1,0 +1,58 @@
+后端定向测试/MySQL只读/Redis并发:
+SYSTEM_OPTIONS_REDIS_VERSION concurrentDistinctVersions=100 numericProtocol=passed disposableKeyCleanup=finally
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.894 s -- in com.itwray.iw.auth.settings.SystemOptionsRedisVersionTest
+SYSTEM_OPTIONS_MYSQL_READ rows=368 unknownCodes=16 duplicateCodes=0 structureIssues=0
+SYSTEM_OPTIONS_UNKNOWN_TYPE_CODE_COUNTS {3002:4=16}
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.344 s -- in com.itwray.iw.auth.settings.SystemOptionsMysqlReadTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.797 s -- in com.itwray.iw.auth.settings.SystemOptionsServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.itwray.iw.auth.service.impl.MembershipLegacyDictionaryTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.itwray.iw.auth.service.impl.AccountCategoryServiceTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+核心包:
+[INFO] BUILD SUCCESS
+
+小程序路由:
+
+> iw-mixes-app-wx@0.1.0 check:routes
+> node scripts/check-routes.js
+
+Route check passed: 84 pages
+
+小程序隔离行为测试:
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 58.643625
+
+Web类型检查:
+vue-tsc --build --force: exit 0
+
+Web构建:
+✓ built in 17.93s
+
+原生最终布局与跳转:
+connecting
+connected
+page opened
+PASS denied state and final screenshot
+PASS actual legacy link navigation
+
+Web浏览器实访 http://127.0.0.1:5178/kitchen/settings -> /login（未登录，无管理员UI验收）
+最终后端API复验：18005，iw-core-0.2.7-admin-settings-local.jar；权限与未登录响应见final-api-permissions.json。
+测试启动的18003/18004/18005后端均已退出（lsof无监听）；默认18000旧进程未改，健康检查仍为200。
+规定启停脚本拒绝重启18000：无法识别占用端口的进程63427为iw-core。没有绕过脚本kill该进程。
+未执行全局同步、业务数据迁移、角色修改、DDL、提交、推送或发布。Redis仅使用唯一临时测试键并已删除。
+截图已查看：厨房原用户选项、迁移提示与无权限页。权限提示按钮已分行修复并截图复验。
+
+2026-10-28默认环境接续：
+用户已停止旧后端；规定脚本成功启动新包于18000，PID25860，health=UP。
+默认端口API复验通过，见default-port-api.json。当前真实微信登录角色USER=1。
+本地编码4视为测试数据观测，不计作业务验收阻塞；生产是否需要修复尚未判定，本次未访问生产。

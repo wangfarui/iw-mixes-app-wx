@@ -22,7 +22,7 @@
       <text class="row-arrow">›</text>
     </view>
     <view wx:if="{{isSuperAdmin}}" class="settings-row clickable" bindtap="syncDict">
-      <text class="row-label">同步字典</text>
+      <text class="row-label">修复业务选项</text>
       <view class="row-right">
         <text class="row-value">{{dictSyncing ? '同步中' : '补齐用户字典'}}</text>
         <text class="row-arrow">›</text>

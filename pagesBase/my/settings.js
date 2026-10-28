@@ -1,5 +1,3 @@
-const { refreshDictCache } = require('../../api/login')
-const baseApi = require('../../api/base')
 const loginHistoryStore = require('../../stores/login-history')
 const eatCartStore = require('../../stores/eat-cart')
 
@@ -34,19 +32,15 @@ Page({
   },
 
   async loadUserRole() {
-    const cached = wx.getStorageSync('userInfo')
-    if (cached) {
-      this.setData({ isSuperAdmin: this.isSuperAdminUser(cached) })
-    }
+    const token = require('../../stores/session').getToken()
+    const seq = this._roleSeq = (this._roleSeq || 0) + 1
+    this.setData({ isSuperAdmin: false })
     try {
-      const res = await baseApi.getUserInfo()
-      const userInfo = res.data || {}
-      wx.setStorageSync('userInfo', userInfo)
-      this.setData({ isSuperAdmin: this.isSuperAdminUser(userInfo) })
-    } catch (error) {
-      this.setData({ isSuperAdmin: this.isSuperAdminUser(cached) })
-    }
+      const result = await require('../../api/system-options').capabilities()
+      if (seq === this._roleSeq && token === require('../../stores/session').getToken()) this.setData({ isSuperAdmin: result.data.repairSystemOptions })
+    } catch (_) {}
   },
+  onHide() { this._roleSeq = (this._roleSeq || 0) + 1; this.setData({ isSuperAdmin: false }) },
 
   saveSettings(settings) {
     wx.setStorageSync(SETTINGS_KEY, settings)
@@ -72,36 +66,7 @@ Page({
   },
 
   syncDict() {
-    if (!this.data.isSuperAdmin || this.data.dictSyncing) return
-    wx.showModal({
-      title: '同步字典',
-      content: '确认补齐所有用户的可见字典数据？',
-      confirmText: '同步',
-      success: async (res) => {
-        if (!res.confirm) return
-        await this.confirmSyncDict()
-      }
-    })
-  },
-
-  async confirmSyncDict() {
-    if (!this.data.isSuperAdmin || this.data.dictSyncing) return
-    this.setData({ dictSyncing: true })
-    wx.showLoading({ title: '同步中...' })
-    let success = false
-    try {
-      await baseApi.repairUserVisibleDictData()
-      await refreshDictCache(true)
-      success = true
-    } catch (error) {
-      // 请求封装会提示具体错误，这里只负责恢复页面状态。
-    } finally {
-      wx.hideLoading()
-      this.setData({ dictSyncing: false })
-    }
-    if (success) {
-      wx.showToast({ title: '同步完成', icon: 'success' })
-    }
+    if (this.data.isSuperAdmin) wx.navigateTo({ url: '/pagesBase/base/system-options?domain=all' })
   },
 
   checkUpdate() {

@@ -1,0 +1,26 @@
+[
+  {
+    "check": "/business-settings/kitchen/preview?type=3003",
+    "message": "没有系统选项维护权限"
+  },
+  {
+    "check": "/business-settings/all/preview",
+    "message": "没有系统选项维护权限"
+  },
+  {
+    "check": "sync rejected",
+    "message": "没有系统选项维护权限"
+  },
+  {
+    "check": "owned legacy ID resolves to type 3003",
+    "status": "passed"
+  },
+  {
+    "check": "existing numeric cache version protocol",
+    "status": "passed"
+  },
+  {
+    "check": "unauthenticated capability access",
+    "code": 401
+  }
+]

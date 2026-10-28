@@ -1,0 +1,162 @@
+[
+  {
+    "identity": "member",
+    "systemRole": 1,
+    "familyRole": 3,
+    "pages": [
+      {
+        "path": "/pagesEat/eat/kitchen-settings",
+        "systemEntries": 0
+      },
+      {
+        "path": "/pagesBookkeeping/bookkeeping/bookkeeping-settings",
+        "systemEntries": 0
+      }
+    ],
+    "directEntryDenied": true,
+    "directApiDenied": true,
+    "fullRepairVisible": false
+  },
+  {
+    "identity": "parent",
+    "systemRole": 10,
+    "familyRole": 2,
+    "pages": [
+      {
+        "path": "/pagesEat/eat/kitchen-settings",
+        "systemEntries": 3
+      },
+      {
+        "path": "/pagesBookkeeping/bookkeeping/bookkeeping-settings",
+        "systemEntries": 3
+      }
+    ],
+    "systemPages": [
+      {
+        "type": 3003,
+        "count": 3,
+        "issues": 0
+      },
+      {
+        "type": 3002,
+        "count": 4,
+        "issues": 16
+      },
+      {
+        "type": 3004,
+        "count": 3,
+        "issues": 0
+      },
+      {
+        "type": 4003,
+        "count": 2,
+        "issues": 0
+      },
+      {
+        "type": 4005,
+        "count": 6,
+        "issues": 0
+      },
+      {
+        "type": 4006,
+        "count": 4,
+        "issues": 0
+      }
+    ],
+    "sync": {
+      "type": 4005,
+      "corrected": 16,
+      "afterDifferences": 0,
+      "otherAdminStaleRejected": true,
+      "repeatedOldPreviewRejected": true,
+      "freshNoopChanged": 0
+    },
+    "fullRepairVisible": false,
+    "fullRepairApiDenied": true
+  },
+  {
+    "identity": "owner",
+    "systemRole": 20,
+    "familyRole": 1,
+    "pages": [
+      {
+        "path": "/pagesEat/eat/kitchen-settings",
+        "systemEntries": 3
+      },
+      {
+        "path": "/pagesBookkeeping/bookkeeping/bookkeeping-settings",
+        "systemEntries": 3
+      }
+    ],
+    "systemPages": [
+      {
+        "type": 3003,
+        "count": 3,
+        "issues": 0
+      },
+      {
+        "type": 3002,
+        "count": 4,
+        "issues": 16
+      },
+      {
+        "type": 3004,
+        "count": 3,
+        "issues": 0
+      },
+      {
+        "type": 4003,
+        "count": 2,
+        "issues": 0
+      },
+      {
+        "type": 4005,
+        "count": 6,
+        "issues": 0
+      },
+      {
+        "type": 4006,
+        "count": 4,
+        "issues": 0
+      }
+    ],
+    "fullRepairVisible": true,
+    "fullRepairPreviewProtected": true
+  },
+  {
+    "identity": "child",
+    "systemRole": 1,
+    "familyRole": 4,
+    "pages": [
+      {
+        "path": "/pagesEat/eat/kitchen-settings",
+        "systemEntries": 0
+      },
+      {
+        "path": "/pagesBookkeeping/bookkeeping/bookkeeping-settings",
+        "systemEntries": 0
+      }
+    ],
+    "directEntryDenied": true,
+    "directApiDenied": true,
+    "fullRepairVisible": false
+  },
+  {
+    "identity": "personal",
+    "systemRole": 1,
+    "familyRole": null,
+    "pages": [
+      {
+        "path": "/pagesEat/eat/kitchen-settings",
+        "systemEntries": 0
+      },
+      {
+        "path": "/pagesBookkeeping/bookkeeping/bookkeeping-settings",
+        "systemEntries": 0
+      }
+    ],
+    "directEntryDenied": true,
+    "directApiDenied": true,
+    "fullRepairVisible": false
+  }
+]

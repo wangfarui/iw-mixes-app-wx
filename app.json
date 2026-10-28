@@ -36,6 +36,7 @@
       "root": "pagesBase",
       "pages": [
         "base/dict-manage",
+        "base/system-options",
         "base/dict-detail",
         "base/account-manage",
         "base/account-detail",

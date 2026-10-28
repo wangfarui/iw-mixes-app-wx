@@ -10,4 +10,16 @@
     </view>
   </view>
   <view class="note">改名、停用或删除选项后，已有账单和订阅仍保留原来的名称。</view>
+
+  <view wx:if="{{systemItems.length}}" class="system-group">
+    <view class="system-heading">系统选项</view>
+    <view class="system-caption">由管理员统一维护，影响所有用户</view>
+    <view class="group">
+      <view class="entry system-entry" wx:for="{{systemItems}}" wx:key="type" data-type="{{item.type}}" bindtap="openSystem" hover-class="entry-hover">
+        <view class="entry-text"><view class="entry-name">{{item.name}}</view><view class="entry-desc">系统固定项 · 查看与同步</view></view>
+        <image class="entry-arrow" src="/static/bookkeeping/settings/chevron-right.svg" mode="aspectFit"/>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{permissionError}}" class="note retry-permission" bindtap="retryPermission">管理权限加载失败，点击重试</view>
 </view>

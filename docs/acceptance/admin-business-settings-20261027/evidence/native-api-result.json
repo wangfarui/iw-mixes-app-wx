@@ -1,0 +1,58 @@
+{
+  "authenticatedRole": "USER (real session)",
+  "capability": {
+    "manageSystemOptions": false,
+    "repairSystemOptions": false
+  },
+  "forbiddenPreview": 500,
+  "forbiddenSync": 500,
+  "forbiddenLegacyWrite": 500,
+  "candidateTypes": [
+    {
+      "type": 3002,
+      "count": 5
+    },
+    {
+      "type": 3003,
+      "count": 3
+    },
+    {
+      "type": 3004,
+      "count": 3
+    },
+    {
+      "type": 4003,
+      "count": 2
+    },
+    {
+      "type": 4005,
+      "count": 6
+    },
+    {
+      "type": 4006,
+      "count": 4
+    }
+  ],
+  "pages": [
+    {
+      "path": "/pagesEat/eat/kitchen-settings",
+      "status": "passed"
+    },
+    {
+      "path": "/pagesBookkeeping/bookkeeping/bookkeeping-settings",
+      "status": "passed"
+    },
+    {
+      "path": "/pagesBase/base/system-options?domain=kitchen&type=3003",
+      "status": "passed"
+    },
+    {
+      "path": "/pagesBase/base/dict-manage",
+      "status": "passed"
+    },
+    {
+      "path": "/pagesBase/base/dict-detail?type=3003",
+      "status": "passed"
+    }
+  ]
+}

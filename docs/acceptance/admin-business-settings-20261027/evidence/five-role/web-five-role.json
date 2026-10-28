@@ -1,0 +1,34 @@
+[
+  {
+    "identity": "parent",
+    "systemEntries": true,
+    "sixTypesViewed": true,
+    "sync": {
+      "type": 4006,
+      "corrected": 16,
+      "afterDifferences": 0,
+      "cancelPreserved": true
+    },
+    "legacyMigrated": true
+  },
+  {
+    "identity": "member",
+    "systemEntries": false,
+    "directEntryDenied": true
+  },
+  {
+    "identity": "owner",
+    "directEntryDenied": false,
+    "systemOptionsVisible": true
+  },
+  {
+    "identity": "child",
+    "directEntryDenied": true,
+    "systemOptionsVisible": false
+  },
+  {
+    "identity": "personal",
+    "directEntryDenied": true,
+    "systemOptionsVisible": false
+  }
+]

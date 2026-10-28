@@ -1,0 +1,21 @@
+<view class="options-page">
+  <view class="intro"><view class="title">{{domain === 'all' ? '修复业务选项' : '系统固定项'}}</view><view class="muted">由当前服务端版本定义，统一影响所有用户。扩展业务含义需随功能更新。</view></view>
+  <view wx:if="{{loading}}" class="message">正在读取系统选项…</view>
+  <view wx:if="{{error}}" class="error"><view>{{error}}</view><view class="retry-wrap"><button size="mini" bindtap="reload" disabled="{{busy}}">重新预览</button></view></view>
+  <block wx:if="{{preview && allowed}}">
+    <view class="option-group" wx:for="{{preview.definitions}}" wx:key="type" wx:for-item="definition">
+      <view class="group-title">{{definition.name}}<text class="badge">系统固定项</text></view>
+      <view class="option-row" wx:for="{{definition.options}}" wx:key="code"><text>{{item.name}}</text><text class="code">编码 {{item.code}} · 启用</text></view>
+    </view>
+    <view class="summary">本次范围：{{domain === 'all' ? '全部六类系统选项' : preview.definitions[0].name}}<view>影响 {{preview.userCount}} 位用户及系统模板</view></view>
+    <view wx:if="{{preview.issues.length}}" class="error"><view>存在异常，已阻止同步</view><view wx:for="{{preview.issueLines}}" wx:key="key">{{item.text}}</view><view>请联系管理员核实原始数据；不会自动删除或重映射。</view></view>
+    <view class="diff-card"><view class="group-title">差异预览</view><view class="diff-row" wx:for="{{preview.differences}}" wx:key="key"><text>{{domain === 'all' ? item.name + ' · ' : ''}}{{item.option}}</text><text class="code">补齐 {{item.addCount}} · 校准 {{item.correctCount}}</text></view></view>
+    <view class="summary">将补齐 {{preview.addCount}} 条，校准 {{preview.correctCount}} 条名称、顺序或启用状态。</view>
+    <view class="footer">
+      <block wx:if="{{cachePending}}"><view class="muted">数据已保存，仅需刷新缓存。</view><button loading="{{busy}}" disabled="{{busy}}" bindtap="retryCache">重试缓存刷新</button></block>
+      <button wx:else type="primary" loading="{{busy}}" disabled="{{busy || committed || preview.issues.length || !(preview.addCount + preview.correctCount)}}" bindtap="openConfirm">{{committed ? '已保存，请重新预览' : preview.issues.length ? '存在异常，暂不可同步' : !(preview.addCount + preview.correctCount) ? '已是最新' : '同步系统选项'}}</button>
+      <view wx:if="{{!cachePending}}" class="cache-link" bindtap="retryCache">刷新候选缓存</view>
+    </view>
+  </block>
+</view>
+<view wx:if="{{confirmOpen}}" class="mask" catchtap="closeConfirm"><view class="sheet" catchtap="noop"><view class="title">确认同步{{domain === 'all' ? '六类系统选项' : preview.definitions[0].name}}？</view><scroll-view scroll-y class="sheet-body"><view>影响 {{preview.userCount}} 位用户及模板。</view><view>补齐 {{preview.addCount}} 条，校准 {{preview.correctCount}} 条。</view><view class="muted">保留现有业务记录和编码。仅校准当前预览范围，不处理个人或家庭选项。</view></scroll-view><view class="sheet-actions"><button disabled="{{busy}}" catchtap="closeConfirm">取消</button><button type="primary" loading="{{busy}}" disabled="{{busy}}" catchtap="confirmSync">确认同步</button></view></view></view>

@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-27T09:03:01.568401+00:00",
+  "repos": {
+    "iw-mixes-app-wx": {
+      "head": "f0347b8006393b316d01bb9168b0faf7e3877da1",
+      "branch": "main"
+    },
+    "iw-mixes-server": {
+      "head": "1885da4ab84a8bfe0825e271166a1be04ca2acb9",
+      "branch": "main"
+    },
+    "iw-mixes-web-platform": {
+      "head": "30fa3687f1ac61d31fb5b9d3fc69c83417347613",
+      "branch": "dev"
+    }
+  },
+  "files": [
+    {
+      "path": "iw-mixes-app-wx/pages/menu.js",
+      "sha256": "9f0df9ef1d23fe18a2f54b9342e0a8e73ae7069c936d3ff6c14f8d7964421435",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBase/my/settings.js",
+      "sha256": "8468a59ac86271372305a3db4a0ec44cfaad84dc5c6686cfd779e47c213436d3",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesBookkeeping/bookkeeping/bookkeeping-settings.js",
+      "sha256": "e7a7c55f7f7f83def1b9d26c78c6faff923db6f8da1e1880ec0d1f247d34a293",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-app-wx/pagesEat/eat/kitchen-settings.js",
+      "sha256": "ed4f61716ab1d6f704f10d346144d9dc5838e2b77f2bbcf2180558ad362a7e76",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-auth/src/main/java/com/itwray/iw/auth/service/impl/BaseDictServiceImpl.java",
+      "sha256": "a80ed61cb6a8601dbe515e520dc759cbd76eb03d15a27e0c759ce9635521c5b7",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-bookkeeping/src/main/java/com/itwray/iw/bookkeeping/utils/MembershipBillingCycleUtils.java",
+      "sha256": "038b2f4f2533b2229504e73b0440791e72c6f84cb22f059f5fdc8f97824442b1",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-packaging-parent/iw-eat/src/main/java/com/itwray/iw/eat/model/dto/DishesAddDto.java",
+      "sha256": "fdf09fef8b891f2515ad04a6966cbfb9b5f1ce2b4a5f5861cb78cdd19e31776e",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/java/com/itwray/iw/web/model/enums/DictTypeEnum.java",
+      "sha256": "891ba5dd9aef211df1db878c2590cf7eae0a040a3e17aaa96a9201a55ae2ba67",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-server/iw-web/src/main/resources/mapper/BaseDictMapper.xml",
+      "sha256": "d85f7ae1daecc5f1aa7afcc49e196d49d6093e91be5dfaaaf8b92705eaf3582f",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/src/router/index.ts",
+      "sha256": "fc30ac5324977e14a93d55b02f099a060bc86d9caf98b377dce00c7fa5ce169d",
+      "tracked": true
+    },
+    {
+      "path": "iw-mixes-web-platform/src/views/HomeView.vue",
+      "sha256": "2a0ea788927069334c7113bea42119604b7dc1b82c4c49d971568caad4fd9023",
+      "tracked": true
+    }
+  ]
+}

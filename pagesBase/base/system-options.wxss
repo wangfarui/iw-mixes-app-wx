@@ -1,0 +1,18 @@
+page { background: #f5f6f7; color: #222; }
+.options-page { padding: 32rpx 28rpx calc(44rpx + env(safe-area-inset-bottom)); }
+.intro { padding: 8rpx 4rpx 24rpx; }.title { font-size: 36rpx; font-weight: 600; margin-bottom: 16rpx; }
+.muted,.summary { font-size: 25rpx; color: #7b8189; line-height: 1.7; }.summary { padding: 20rpx 4rpx; }
+.option-group,.diff-card { border-radius: 24rpx; background: #fff; margin: 20rpx 0; padding: 8rpx 24rpx; }
+.group-title { display: flex; flex-wrap: wrap; gap: 12rpx; align-items: center; font-size: 29rpx; font-weight: 600; padding: 20rpx 0; }
+.badge { color: #16835e; font-size: 21rpx; background: #edf8f2; padding: 4rpx 10rpx; border-radius: 8rpx; font-weight: 400; }
+.option-row,.diff-row { display: flex; justify-content: space-between; gap: 16rpx; padding: 23rpx 0; font-size: 28rpx; border-top: 1rpx solid #f0f1f2; }
+.option-row>text:first-child,.diff-row>text:first-child { flex: 1; min-width: 0; word-break: break-all; }.code { color: #888; font-size: 23rpx; flex: 0 0 auto; }
+.error { background: #fff4eb; color: #a55319; font-size: 25rpx; line-height: 1.8; padding: 24rpx; margin: 20rpx 0; border-radius: 20rpx; word-break: break-all; }
+.message { padding: 30rpx; color: #888; }.footer button { width: 100%; margin: 12rpx 0; font-size: 29rpx; }
+.mask { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,.4); display: flex; align-items: flex-end; z-index: 20; }
+.sheet { width: 100%; box-sizing: border-box; background: white; border-radius: 28rpx 28rpx 0 0; padding: 36rpx 32rpx calc(28rpx + env(safe-area-inset-bottom)); }
+.sheet-body { max-height: 42vh; font-size: 28rpx; line-height: 1.8; }.sheet-actions { display: flex; gap: 20rpx; padding-top: 26rpx; }.sheet-actions button { flex: 1; margin: 0; font-size: 29rpx; }
+
+.retry-wrap { margin-top: 20rpx; }.retry-wrap button { display: inline-flex; align-items: center; justify-content: center; position: static; float: none; margin: 0; padding: 0 28rpx; min-height: 68rpx; font-size: 26rpx; }
+
+.cache-link { text-align: center; color: #16835e; font-size: 25rpx; padding: 24rpx; }
