@@ -1,5 +1,7 @@
 <view class="points-page">
-  <view class="form-card">
+  <view wx:if="{{loading}}" class="form-state">正在加载计划…</view>
+  <view wx:if="{{loadError}}" class="form-state retry" bindtap="loadTaskDetail">{{loadError}}</view>
+  <view wx:if="{{!loading && !loadError}}" class="form-card">
     <view class="form-row">
       <view class="form-label">任务名称</view>
       <input class="form-input" value="{{formData.taskName}}" placeholder="请输入任务名称" data-field="taskName" bindinput="handleInput" />
@@ -15,18 +17,36 @@
       </picker>
     </view>
     <view class="form-row">
-      <view class="form-label">计划日期</view>
-      <picker class="filter-field" mode="date" value="{{formData.planDate}}" bindchange="onPlanDateChange">
+      <view class="form-label">历法</view>
+      <view class="segmented"><view class="segment {{formData.calendarType === 'SOLAR' ? 'active' : ''}}" data-value="SOLAR" bindtap="changeCalendar">公历</view><view class="segment {{formData.calendarType === 'LUNAR' ? 'active' : ''}}" data-value="LUNAR" bindtap="changeCalendar">农历</view></view>
+      <view wx:if="{{converting}}" class="template-hint">正在转换日期…</view>
+    </view>
+    <view wx:if="{{formData.calendarType === 'SOLAR'}}" class="form-row">
+      <view class="form-label">首次计划日期</view>
+      <picker class="filter-field" mode="date" start="1901-01-01" end="2099-12-31" value="{{formData.planDate}}" bindchange="onPlanDateChange" disabled="{{saving || converting}}">
         <view>{{formData.planDate || '请选择计划日期'}}</view>
       </picker>
+    </view>
+    <view wx:else class="form-row">
+      <view class="form-label">首次计划日期（农历）</view>
+      <view class="lunar-fields">
+        <picker class="filter-field" range="{{years}}" value="{{yearIndex}}" bindchange="chooseLunarYear" disabled="{{saving || converting || calendarLoading}}"><view>{{formData.lunarYear}}年</view></picker>
+        <picker class="filter-field" range="{{lunarMonths}}" range-key="label" value="{{lunarMonthIndex}}" bindchange="chooseLunarMonth" disabled="{{saving || converting || calendarLoading || calendarError}}"><view>{{lunarMonthText}}</view></picker>
+        <picker class="filter-field" range="{{lunarDays}}" value="{{lunarDayIndex}}" bindchange="chooseLunarDay" disabled="{{saving || converting || calendarLoading || calendarError || !lunarDays.length}}"><view>{{lunarDayText}}</view></picker>
+      </view>
+      <view wx:if="{{calendarLoading}}" class="template-hint">正在加载农历日期…</view>
+      <view wx:if="{{calendarError}}" class="template-hint retry" bindtap="loadCalendar">{{calendarError}}</view>
+      <view wx:if="{{formData.planCycle === 3}}" class="template-hint">每个农历月均执行，包含闰月；小月无三十时按二十九执行，大月恢复三十。</view>
+      <view wx:if="{{formData.planCycle === 4}}" class="template-hint">每年按农历计算；无同名闰月时按普通月，小月无三十时按二十九执行。</view>
+      <view wx:if="{{formData.planCycle !== 3 && formData.planCycle !== 4}}" class="template-hint">从所选日期开始，按实际自然日间隔执行。</view>
     </view>
     <view wx:if="{{formData.planCycle === 5}}" class="form-row">
       <view class="form-label">计划天数</view>
       <input class="form-input" type="number" value="{{formData.cycleDays}}" placeholder="请输入计划天数" data-field="cycleDays" bindinput="handleInput" />
     </view>
     <view class="form-row">
-      <view class="form-label">提前提醒天数</view>
-      <input class="form-input" type="number" value="{{formData.remindDays}}" placeholder="请输入提前提醒天数" data-field="remindDays" bindinput="handleInput" />
+      <view class="form-label">提前生成天数</view>
+      <input class="form-input" type="number" value="{{formData.remindDays}}" placeholder="请输入提前生成天数" data-field="remindDays" bindinput="handleInput" />
     </view>
     <view class="form-row">
       <view class="form-label">截止天数</view>
@@ -52,8 +72,24 @@
     </view>
   </view>
 
-  <view class="button-row">
-    <button class="primary-btn" loading="{{saving}}" disabled="{{saving}}" bindtap="handleSubmit">保存</button>
+  <view wx:if="{{!loading && !loadError}}" class="form-card plan-preview">
+    <view class="preview-heading">接下来三次计划</view>
+    <view wx:if="{{previewLoading}}" class="template-hint">正在计算…</view>
+    <view wx:if="{{previewError}}" class="template-hint retry" bindtap="refreshPreview">{{previewError}}</view>
+    <block wx:if="{{preview}}">
+      <view class="preview-rule">{{preview.ruleText}}</view>
+      <view class="preview-row" wx:for="{{preview.occurrences}}" wx:key="planDate">
+        <view class="preview-date">{{item.planDateText}}</view>
+        <view class="template-hint">生成：{{item.generateDate}} · 截止：{{item.deadlineDate}}</view>
+      </view>
+      <view wx:if="{{formData.status === 0}}" class="template-hint">当前计划已禁用，仅预览日期；保存后仍保持禁用，不会自动生成待办。</view>
+      <view wx:else class="template-hint">新建或调整日期规则时，若提前生成日期已过、本期计划日期未过，保存后会生成本期待办。修改计划只影响以后生成的任务。</view>
+      <view wx:if="{{preview.exhausted}}" class="template-hint">已接近支持的年份上限，最后一期生成后计划将自动禁用。</view>
+    </block>
+  </view>
+
+  <view wx:if="{{!loading && !loadError}}" class="button-row">
+    <button class="primary-btn" loading="{{saving}}" disabled="{{saving || converting || calendarLoading || calendarError}}" bindtap="handleSubmit">保存</button>
     <button class="plain-btn" bindtap="handleCancel">取消</button>
   </view>
 </view>

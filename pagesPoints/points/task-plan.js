@@ -34,6 +34,7 @@ function formatTaskPlan(item) {
     statusText: status === 1 ? '启用' : '禁用',
     statusClass: status === 1 ? 'is-active' : 'is-inactive',
     planDateText: dateText(item.planDate),
+    calendarText: item.calendarType === 'LUNAR' ? '农历' : '公历',
     nextPlanDateText: dateText(item.nextPlanDate),
     createTimeText: item.createTime || ''
   }

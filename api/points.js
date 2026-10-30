@@ -24,6 +24,18 @@ function getPointsBalance() {
   return http.get('/points-service/points/total/getPointsBalance')
 }
 
+function getTaskPlanCalendar(year) {
+  return http.get('/points-service/points/task/plan/calendar', { year })
+}
+
+function convertTaskPlanDate(data) {
+  return http.post('/points-service/points/task/plan/convertDate', data)
+}
+
+function previewTaskPlan(data) {
+  return http.post('/points-service/points/task/plan/preview', data)
+}
+
 function getTaskPlanPage(data) {
   return http.post('/points-service/points/task/plan/page', data)
 }
@@ -89,6 +101,9 @@ function updateTaskStatus(data) {
 }
 
 module.exports = {
+  getTaskPlanCalendar,
+  convertTaskPlanDate,
+  previewTaskPlan,
   updateTaskBookkeepingTemplate,
   updateTaskStatus,
   addPointsRecord,

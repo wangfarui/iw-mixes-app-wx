@@ -5,3 +5,13 @@
 .template-summary { color: #222; font-size: 28rpx; word-break: break-all; }
 .template-hint { margin-top: 12rpx; color: #888; font-size: 24rpx; line-height: 1.6; }
 .template-link { margin-top: 16rpx; color: #007aff; font-size: 27rpx; }
+
+.lunar-fields { display: flex; gap: 12rpx; }
+.lunar-fields .filter-field { padding: 0 12rpx; text-align: center; }
+.preview-heading { color: #333; font-size: 29rpx; font-weight: 600; }
+.preview-rule { margin-top: 12rpx; color: #007aff; font-size: 26rpx; }
+.preview-row { padding: 18rpx 0; border-bottom: 1rpx solid #f0f0f0; }
+.preview-date { font-size: 26rpx; line-height: 1.6; overflow-wrap: anywhere; }
+.retry { color: #c35416; }
+.form-state { padding: 40rpx 20rpx; text-align: center; font-size: 27rpx; }
+.button-row { padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); }

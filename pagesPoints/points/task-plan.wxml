@@ -15,6 +15,7 @@
         <view class="item-title task-plan-title">{{item.taskNameText}}</view>
         <view class="status-tag task-plan-status-tag {{item.statusClass}}">{{item.statusText}}</view>
       </view>
+      <view class="item-meta">{{item.calendarText}}<text wx:if="{{item.ruleText}}"> · {{item.ruleText}}</text></view>
       <view class="task-plan-date-grid">
         <view class="task-plan-date-cell">
           <view class="task-plan-date-label">计划日期</view>
