@@ -145,8 +145,7 @@
   font-size: 28rpx;
 }
 
-.date-picker,
-.deadline-picker {
+.date-picker {
   height: 80rpx;
   display: flex;
   align-items: center;
@@ -234,7 +233,21 @@
 }
 
 .deadline-picker {
+  display: block;
   width: 100%;
+  box-sizing: border-box;
+}
+
+.deadline-picker-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  color: #666;
+  font-size: 24rpx;
 }
 
 .modal-actions {
@@ -249,6 +262,17 @@
   border-radius: 8rpx;
   font-size: 28rpx;
   line-height: 80rpx;
+}
+
+.deadline-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 0;
+  line-height: 1.4;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .modal-btn.secondary {

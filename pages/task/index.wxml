@@ -73,11 +73,11 @@
     <view class="modal-card">
       <view class="modal-title">设置截止日期</view>
       <picker mode="date" value="{{deadlineForm.deadlineDate}}" bindchange="onDeadlineDateChange" class="deadline-picker">
-        <view class="picker-text">{{deadlineDateText}}</view>
+        <view class="deadline-picker-content">{{deadlineDateText}}</view>
       </picker>
       <view class="modal-actions">
-        <button class="modal-btn secondary" bindtap="closeDeadlineDialog">取消</button>
-        <button class="modal-btn primary" bindtap="saveDeadline">保存</button>
+        <view class="modal-btn deadline-action secondary" role="button" catchtap="closeDeadlineDialog">取消</view>
+        <view class="modal-btn deadline-action primary" role="button" catchtap="saveDeadline">保存</view>
       </view>
     </view>
   </view>
